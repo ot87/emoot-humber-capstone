@@ -41,7 +41,7 @@ npm run dev
 
 ## Environment setup (Firebase)
 
-The app talks to Firebase directly (a serverless setup where the client connects to Firestore, protected by security rules). Create a Firebase project, enable Authentication (email/password) and Firestore, and put the web config in `.env.local`:
+The app talks to Firebase directly (a serverless setup where the client connects to Firestore, protected by security rules). Create a Firebase project, enable Authentication (Google sign-in) and Firestore, and put the web config in `.env.local`:
 
 ```
 VITE_FIREBASE_API_KEY=
