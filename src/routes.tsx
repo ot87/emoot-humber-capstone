@@ -11,7 +11,8 @@ function RequireAuth({ children }: { children: React.ReactElement }) {
     return null;
   }
   if (!user) {
-    return <Navigate to="/auth" replace />;
+     return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
+     
   }
 
   return children;
@@ -20,7 +21,7 @@ function RequireAuth({ children }: { children: React.ReactElement }) {
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/quiz" replace />} />
+      <Route path="/" element={<Navigate to="/auth" replace />} />
       <Route path="/quiz" element={<QuizPage />} />
       <Route path="/result" element={<div>Result</div>} />
       <Route
