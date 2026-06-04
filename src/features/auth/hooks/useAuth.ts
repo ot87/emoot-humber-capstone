@@ -3,7 +3,7 @@ import { listenToAuthChanges } from "@/services/auth.service";
 import type { AuthUser } from "@/types/user";
 
 export interface AuthState {
-  user: { uid: string } | null;
+  user: AuthUser | null;
   loading: boolean;
 }
 
