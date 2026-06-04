@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { logout } from "@/services/auth.service";
+import { signOut } from "@/services/auth.service";
 
 export default function SignOutButton() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ export default function SignOutButton() {
     setIsSigningOut(true);
 
     try {
-      await logout();
+      await signOut();
       navigate("/auth", { replace: true });
     } catch (error) {
       console.error("Sign out failed:", error);

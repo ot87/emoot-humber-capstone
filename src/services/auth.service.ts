@@ -2,7 +2,7 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
-  signOut,
+  signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -25,8 +25,8 @@ export async function signInWithGoogle(): Promise<AuthUser> {
   return mapFirebaseUser(result.user);
 }
 
-export async function logout(): Promise<void> {
-  await signOut(auth);
+export async function signOut(): Promise<void> {
+  await firebaseSignOut(auth);
 }
 
 export function listenToAuthChanges(
