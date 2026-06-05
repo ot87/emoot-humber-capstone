@@ -4,19 +4,14 @@ import { useAuth } from "../hooks/useAuth";
 
 export default function SignOutButton() {
   const navigate = useNavigate();
- const { signOut, isSigningOut } = useAuth();
-     async function handleSignOut() {
+  const { signOut, isSigningOut } = useAuth();
+  async function handleSignOut() {
     if (await signOut()) {
       navigate("/auth", { replace: true });
     }
   }
   return (
-    <Button
-      type="button"
-      variant="outline"
-      onClick={handleSignOut}
-      disabled={isSigningOut}
-    >
+    <Button type="button" variant="outline" onClick={handleSignOut} disabled={isSigningOut}>
       {isSigningOut ? "Signing out..." : "Sign out"}
     </Button>
   );

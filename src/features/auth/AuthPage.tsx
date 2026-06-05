@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { SignInCard } from "./components/SignInCard";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -6,8 +6,9 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 export function AuthPage() {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const redirectTo = location.state?.from?.pathname || "/";
+  const redirectTo = location.state?.from ?? "/bingo";
 
   if (loading) {
     return <LoadingSpinner />;
@@ -17,5 +18,5 @@ export function AuthPage() {
     return <Navigate to={redirectTo} replace />;
   }
 
-  return <SignInCard />;
+  return <SignInCard onSuccess={() => navigate(redirectTo, { replace: true })} />;
 }
