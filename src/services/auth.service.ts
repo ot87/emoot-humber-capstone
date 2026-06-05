@@ -11,7 +11,7 @@ import type { AuthUser } from "@/types/user";
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
-export function mapFirebaseUser(user: User): AuthUser {
+ function mapFirebaseUser(user: User): AuthUser {
   return {
     uid: user.uid,
     email: user.email,
