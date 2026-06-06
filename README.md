@@ -95,7 +95,7 @@ src/
       bingo.logic.test.ts
     auth/
       AuthPage.tsx          # thin route-level wrapper
-      components/           # SignInCard ("Continue with Google"), SignOutButton
+      components/           # SignInCard (Google sign-in button), SignOutButton
       hooks/                # useAuth (auth state + signIn/signOut actions)
 
   components/

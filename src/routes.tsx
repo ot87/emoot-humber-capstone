@@ -1,17 +1,22 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import QuizPage from "@/features/quiz/QuizPage";
 import BingoPage from "@/features/bingo/BingoPage";
-import AuthPage from "@/features/auth/AuthPage";
+import { AuthPage } from "@/features/auth/AuthPage";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
+
+
 function RequireAuth({ children }: { children: React.ReactElement }) {
+  const location = useLocation(); 
   const { user, loading } = useAuth();
+
 
   if (loading) {
     return null;
   }
   if (!user) {
-    return <Navigate to="/auth" replace />;
+     return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
+     
   }
 
   return children;
