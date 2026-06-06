@@ -20,7 +20,7 @@ const buttonVariants = cva(
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
         quiz:
-          "rounded-3xl border-0 bg-quiz-brand font-quiz-display text-quiz-brand-foreground normal-case tracking-normal shadow-none hover:bg-quiz-brand/90 focus-visible:ring-quiz-brand/40",
+          "rounded-[10px] border-0 bg-quiz-brand font-quiz-display text-quiz-brand-foreground normal-case tracking-normal shadow-none hover:bg-quiz-brand/90 focus-visible:ring-quiz-brand/40",
       },
       size: {
         default:
@@ -34,7 +34,7 @@ const buttonVariants = cva(
         "icon-sm":
           "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
-        cta: "h-14 gap-2 px-6 text-lg sm:h-16 md:h-[4.5rem] md:px-8 lg:h-20 lg:px-10",
+        cta: "h-14 gap-2 px-6 text-lg sm:h-16 sm:px-8",
       },
     },
     defaultVariants: {
