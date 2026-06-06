@@ -11,7 +11,7 @@ import type { AuthUser } from "@/types/user";
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
 
- function mapFirebaseUser(user: User): AuthUser {
+function mapFirebaseUser(user: User): AuthUser {
   return {
     uid: user.uid,
     email: user.email,
@@ -29,9 +29,7 @@ export async function signOut(): Promise<void> {
   await firebaseSignOut(auth);
 }
 
-export function listenToAuthChanges(
-  callback: (user: AuthUser | null) => void,
-): () => void {
+export function listenToAuthChanges(callback: (user: AuthUser | null) => void): () => void {
   return onAuthStateChanged(auth, (firebaseUser) => {
     callback(firebaseUser ? mapFirebaseUser(firebaseUser) : null);
   });
