@@ -9,13 +9,13 @@ type QuizLandingScreenProps = {
 
 export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
   return (
-    <div className="min-h-dvh bg-background">
+    <div className="flex min-h-dvh flex-col bg-background">
       <header className="relative w-full min-h-[32svh] sm:min-h-[34svh] lg:min-h-[16rem] xl:min-h-[18rem]">
         <img
           src="/assets/bg-header-torn.svg"
           alt=""
           aria-hidden="true"
-          width={402}
+          width={1083}
           height={172}
           decoding="async"
           fetchPriority="high"
@@ -28,25 +28,28 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
             "relative flex h-full min-h-[inherit] flex-col justify-center pb-14 pt-8 sm:pb-16 sm:pt-10 md:pb-20 md:pt-14 lg:max-w-none lg:pb-24 lg:pt-16",
           )}
         >
-          <div className="relative mx-auto w-full max-w-[19rem] -rotate-1 px-3 py-3 sm:max-w-[20rem] sm:px-4 sm:py-4 md:max-w-[21rem] lg:max-w-[22rem]">
+          <div className="relative mx-auto w-[278px] -rotate-1">
             <img
               src="/assets/bg-title-brush.svg"
               alt=""
               aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-fill"
+              width={278}
+              height={40}
+              decoding="async"
+              className="pointer-events-none absolute inset-0 size-full object-fill select-none"
             />
             <h1
               aria-label="FIND YOUR MONEY PERSONALITY"
-              className="relative z-10 font-quiz-display text-center text-[1.375rem] leading-tight text-foreground"
+              className="relative z-10 px-3 py-2 text-center font-quiz-display text-[1.375rem] leading-[1.1] text-foreground"
             >
               <span className="block whitespace-nowrap">FIND YOUR MONEY</span>
-              <span className="block">PERSONALITY</span>
+              <span className="block whitespace-nowrap">PERSONALITY</span>
             </h1>
           </div>
         </div>
       </header>
 
-      <div className={cn(CONTENT_SHELL, "relative")}>
+      <div className={cn(CONTENT_SHELL, "relative flex flex-1 flex-col")}>
         <div className="relative z-10 -mt-14 flex justify-center" aria-hidden="true">
           <div className="flex h-[111.71px] w-[108.38px] items-center justify-center rounded-full border-[5px] border-white bg-quiz-header">
             <img
@@ -60,32 +63,34 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
           </div>
         </div>
 
-        <main className="relative flex flex-col items-center pb-8 pt-2 text-center sm:pb-10 sm:pt-3 md:pb-12 lg:pb-14 lg:pt-4">
-          <p className="max-w-[18rem] font-quiz-body text-base font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-xs md:max-w-sm lg:max-w-md">
+        <main className="relative flex flex-1 flex-col items-center pt-2 text-center sm:pt-3 lg:pt-4">
+          <p className="max-w-[18rem] font-quiz-body text-xl font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-xs md:max-w-sm lg:max-w-md">
             How do you really feel about money?
             <br />
             Let&apos;s find out!
           </p>
 
-          <p className="mt-2 max-w-[20rem] font-quiz-body text-base font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-sm md:max-w-md lg:max-w-lg">
+          <p className="mt-2 max-w-[20rem] font-quiz-body text-xl font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-sm md:max-w-md lg:max-w-lg">
             Take this quick 5-question quiz to uncover your unique money personality — and get
             personalized tips to help you save smarter, stay motivated, and reach your financial
             goals.
           </p>
 
-          <Button
-            type="button"
-            variant="quiz"
-            size="cta"
-            className="mt-8 w-full max-w-[18rem] sm:mt-10 sm:max-w-xs md:mt-12 md:max-w-sm lg:mt-14 lg:max-w-md"
-            onClick={onStart}
-          >
-            START QUIZ
-          </Button>
+          <div className="mt-auto flex w-full flex-col items-center pb-8 pt-8 sm:pb-10 md:pb-12 lg:pb-14">
+            <Button
+              type="button"
+              variant="brand"
+              size="cta"
+              className="w-full max-w-[18rem] sm:max-w-xs md:max-w-sm lg:max-w-md"
+              onClick={onStart}
+            >
+              START QUIZ
+            </Button>
 
-          <p className="mt-3 font-quiz-body text-sm font-normal leading-[22px] tracking-[-0.3px] text-quiz-footer sm:mt-4">
-            No login required
-          </p>
+            <p className="mt-3 font-quiz-body text-sm font-normal leading-[22px] tracking-[-0.3px] text-quiz-footer sm:mt-4">
+              No login required
+            </p>
+          </div>
         </main>
       </div>
     </div>
