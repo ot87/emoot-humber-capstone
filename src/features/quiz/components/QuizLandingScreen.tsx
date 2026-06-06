@@ -12,7 +12,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
     <div className="min-h-dvh bg-background">
       <header className="relative w-full min-h-[32svh] sm:min-h-[34svh] lg:min-h-[16rem] xl:min-h-[18rem]">
         <img
-          src="/assets/bg-header-torn.png"
+          src="/assets/bg-header-torn.svg"
           alt=""
           aria-hidden="true"
           width={402}
@@ -30,7 +30,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
         >
           <div className="relative mx-auto w-full max-w-[19rem] -rotate-1 px-3 py-3 sm:max-w-[20rem] sm:px-4 sm:py-4 md:max-w-[21rem] lg:max-w-[22rem]">
             <img
-              src="/assets/bg-title-brush.png"
+              src="/assets/bg-title-brush.svg"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 h-full w-full object-fill"
@@ -50,10 +50,10 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
         <div className="relative z-10 -mt-14 flex justify-center" aria-hidden="true">
           <div className="flex h-[111.71px] w-[108.38px] items-center justify-center rounded-full border-[5px] border-white bg-quiz-header">
             <img
-              src="/assets/icon-star.png"
+              src="/assets/icon-star.svg"
               alt=""
-              width={65}
-              height={65}
+              width={75}
+              height={75}
               decoding="async"
               className="size-[65px]"
             />
