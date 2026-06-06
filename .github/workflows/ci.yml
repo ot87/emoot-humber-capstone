@@ -24,8 +24,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Four blocking gates, in order. Any failure fails the job — no
+      # Five blocking gates, in order. Any failure fails the job — no
       # continue-on-error, no conditional skips.
+      - name: Format check
+        run: npm run format:check
+
       - name: Lint
         run: npm run lint
 
