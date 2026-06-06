@@ -44,6 +44,8 @@
   --color-quiz-brand: var(--quiz-brand);
   --color-quiz-brand-foreground: var(--quiz-brand-foreground);
   --color-quiz-header: var(--quiz-header);
+  --color-quiz-copy: var(--quiz-copy);
+  --color-quiz-footer: var(--quiz-footer);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -90,6 +92,8 @@
   --quiz-header: #fec428;
   --quiz-brand: #ffe900;
   --quiz-brand-foreground: oklch(0.145 0 0);
+  --quiz-copy: #000000;
+  --quiz-footer: rgb(145 145 136 / 0.9);
 }
 
 .dark {

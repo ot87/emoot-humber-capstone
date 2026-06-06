@@ -42,13 +42,13 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
         </div>
 
         <main className="relative flex flex-col items-center pb-8 pt-4 text-center sm:pb-10 sm:pt-6 md:pb-12 lg:pb-14 lg:pt-6">
-          <p className="max-w-[18rem] font-quiz-body text-xl font-normal leading-snug text-black sm:max-w-xs md:max-w-sm lg:max-w-md">
+          <p className="max-w-[18rem] font-quiz-body text-xl font-normal leading-snug text-quiz-copy sm:max-w-xs md:max-w-sm lg:max-w-md">
             How do you really feel about money?
             <br />
             Let&apos;s find out!
           </p>
 
-          <p className="mt-3 max-w-[20rem] font-quiz-body text-xl font-normal leading-relaxed text-black sm:mt-4 sm:max-w-sm md:max-w-md lg:mt-5 lg:max-w-lg">
+          <p className="mt-3 max-w-[20rem] font-quiz-body text-xl font-normal leading-relaxed text-quiz-copy sm:mt-4 sm:max-w-sm md:max-w-md lg:mt-5 lg:max-w-lg">
             Take this quick 5-question quiz to uncover your unique money personality — and get
             personalized tips to help you save smarter, stay motivated, and reach your financial
             goals.
@@ -64,7 +64,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
             START QUIZ
           </Button>
 
-          <p className="mt-3 font-quiz-body text-sm font-normal leading-[22px] tracking-[-0.3px] text-[#919188]/90 sm:mt-4">
+          <p className="mt-3 font-quiz-body text-sm font-normal leading-[22px] tracking-[-0.3px] text-quiz-footer sm:mt-4">
             No login required
           </p>
         </main>
