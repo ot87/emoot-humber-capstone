@@ -18,6 +18,7 @@ vi.mock("@/services/auth.service", () => ({
 describe("App", () => {
   it("renders the default route", () => {
     render(<App />);
-    expect(screen.getByText("Quiz")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /find your money personality/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /start quiz/i })).toBeInTheDocument();
   });
 });
