@@ -12,12 +12,13 @@ Vite + React + TypeScript (strict) + Tailwind v4 + Shadcn + React Router v7
 
 ## Commands
 
-- `npm run dev` / `npm run lint` / `npm run typecheck` / `npm run test` / `npm run build`
+- `npm run dev` / `npm run lint` / `npm run format` / `npm run format:check` /
+  `npm run typecheck` / `npm run test` / `npm run build`
 - One test file: `npx vitest run src/App.test.tsx`
 - One test by name: `npx vitest run -t "<test name>"`
 
-lint, typecheck, test, and build MUST all pass before work is presented as
-done. CI runs these on every PR.
+format:check, lint, typecheck, test, and build MUST all pass before work is
+presented as done. CI runs these on every PR.
 
 ## Architecture rules
 
@@ -30,6 +31,7 @@ done. CI runs these on every PR.
   `bingo.service.ts`. Services export typed async functions, no React code.
 - Feature code reaches data only through hooks. Components and pages NEVER
   import from `src/services/*` directly; hooks are the only callers of services.
+  ESLint enforces this via `no-restricted-imports`.
 
 ```ts
 // BAD - component imports the service
@@ -63,8 +65,9 @@ const onClick = async () => {
     no I/O, no React, fully unit-tested in the co-located `.test.ts`.
 - Shared domain types: `src/types/<domain>.ts`. Feature-internal types stay in
   the feature.
-- Shared UI primitives: `src/components/ui/` (Shadcn). Shared layout:
-  `src/components/layout/`.
+- Shared UI primitives: `src/components/ui/`. Shadcn-generated files are left
+  unmodified; hand-written shared UI (e.g. `LoadingSpinner.tsx`) follows the
+  same conventions as feature components. Shared layout: `src/components/layout/`.
 
 ### Auth and access
 
@@ -86,16 +89,19 @@ const onClick = async () => {
 - Declared return types match what is actually produced: never narrow away
   fields the layer below provides (a hook exposing `{ uid }` while the service
   returns a full user hides real data from every consumer).
-- Styling: Tailwind utilities + Shadcn primitives only. No new CSS files
-  (`src/index.css` is the sole Tailwind entry), no inline style objects.
+- Imports use the `@/` path alias (mapped to `src/`). Same-directory `./`
+  imports are fine; parent-relative `../` imports are not — ESLint enforces
+  this via `no-restricted-imports`.
+- Named exports for components, hooks, and utilities. Default exports only when
+  a framework requires them (e.g. route lazy imports).
 - Use semantic theme tokens (`text-destructive`, `text-muted-foreground`,
   `bg-background`), never raw palette classes like `text-red-600`.
+- Mobile-first with a proper desktop layout; wider breakpoints are additive.
 - Routing state comes from React Router hooks (`useLocation`, `useNavigate`,
   `useParams`); never read `window.location`.
 - No dead code in committed work: no commented-out blocks, leftover dev
   toggles, or unused variables surviving a rewrite. Export only what has a
   consumer.
-- Mobile-first with a proper desktop layout; wider breakpoints are additive.
 - Tests NEVER touch live Firebase: `vi.mock` the `src/services/*` module (or
   `src/lib/firebase`, which initializes eagerly at import) before rendering
   anything that transitively imports it. If a test seems to need credentials
@@ -111,6 +117,8 @@ const onClick = async () => {
 - One branch and one PR per Jira ticket, named after it (`KAN-NN-...`). Keep
   the diff inside the ticket's scope: no drive-by fixes, no opportunistic
   refactors. Report unrelated problems instead of fixing them.
+- Commit messages: `type(KAN-NN): imperative summary` (under 72 chars). Types:
+  `feat`, `fix`, `chore`, `docs`, `test`, `refactor`.
 - Smallest change that satisfies the acceptance criteria.
 - NEVER commit credentials. `.env.example` is tracked and contains placeholder
   keys only (`VITE_FIREBASE_*`); real values live only in untracked `.env.local`.
