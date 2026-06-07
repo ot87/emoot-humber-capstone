@@ -48,6 +48,7 @@
   --color-quiz-header: var(--quiz-header);
   --color-quiz-copy: var(--quiz-copy);
   --color-quiz-footer: var(--quiz-footer);
+  --color-quiz-badge-ring: var(--quiz-badge-ring);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -96,6 +97,7 @@
   --quiz-brand-foreground: oklch(0.145 0 0);
   --quiz-copy: #000000;
   --quiz-footer: rgb(145 145 136 / 0.9);
+  --quiz-badge-ring: #ffffff;
 }
 
 .dark {

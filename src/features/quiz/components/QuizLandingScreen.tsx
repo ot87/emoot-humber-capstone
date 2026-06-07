@@ -31,19 +31,22 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
         >
           <QuizTitleBanner>
             <h1
-              aria-label="FIND YOUR MONEY PERSONALITY"
+              aria-label="Find Your Money Personality"
               className="font-quiz-display text-[22px] leading-[1.15] text-foreground"
             >
-              <span className="block whitespace-nowrap">FIND YOUR MONEY</span>
-              <span className="block whitespace-nowrap">PERSONALITY</span>
+              <span className="block whitespace-nowrap">Find Your Money</span>
+              <span className="block whitespace-nowrap">Personality</span>
             </h1>
           </QuizTitleBanner>
         </div>
       </header>
 
       <div className={cn(CONTENT_SHELL, "relative flex min-h-0 flex-1 flex-col")}>
-        <div className="relative z-10 -mt-14 flex justify-center" aria-hidden="true">
-          <div className="flex h-[111.71px] w-[108.38px] items-center justify-center rounded-full border-[5px] border-white bg-quiz-header">
+        <div
+          className="relative z-10 -mt-14 mb-[clamp(1rem,2.5vw+0.75rem,3.5rem)] flex justify-center"
+          aria-hidden="true"
+        >
+          <div className="flex h-[111.71px] w-[108.38px] items-center justify-center rounded-full border-[5px] border-quiz-badge-ring bg-quiz-header">
             <img
               src="/assets/icon-star.svg"
               alt=""
@@ -55,7 +58,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
           </div>
         </div>
 
-        <main className="relative flex flex-col items-center pt-2 text-center sm:pt-3 lg:pt-4">
+        <main className="relative flex flex-col items-center text-center">
           <p className="max-w-[18rem] font-quiz-body text-xl font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-xs md:max-w-sm lg:max-w-md">
             How do you really feel about money?
             <br />
@@ -79,7 +82,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
             className="w-full max-w-[18rem] sm:max-w-xs md:max-w-sm lg:max-w-md"
             onClick={onStart}
           >
-            START QUIZ
+            Start Quiz
           </Button>
 
           <p className="mt-3 font-quiz-body text-sm font-normal leading-[22px] tracking-[-0.3px] text-quiz-footer sm:mt-4">
