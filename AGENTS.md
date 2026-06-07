@@ -65,9 +65,11 @@ const onClick = async () => {
     no I/O, no React, fully unit-tested in the co-located `.test.ts`.
 - Shared domain types: `src/types/<domain>.ts`. Feature-internal types stay in
   the feature.
-- Shared UI primitives: `src/components/ui/`. Shadcn-generated files are left
-  unmodified; hand-written shared UI (e.g. `LoadingSpinner.tsx`) follows the
-  same conventions as feature components. Shared layout: `src/components/layout/`.
+- Shared UI primitives: `src/components/ui/`. Shadcn-generated files may be
+  extended through their variant/cva APIs with role-named additions; do not
+  restructure their internals. Hand-written shared UI (e.g.
+  `LoadingSpinner.tsx`) follows the same conventions as feature components.
+  Shared layout: `src/components/layout/`.
 
 ### Auth and access
 
