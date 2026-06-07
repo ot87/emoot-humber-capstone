@@ -58,14 +58,14 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
           </div>
         </div>
 
-        <main className="relative flex flex-col items-center text-center">
+        <main className="relative flex flex-col items-center gap-[clamp(1.25rem,2vw+0.75rem,2.5rem)] text-center">
           <p className="max-w-[18rem] font-quiz-body text-xl font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-xs md:max-w-sm lg:max-w-md">
             How do you really feel about money?
             <br />
             Let&apos;s find out!
           </p>
 
-          <p className="mt-2 max-w-[20rem] font-quiz-body text-xl font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-sm md:max-w-md lg:max-w-lg">
+          <p className="max-w-[20rem] font-quiz-body text-xl font-normal leading-[22px] tracking-[-0.3px] text-quiz-copy sm:max-w-sm md:max-w-md lg:max-w-lg">
             Take this quick 5-question quiz to uncover your unique money personality — and get
             personalized tips to help you save smarter, stay motivated, and reach your financial
             goals.
