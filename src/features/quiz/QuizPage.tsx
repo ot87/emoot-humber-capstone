@@ -11,7 +11,7 @@ export default function QuizPage() {
 
   if (step === "questions") {
     return (
-      <main className="flex min-h-dvh flex-col bg-background pt-10 pb-8 sm:pt-12 sm:pb-10">
+      <main className="flex min-h-dvh flex-col bg-background">
         <QuizQuestion
           question={previewQuestion}
           heading="Q1. Saving Style"

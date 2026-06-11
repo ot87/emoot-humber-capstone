@@ -3,7 +3,7 @@ import type { Question } from "@/types/quiz";
 
 const CONTENT_SHELL = "mx-auto w-full max-w-[430px] px-4 sm:px-6 lg:max-w-lg lg:px-8 xl:max-w-xl";
 
-const OPTION_LETTERS = ["A", "B", "C", "D", "E", "F"] as const;
+const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
 
 /** Figma option tile — reconcile in KAN-14 if the frame updates. */
 const OPTION_BOX = "size-[147.76px]";
@@ -26,33 +26,33 @@ export function QuizQuestion({
   return (
     <section
       aria-labelledby={heading ? headingId : undefined}
-      className={cn(CONTENT_SHELL, "flex flex-col items-center")}
+      className={cn(
+        CONTENT_SHELL,
+        "flex flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12",
+      )}
     >
-      {heading ? (
-        <h2
-          id={headingId}
-          className="text-center font-quiz-body text-[32px] font-bold leading-tight text-quiz-copy"
-        >
-          {heading}
-        </h2>
-      ) : null}
+      <div className="flex w-full flex-col items-center gap-4">
+        {heading ? (
+          <h2
+            id={headingId}
+            className="text-center font-quiz-body text-[32px] font-bold leading-tight text-quiz-copy"
+          >
+            {heading}
+          </h2>
+        ) : null}
 
-      <p
-        className={cn(
-          "max-w-[20rem] text-center font-quiz-body text-2xl font-normal leading-snug text-quiz-copy sm:max-w-sm",
-          heading ? "mt-4" : undefined,
-        )}
-      >
-        {question.text}
-      </p>
+        <p className="max-w-[20rem] text-center font-quiz-body text-2xl font-normal leading-snug text-quiz-copy sm:max-w-sm">
+          {question.text}
+        </p>
+      </div>
 
       <div
         role="radiogroup"
         aria-label={question.text}
-        className="mt-10 grid w-fit grid-cols-2 gap-x-6 gap-y-10"
+        className="grid w-fit grid-cols-2 gap-x-6 gap-y-10"
       >
         {question.options.map((option, index) => {
-          const letter = OPTION_LETTERS[index] ?? String(index + 1);
+          const letter = OPTION_LETTERS[index];
           const isSelected = selectedOptionId === option.id;
 
           return (
