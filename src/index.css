@@ -4,6 +4,7 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource/permanent-marker";
 @import "@fontsource/quicksand/400.css";
+@import "@fontsource/quicksand/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -49,6 +50,10 @@
   --color-quiz-copy: var(--quiz-copy);
   --color-quiz-footer: var(--quiz-footer);
   --color-quiz-badge-ring: var(--quiz-badge-ring);
+  --color-quiz-option: var(--quiz-option);
+  --color-quiz-option-badge: var(--quiz-option-badge);
+  --color-quiz-option-selected: var(--quiz-option-selected);
+  --color-quiz-option-selected-foreground: var(--quiz-option-selected-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -98,6 +103,10 @@
   --quiz-copy: #000000;
   --quiz-footer: rgb(145 145 136 / 0.9);
   --quiz-badge-ring: #ffffff;
+  --quiz-option: #ffc133;
+  --quiz-option-badge: #ffe900;
+  --quiz-option-selected: #5a6238;
+  --quiz-option-selected-foreground: #ffffff;
 }
 
 .dark {
