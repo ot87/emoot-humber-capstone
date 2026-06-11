@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import QuizPage from "@/features/quiz/QuizPage";
+import ResultPage from "@/features/quiz/ResultPage";
 import BingoPage from "@/features/bingo/BingoPage";
 import { AuthPage } from "@/features/auth/AuthPage";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -23,7 +24,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/quiz" replace />} />
       <Route path="/quiz" element={<QuizPage />} />
-      <Route path="/result" element={<div>Result</div>} />
+      <Route path="/result" element={<ResultPage />} />
       <Route
         path="/bingo"
         element={

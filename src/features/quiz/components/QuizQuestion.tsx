@@ -28,20 +28,23 @@ export function QuizQuestion({
       aria-labelledby={heading ? headingId : undefined}
       className={cn(
         CONTENT_SHELL,
-        "flex flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12",
+        "flex min-h-0 flex-1 flex-col items-center gap-6 overflow-hidden pb-4 sm:gap-8 sm:pb-6",
       )}
     >
-      <div className="flex w-full flex-col items-center gap-4">
+      <div className="flex w-full min-h-0 flex-col items-center gap-4 overflow-hidden">
         {heading ? (
           <h2
             id={headingId}
-            className="text-center font-quiz-body text-[32px] font-bold leading-tight text-quiz-copy"
+            className="shrink-0 text-center font-quiz-body text-[32px] font-bold leading-tight text-quiz-copy"
           >
             {heading}
           </h2>
         ) : null}
 
-        <p className="max-w-[20rem] text-center font-quiz-body text-2xl font-normal leading-snug text-quiz-copy sm:max-w-sm">
+        <p
+          title={question.text}
+          className="max-w-[20rem] overflow-hidden text-center font-quiz-body text-2xl font-normal leading-snug text-ellipsis text-quiz-copy line-clamp-4 sm:max-w-sm [@media(max-height:700px)]:line-clamp-2"
+        >
           {question.text}
         </p>
       </div>
@@ -49,7 +52,7 @@ export function QuizQuestion({
       <div
         role="radiogroup"
         aria-label={question.text}
-        className="grid w-fit grid-cols-2 gap-x-6 gap-y-10"
+        className="grid w-fit shrink-0 grid-cols-2 gap-x-6 gap-y-10"
       >
         {question.options.map((option, index) => {
           const letter = OPTION_LETTERS[index];
