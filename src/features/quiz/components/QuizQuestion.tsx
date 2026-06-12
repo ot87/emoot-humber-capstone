@@ -28,7 +28,7 @@ export function QuizQuestion({
       aria-labelledby={heading ? headingId : undefined}
       className={cn(
         CONTENT_SHELL,
-        "flex flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12",
+        "flex min-h-0 flex-1 flex-col items-center justify-evenly overflow-y-auto py-8 sm:py-10 lg:py-12",
       )}
     >
       <div className="flex w-full flex-col items-center gap-4">
@@ -41,7 +41,7 @@ export function QuizQuestion({
           </h2>
         ) : null}
 
-        <p className="max-w-[20rem] text-center font-quiz-body text-2xl font-normal leading-snug text-quiz-copy sm:max-w-sm">
+        <p className="max-w-[20rem] text-center font-quiz-body text-2xl font-normal leading-snug text-quiz-copy sm:max-w-sm [@media(max-height:700px)]:text-xl">
           {question.text}
         </p>
       </div>
