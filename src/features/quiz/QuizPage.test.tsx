@@ -47,7 +47,10 @@ describe("QuizPage", () => {
       await answerCurrentQuestionAndAdvance(user, index === quizQuestions.length - 1);
     }
 
-    expect(screen.getByText("Your money personality")).toBeInTheDocument();
-    expect(screen.getByText("planner")).toBeInTheDocument();
+    expect(screen.getByText("THE PLANNER")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
+      "href",
+      "/auth",
+    );
   });
 });

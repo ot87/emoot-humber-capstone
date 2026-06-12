@@ -26,11 +26,8 @@ export function QuizProgressBar({
           style={{ width: `${value}%` }}
         />
       </div>
-      <p className="mt-2 text-center font-quiz-body text-sm text-quiz-footer sm:hidden">
+      <p className="mt-2 text-center font-quiz-body text-sm text-quiz-footer">
         {currentQuestion} of {totalQuestions}
-      </p>
-      <p className="mt-2 hidden text-center font-quiz-body text-sm text-quiz-footer sm:block">
-        {value}%
       </p>
     </div>
   );
