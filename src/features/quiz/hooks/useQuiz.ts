@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { QuizFlowItem } from "@/features/quiz/quiz.questions";
 import { scoreQuiz } from "@/features/quiz/quiz.logic";
-import type { QuizAnswer, QuizCompletionResult } from "@/types/quiz";
+import type { QuizAnswer, QuizAnswersMap, QuizCompletionResult } from "@/types/quiz";
 
 type QuizStep = "landing" | "questions";
 
@@ -22,6 +22,10 @@ export type UseQuizState = {
   goNext: () => void;
   complete: () => QuizCompletionResult | null;
 };
+
+function answersToMap(answers: QuizAnswer[]): QuizAnswersMap {
+  return Object.fromEntries(answers.map((answer) => [answer.questionId, answer.optionId]));
+}
 
 function allQuestionsAnswered(items: QuizFlowItem[], answers: QuizAnswer[]): boolean {
   return items.every((item) => answers.some((answer) => answer.questionId === item.question.id));
@@ -91,7 +95,7 @@ export function useQuiz(items: QuizFlowItem[]): UseQuizState {
     }
 
     return {
-      personalityType: scoreQuiz(answers),
+      personalityType: scoreQuiz(answersToMap(answers)),
       answers,
     };
   }, [answers, items]);

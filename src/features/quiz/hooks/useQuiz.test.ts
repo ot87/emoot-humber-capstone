@@ -142,6 +142,12 @@ describe("useQuiz", () => {
       answers: expectedAnswers,
     });
     expect(mockedScoreQuiz).toHaveBeenCalledOnce();
-    expect(mockedScoreQuiz).toHaveBeenCalledWith(expectedAnswers);
+    expect(mockedScoreQuiz).toHaveBeenCalledWith({
+      q1: "a",
+      q2: "b",
+      q3: "c",
+      q4: "d",
+      q5: "a",
+    });
   });
 });

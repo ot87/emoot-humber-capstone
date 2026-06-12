@@ -25,6 +25,9 @@ export type QuizAnswer = {
   optionId: string;
 };
 
+/** User answers keyed by question id — input shape for scoreQuiz. */
+export type QuizAnswersMap = Record<string, string>;
+
 export type QuizCompletionResult = {
   personalityType: PersonalityType;
   answers: QuizAnswer[];

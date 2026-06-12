@@ -1,12 +1,59 @@
 import { scoreQuiz } from "./quiz.logic";
+import type { QuizAnswersMap } from "@/types/quiz";
+
+function allAnswers(optionId: string): QuizAnswersMap {
+  return {
+    q1: optionId,
+    q2: optionId,
+    q3: optionId,
+    q4: optionId,
+    q5: optionId,
+  };
+}
 
 describe("scoreQuiz", () => {
-  it("returns the stub personality type until KAN-29 replaces this seam", () => {
+  it.each([
+    ["planner", "a"],
+    ["worrier", "b"],
+    ["free-spirit", "c"],
+    ["overwhelmed-starter", "d"],
+  ] as const)("returns %s when every answer is %s", (personalityType, optionId) => {
+    expect(scoreQuiz(allAnswers(optionId))).toBe(personalityType);
+  });
+
+  it("weights question 1 twice when breaking a count tie", () => {
     expect(
-      scoreQuiz([
-        { questionId: "q1", optionId: "a" },
-        { questionId: "q2", optionId: "b" },
-      ]),
+      scoreQuiz({
+        q1: "b",
+        q2: "b",
+        q3: "a",
+        q4: "a",
+        q5: "a",
+      }),
+    ).toBe("worrier");
+  });
+
+  it("uses question 1 as the tie-breaker when weighted counts are equal", () => {
+    expect(
+      scoreQuiz({
+        q1: "c",
+        q2: "a",
+        q3: "a",
+        q4: "b",
+        q5: "b",
+      }),
+    ).toBe("free-spirit");
+  });
+
+  it("does not use question 1 when one type has the highest weighted count", () => {
+    expect(
+      scoreQuiz({
+        q1: "b",
+        q2: "a",
+        q3: "a",
+        q4: "a",
+        q5: "a",
+      }),
     ).toBe("planner");
   });
 });
