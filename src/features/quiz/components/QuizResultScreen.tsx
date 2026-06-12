@@ -33,9 +33,9 @@ export function QuizResultScreen({ personalityType, onSignUp }: QuizResultScreen
           />
 
           <QuizTitleBanner variant="result" className="max-w-[min(100%,22rem)]">
-            <p className="font-quiz-display text-lg leading-tight whitespace-pre-line text-foreground sm:text-xl">
+            <h1 className="font-quiz-display text-lg leading-tight whitespace-pre-line text-foreground sm:text-xl">
               {content.title}
-            </p>
+            </h1>
           </QuizTitleBanner>
 
           <p className="max-w-[20rem] text-center font-quiz-body text-xl font-normal leading-snug text-quiz-copy sm:max-w-sm">

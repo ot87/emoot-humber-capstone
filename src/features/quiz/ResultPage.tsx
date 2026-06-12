@@ -34,7 +34,7 @@ export default function ResultPage() {
     <QuizResultScreen
       personalityType={result.personalityType}
       onSignUp={() => {
-        navigate("/auth");
+        navigate("/auth", { state: { from: "/bingo" } });
       }}
     />
   );

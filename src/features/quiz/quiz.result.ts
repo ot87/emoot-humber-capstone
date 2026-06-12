@@ -7,7 +7,10 @@ export type PersonalityResultContent = {
   iconSrc: string;
 };
 
-/** Presentation copy and theme per personality — reconcile with KAN-17 when it closes. */
+/**
+ * Temporary presentation seam for KAN-30; replace with persisted quiz result data in KAN-32.
+ * Copy and theme per personality — reconcile with KAN-17 when it closes.
+ */
 export const PERSONALITY_RESULT_CONTENT: Record<PersonalityType, PersonalityResultContent> = {
   planner: {
     title: "THE PLANNER",
