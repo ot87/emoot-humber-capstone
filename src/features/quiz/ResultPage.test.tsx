@@ -42,9 +42,10 @@ describe("ResultPage", () => {
         .getAllByRole("presentation")
         .some((img) => img.getAttribute("src") === content.iconSrc),
     ).toBe(true);
-    expect(
-      screen.getByRole("link", { name: /sign up to play emoot bingo/i }),
-    ).toHaveAttribute("href", "/auth");
+    expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
+      "href",
+      "/auth",
+    );
   });
 
   it.each([

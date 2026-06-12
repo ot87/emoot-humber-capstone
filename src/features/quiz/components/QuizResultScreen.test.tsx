@@ -38,18 +38,17 @@ describe("QuizResultScreen", () => {
         .getAllByRole("presentation")
         .some((img) => img.getAttribute("src") === content.iconSrc),
     ).toBe(true);
-    expect(
-      screen.getByRole("link", { name: /sign up to play emoot bingo/i }),
-    ).toHaveAttribute("href", "/auth");
+    expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
+      "href",
+      "/auth",
+    );
   });
 
   it("renders the copyright footer with the current year", () => {
     renderQuizResultScreen("planner");
 
     expect(
-      screen.getByText(
-        `© Emoot | Happy Path Ventures Incorporated ${new Date().getFullYear()}`,
-      ),
+      screen.getByText(`© Emoot | Happy Path Ventures Incorporated ${new Date().getFullYear()}`),
     ).toBeInTheDocument();
   });
 

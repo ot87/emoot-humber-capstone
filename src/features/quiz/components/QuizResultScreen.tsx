@@ -36,9 +36,7 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
           />
 
           <QuizTitleBanner variant="result" className="max-w-[min(100%,22rem)]">
-            <h1 className={cn(QUIZ_DISPLAY_TITLE_CLASS, "whitespace-pre-line")}>
-              {content.title}
-            </h1>
+            <h1 className={cn(QUIZ_DISPLAY_TITLE_CLASS, "whitespace-pre-line")}>{content.title}</h1>
           </QuizTitleBanner>
 
           <p className="max-w-[20rem] text-center font-quiz-body text-xl font-normal leading-snug text-quiz-copy sm:max-w-sm">

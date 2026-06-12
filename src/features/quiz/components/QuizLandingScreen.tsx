@@ -29,10 +29,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
           )}
         >
           <QuizTitleBanner>
-            <h1
-              aria-label="Find Your Money Personality"
-              className={QUIZ_DISPLAY_TITLE_CLASS}
-            >
+            <h1 aria-label="Find Your Money Personality" className={QUIZ_DISPLAY_TITLE_CLASS}>
               <span className="block whitespace-nowrap">Find Your Money</span>
               <span className="block whitespace-nowrap">Personality</span>
             </h1>
