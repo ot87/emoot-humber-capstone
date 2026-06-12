@@ -49,7 +49,7 @@ describe("QuizPage", () => {
 
     expect(screen.getByText("THE PLANNER")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /sign up to play emoot bingo/i }),
-    ).toBeInTheDocument();
+      screen.getByRole("link", { name: /sign up to play emoot bingo/i }),
+    ).toHaveAttribute("href", "/auth");
   });
 });

@@ -1,24 +1,23 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { QuizTitleBanner } from "@/features/quiz/components/QuizTitleBanner";
+import { QUIZ_CONTENT_SHELL, QUIZ_DISPLAY_TITLE_CLASS } from "@/features/quiz/quiz.layout";
 import { getPersonalityResultContent } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";
 import type { PersonalityType } from "@/types/quiz";
 
-const CONTENT_SHELL = "mx-auto w-full max-w-[430px] px-4 sm:px-6 lg:max-w-lg lg:px-8 xl:max-w-xl";
-
 type QuizResultScreenProps = {
   personalityType: PersonalityType;
-  onSignUp: () => void;
 };
 
-export function QuizResultScreen({ personalityType, onSignUp }: QuizResultScreenProps) {
+export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
   const content = getPersonalityResultContent(personalityType);
 
   return (
     <div className={cn("flex min-h-dvh flex-col", content.surfaceClass)}>
       <div
         className={cn(
-          CONTENT_SHELL,
+          QUIZ_CONTENT_SHELL,
           "flex min-h-0 flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12",
         )}
       >
@@ -33,7 +32,7 @@ export function QuizResultScreen({ personalityType, onSignUp }: QuizResultScreen
           />
 
           <QuizTitleBanner variant="result" className="max-w-[min(100%,22rem)]">
-            <h1 className="font-quiz-display text-lg leading-tight whitespace-pre-line text-foreground sm:text-xl">
+            <h1 className={cn(QUIZ_DISPLAY_TITLE_CLASS, "whitespace-pre-line")}>
               {content.title}
             </h1>
           </QuizTitleBanner>
@@ -44,19 +43,20 @@ export function QuizResultScreen({ personalityType, onSignUp }: QuizResultScreen
         </div>
 
         <Button
-          type="button"
+          asChild
           variant="brand"
           size="cta"
-          className="w-full max-w-[18rem] sm:max-w-xs md:max-w-sm"
-          onClick={onSignUp}
+          className="w-full max-w-[18rem] uppercase sm:max-w-xs md:max-w-sm"
         >
-          Sign up to play Emoot Bingo
+          <Link to="/auth" state={{ from: "/bingo" }}>
+            Sign up to play Emoot Bingo
+          </Link>
         </Button>
       </div>
 
       <footer className="shrink-0 bg-quiz-result-footer px-4 py-3 text-center">
         <p className="font-quiz-body text-xs text-quiz-result-footer-foreground">
-          © Emoot | Happy Path Ventures Incorporated 2026
+          © Emoot | Happy Path Ventures Incorporated {new Date().getFullYear()}
         </p>
       </footer>
     </div>

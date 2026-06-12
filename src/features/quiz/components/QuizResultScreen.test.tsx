@@ -1,35 +1,31 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { PERSONALITY_TYPES } from "@/types/quiz";
-import type { QuizCompletionResult } from "@/types/quiz";
-import { getPersonalityResultContent } from "./quiz.result";
-import ResultPage from "./ResultPage";
+import { getPersonalityResultContent } from "@/features/quiz/quiz.result";
+import { PERSONALITY_TYPES, type PersonalityType } from "@/types/quiz";
+import { QuizResultScreen } from "./QuizResultScreen";
 
 function AuthStub() {
   const location = useLocation();
   return <div>Auth page {JSON.stringify(location.state)}</div>;
 }
 
-function renderResultPage(state: unknown, initialEntry = "/result") {
+function renderQuizResultScreen(personalityType: PersonalityType) {
   return render(
-    <MemoryRouter initialEntries={[{ pathname: initialEntry, state }]}>
+    <MemoryRouter initialEntries={["/result"]}>
       <Routes>
-        <Route path="/result" element={<ResultPage />} />
-        <Route path="/quiz" element={<div>Quiz landing</div>} />
+        <Route path="/result" element={<QuizResultScreen personalityType={personalityType} />} />
         <Route path="/auth" element={<AuthStub />} />
       </Routes>
     </MemoryRouter>,
   );
 }
 
-const sampleAnswers: QuizCompletionResult["answers"] = [{ questionId: "q1", optionId: "a" }];
-
-describe("ResultPage", () => {
-  it.each(PERSONALITY_TYPES)("renders the %s result screen from route state", (personalityType) => {
+describe("QuizResultScreen", () => {
+  it.each(PERSONALITY_TYPES)("renders %s content from personalityType prop", (personalityType) => {
     const content = getPersonalityResultContent(personalityType);
 
-    renderResultPage({ personalityType, answers: sampleAnswers });
+    renderQuizResultScreen(personalityType);
 
     expect(
       screen.getByRole("heading", {
@@ -47,18 +43,20 @@ describe("ResultPage", () => {
     ).toHaveAttribute("href", "/auth");
   });
 
-  it.each([
-    ["missing", null],
-    ["malformed", { personalityType: "bogus", answers: [] }],
-  ])("redirects to /quiz when route state is %s", (_label, state) => {
-    renderResultPage(state);
-    expect(screen.getByText("Quiz landing")).toBeInTheDocument();
+  it("renders the copyright footer with the current year", () => {
+    renderQuizResultScreen("planner");
+
+    expect(
+      screen.getByText(
+        `© Emoot | Happy Path Ventures Incorporated ${new Date().getFullYear()}`,
+      ),
+    ).toBeInTheDocument();
   });
 
-  it("navigates to /auth when the sign-up CTA is clicked", async () => {
+  it("links to /auth with post-sign-in destination state", async () => {
     const user = userEvent.setup();
 
-    renderResultPage({ personalityType: "planner", answers: sampleAnswers });
+    renderQuizResultScreen("planner");
     await user.click(screen.getByRole("link", { name: /sign up to play emoot bingo/i }));
 
     expect(screen.getByText(/auth page/i)).toHaveTextContent('{"from":"/bingo"}');

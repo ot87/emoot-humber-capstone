@@ -1,4 +1,4 @@
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { QuizResultScreen } from "@/features/quiz/components/QuizResultScreen";
 import { PERSONALITY_TYPES, type PersonalityType, type QuizCompletionResult } from "@/types/quiz";
 
@@ -23,19 +23,11 @@ function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
 
 export default function ResultPage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const result = isQuizCompletionResult(location.state) ? location.state : null;
 
   if (!result) {
     return <Navigate to="/quiz" replace />;
   }
 
-  return (
-    <QuizResultScreen
-      personalityType={result.personalityType}
-      onSignUp={() => {
-        navigate("/auth", { state: { from: "/bingo" } });
-      }}
-    />
-  );
+  return <QuizResultScreen personalityType={result.personalityType} />;
 }

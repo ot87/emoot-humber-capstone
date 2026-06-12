@@ -1,7 +1,6 @@
+import { QUIZ_CONTENT_SHELL } from "@/features/quiz/quiz.layout";
 import { cn } from "@/lib/utils";
 import type { Question } from "@/types/quiz";
-
-const CONTENT_SHELL = "mx-auto w-full max-w-[430px] px-4 sm:px-6 lg:max-w-lg lg:px-8 xl:max-w-xl";
 
 const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
 
@@ -27,7 +26,7 @@ export function QuizQuestion({
     <section
       aria-labelledby={heading ? headingId : undefined}
       className={cn(
-        CONTENT_SHELL,
+        QUIZ_CONTENT_SHELL,
         "flex min-h-0 flex-1 flex-col items-center justify-evenly overflow-y-auto py-8 sm:py-10 lg:py-12",
       )}
     >

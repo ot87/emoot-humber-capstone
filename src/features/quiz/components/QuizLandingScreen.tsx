@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { QuizTitleBanner } from "@/features/quiz/components/QuizTitleBanner";
+import { QUIZ_CONTENT_SHELL, QUIZ_DISPLAY_TITLE_CLASS } from "@/features/quiz/quiz.layout";
 import { cn } from "@/lib/utils";
-
-const CONTENT_SHELL = "mx-auto w-full max-w-[430px] px-4 sm:px-6 lg:max-w-lg lg:px-8 xl:max-w-xl";
 
 type QuizLandingScreenProps = {
   onStart: () => void;
@@ -25,14 +24,14 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
 
         <div
           className={cn(
-            CONTENT_SHELL,
+            QUIZ_CONTENT_SHELL,
             "relative flex h-full min-h-[inherit] flex-col justify-center pb-14 pt-8 sm:pb-16 sm:pt-10 md:pb-20 md:pt-14 lg:max-w-none lg:pb-24 lg:pt-16",
           )}
         >
           <QuizTitleBanner>
             <h1
               aria-label="Find Your Money Personality"
-              className="font-quiz-display text-[22px] leading-[1.15] text-foreground"
+              className={QUIZ_DISPLAY_TITLE_CLASS}
             >
               <span className="block whitespace-nowrap">Find Your Money</span>
               <span className="block whitespace-nowrap">Personality</span>
@@ -41,7 +40,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
         </div>
       </header>
 
-      <div className={cn(CONTENT_SHELL, "relative flex min-h-0 flex-1 flex-col")}>
+      <div className={cn(QUIZ_CONTENT_SHELL, "relative flex min-h-0 flex-1 flex-col")}>
         <div
           className="relative z-10 -mt-14 mb-[clamp(1rem,2.5vw+0.75rem,3.5rem)] flex justify-center"
           aria-hidden="true"
