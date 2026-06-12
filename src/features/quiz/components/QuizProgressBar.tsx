@@ -12,10 +12,7 @@ export function QuizProgressBar({
   const value = Math.min(100, Math.max(0, Math.round(percent)));
 
   return (
-    <div
-      className="mx-auto w-full max-w-[430px] shrink-0 px-4 pt-4 pb-6 sm:px-6 sm:pb-8 lg:max-w-lg lg:px-8 xl:max-w-xl"
-      aria-label={`Quiz progress: question ${currentQuestion} of ${totalQuestions}`}
-    >
+    <div className="mx-auto w-full max-w-[430px] shrink-0 px-4 pt-4 pb-6 sm:px-6 sm:pb-8 lg:max-w-lg lg:px-8 xl:max-w-xl">
       <div
         role="progressbar"
         aria-valuenow={currentQuestion}

@@ -1,6 +1,13 @@
 /** Provisional domain types — reconcile with KAN-17 when it closes. */
 
-export type PersonalityType = "planner" | "worrier" | "free-spirit" | "overwhelmed-starter";
+export const PERSONALITY_TYPES = [
+  "planner",
+  "worrier",
+  "free-spirit",
+  "overwhelmed-starter",
+] as const;
+
+export type PersonalityType = (typeof PERSONALITY_TYPES)[number];
 
 export type QuizOption = {
   id: string;

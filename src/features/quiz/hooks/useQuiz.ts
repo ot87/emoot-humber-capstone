@@ -45,7 +45,7 @@ export function useQuiz(items: QuizFlowItem[]): UseQuizState {
   }, [answers, currentItem]);
 
   const progressPercent =
-    items.length === 0 ? 0 : Math.round((answers.length / items.length) * 100);
+    items.length === 0 ? 0 : Math.round(((currentIndex + 1) / items.length) * 100);
 
   const canGoBack = currentIndex > 0;
   const canGoNext = selectedOptionId !== null;

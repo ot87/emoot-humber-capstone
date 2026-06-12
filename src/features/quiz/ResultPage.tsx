@@ -1,5 +1,9 @@
 import { Navigate, useLocation } from "react-router-dom";
-import type { QuizCompletionResult } from "@/types/quiz";
+import { PERSONALITY_TYPES, type PersonalityType, type QuizCompletionResult } from "@/types/quiz";
+
+function isPersonalityType(value: unknown): value is PersonalityType {
+  return PERSONALITY_TYPES.some((type) => type === value);
+}
 
 function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
   if (!value || typeof value !== "object") {
@@ -8,7 +12,7 @@ function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
 
   const candidate = value as QuizCompletionResult;
   return (
-    typeof candidate.personalityType === "string" &&
+    isPersonalityType(candidate.personalityType) &&
     Array.isArray(candidate.answers) &&
     candidate.answers.every(
       (answer) => typeof answer.questionId === "string" && typeof answer.optionId === "string",

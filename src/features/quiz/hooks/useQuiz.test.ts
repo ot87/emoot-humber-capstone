@@ -60,19 +60,21 @@ describe("useQuiz", () => {
     expect(result.current.progressPercent).toBe(100);
   });
 
-  it("reflects answered questions in progress percent", () => {
+  it("reflects current question position in progress percent", () => {
     const { result } = renderHook(() => useQuiz(quizQuestions));
 
     act(() => {
       result.current.start();
     });
 
-    expect(result.current.progressPercent).toBe(0);
+    expect(result.current.progressPercent).toBe(20);
 
     answerCurrent(result, "a");
     expect(result.current.progressPercent).toBe(20);
 
     goNext(result);
+    expect(result.current.progressPercent).toBe(40);
+
     answerCurrent(result, "b");
     goNext(result);
     answerCurrent(result, "c");
@@ -97,6 +99,7 @@ describe("useQuiz", () => {
     goBack(result);
 
     expect(result.current.currentItem?.question.id).toBe("q1");
+    expect(result.current.progressPercent).toBe(20);
     expect(result.current.selectedOptionId).toBe("a");
 
     answerCurrent(result, "d");
