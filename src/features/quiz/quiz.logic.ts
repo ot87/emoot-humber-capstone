@@ -33,10 +33,7 @@ export function scoreQuiz(answers: QuizAnswersMap): PersonalityType {
   for (const [questionId, optionId] of Object.entries(answers)) {
     const personalityType = personalityTypeForOption(optionId);
     const weight = weightForQuestion(questionId);
-    weightedCounts.set(
-      personalityType,
-      (weightedCounts.get(personalityType) ?? 0) + weight,
-    );
+    weightedCounts.set(personalityType, (weightedCounts.get(personalityType) ?? 0) + weight);
   }
 
   const q1OptionId = answers[FIRST_QUESTION_ID];
