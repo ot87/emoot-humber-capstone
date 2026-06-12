@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
 import { QuizTitleBanner } from "@/features/quiz/components/QuizTitleBanner";
-import { QUIZ_CONTENT_SHELL, QUIZ_DISPLAY_TITLE_CLASS } from "@/features/quiz/quiz.layout";
+import {
+  QUIZ_CONTENT_SHELL,
+  QUIZ_DISPLAY_TITLE_CLASS,
+  QUIZ_RESULT_CTA_CLASS,
+} from "@/features/quiz/quiz.layout";
 import { getPersonalityResultContent } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";
 import type { PersonalityType } from "@/types/quiz";
@@ -42,16 +46,15 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
           </p>
         </div>
 
-        <Link
-          to="/auth"
-          state={{ from: "/bingo" }}
-          className={cn(
-            buttonVariants({ variant: "brand", size: "cta" }),
-            "w-full max-w-[18rem] uppercase sm:max-w-xs md:max-w-sm",
-          )}
-        >
-          Sign up to play Emoot Bingo
-        </Link>
+        <div className="flex w-full flex-col items-center">
+          <Link
+            to="/auth"
+            state={{ from: "/bingo" }}
+            className={cn(buttonVariants({ variant: "brand" }), QUIZ_RESULT_CTA_CLASS)}
+          >
+            Sign up to play Emoot Bingo
+          </Link>
+        </div>
       </div>
 
       <footer className="shrink-0 bg-quiz-result-footer px-4 py-3 text-center">
