@@ -21,7 +21,7 @@ describe("scoreQuiz", () => {
     expect(scoreQuiz(allAnswers(optionId))).toBe(personalityType);
   });
 
-  it("weights question 1 twice when breaking a count tie", () => {
+  it("uses Q1 fallback when double-weighting creates a tied highest score", () => {
     expect(
       scoreQuiz({
         q1: "b",
@@ -55,5 +55,28 @@ describe("scoreQuiz", () => {
         q5: "a",
       }),
     ).toBe("PLANNER");
+  });
+
+  it("throws when an answer uses an unknown option id", () => {
+    expect(() =>
+      scoreQuiz({
+        q1: "a",
+        q2: "b",
+        q3: "z",
+        q4: "d",
+        q5: "a",
+      }),
+    ).toThrow("Unknown quiz option id: z");
+  });
+
+  it("throws when question 1 is missing from the answers map", () => {
+    expect(() =>
+      scoreQuiz({
+        q2: "a",
+        q3: "a",
+        q4: "a",
+        q5: "a",
+      }),
+    ).toThrow("Missing answer for question 1");
   });
 });
