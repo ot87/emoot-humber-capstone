@@ -1,18 +1,20 @@
 # Data Model
 
-Firestore collections, document shapes, identifiers, relationships, and the scoring rule for the Emoot app.
+Firestore collections, document shapes, identifiers, relationships, and the per-user access model for the Emoot app.
 
-**Status: placeholder.** Content arrives from KAN-17.
+## Documents
 
-## What will live here
+- [Quiz](./quiz.md) - the Money Personality Quiz: quiz content, the four personality result definitions, and the user's saved result.
+- [Bingo](./bingo.md) - the Emoot Bingo board, challenges per personality type, and feedback. _(to follow)_
 
-- Collection and subcollection names, document paths, and field types.
-- The result-to-challenges relationship and per-challenge status storage (bingo).
-- The scoring rule: how the five answers map to one of the four personality types, including aggregation and tie-breaking. The option-to-`personalityType` mapping exists; the resolution rule still needs writing.
-- The per-user access model that the Firestore security rules implement.
-- An ER diagram as a Mermaid `erDiagram`.
+## Conventions
 
-## Source and status
+- Personality type keys are UPPERCASE (`PLANNER`, `WORRIER`, `FREE_SPIRIT`, `OVERWHELMED_STARTER`); field names are camelCase.
+- Per-user documents are keyed by the Firebase Auth UID.
+- All data access goes through the service layer ([ADR-0002](../adr/0002-service-layer-boundary.md)). Diagrams are written as Mermaid in fenced code blocks.
 
-- **Quiz model:** designed (KAN-17), to be extracted here as markdown from the standalone data-model doc.
-- **Bingo model:** not yet designed; to follow.
+## Security model and indexes
+
+Per-user documents (`userQuizResults/{uid}`, and the bingo board) are readable and writable only by their owner; reference and content collections are read-only to signed-in users. The full access model - including the `feedback` collection and the index it needs - is completed in the bingo doc. The implementing `firestore.rules` and `firestore.indexes.json` are tracked as separate deployment tasks.
+
+Integration with Emoot's existing Firestore is documented separately under [integration](../integration/).
