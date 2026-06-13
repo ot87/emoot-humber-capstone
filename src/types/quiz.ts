@@ -1,10 +1,10 @@
 /** Provisional domain types — reconcile with KAN-17 when it closes. */
 
 export const PERSONALITY_TYPES = [
-  "planner",
-  "worrier",
-  "free-spirit",
-  "overwhelmed-starter",
+  "PLANNER",
+  "WORRIER",
+  "FREE_SPIRIT",
+  "OVERWHELMED_STARTER",
 ] as const;
 
 export type PersonalityType = (typeof PERSONALITY_TYPES)[number];
@@ -24,6 +24,9 @@ export type QuizAnswer = {
   questionId: string;
   optionId: string;
 };
+
+/** User answers keyed by question id — input shape for scoreQuiz. */
+export type QuizAnswersMap = Record<string, string>;
 
 export type QuizCompletionResult = {
   personalityType: PersonalityType;
