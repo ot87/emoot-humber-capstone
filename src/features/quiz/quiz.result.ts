@@ -12,25 +12,25 @@ export type PersonalityResultContent = {
  * Copy and theme per personality — reconcile with KAN-17 when it closes.
  */
 export const PERSONALITY_RESULT_CONTENT: Record<PersonalityType, PersonalityResultContent> = {
-  planner: {
+  PLANNER: {
     title: "THE PLANNER",
     description: "You save better with advanced goal-tracking and streak rewards.",
     surfaceClass: "bg-quiz-result-planner",
     iconSrc: "/assets/icon-personality-planner.svg",
   },
-  worrier: {
+  WORRIER: {
     title: "THE WORRIER",
     description: "You save better with comforting nudges and stress-reducing insights.",
     surfaceClass: "bg-quiz-result-worrier",
     iconSrc: "/assets/icon-personality-worrier.svg",
   },
-  "free-spirit": {
+  FREE_SPIRIT: {
     title: "THE FREE SPIRIT",
     description: "You save better with emotion support, fun challenges, and social engagement.",
     surfaceClass: "bg-quiz-result-free-spirit",
     iconSrc: "/assets/icon-personality-free-spirit.svg",
   },
-  "overwhelmed-starter": {
+  OVERWHELMED_STARTER: {
     title: "THE OVERWHELMED\nSTARTER",
     description: "You save better with micro-steps, simple plans, and supportive guidance.",
     surfaceClass: "bg-quiz-result-overwhelmed-starter",

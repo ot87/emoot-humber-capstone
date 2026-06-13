@@ -13,10 +13,10 @@ function allAnswers(optionId: string): QuizAnswersMap {
 
 describe("scoreQuiz", () => {
   it.each([
-    ["planner", "a"],
-    ["worrier", "b"],
-    ["free-spirit", "c"],
-    ["overwhelmed-starter", "d"],
+    ["PLANNER", "a"],
+    ["WORRIER", "b"],
+    ["FREE_SPIRIT", "c"],
+    ["OVERWHELMED_STARTER", "d"],
   ] as const)("returns %s when every answer is %s", (personalityType, optionId) => {
     expect(scoreQuiz(allAnswers(optionId))).toBe(personalityType);
   });
@@ -30,7 +30,7 @@ describe("scoreQuiz", () => {
         q4: "a",
         q5: "a",
       }),
-    ).toBe("worrier");
+    ).toBe("WORRIER");
   });
 
   it("uses question 1 as the tie-breaker when weighted counts are equal", () => {
@@ -42,7 +42,7 @@ describe("scoreQuiz", () => {
         q4: "b",
         q5: "b",
       }),
-    ).toBe("free-spirit");
+    ).toBe("FREE_SPIRIT");
   });
 
   it("does not use question 1 when one type has the highest weighted count", () => {
@@ -54,6 +54,6 @@ describe("scoreQuiz", () => {
         q4: "a",
         q5: "a",
       }),
-    ).toBe("planner");
+    ).toBe("PLANNER");
   });
 });

@@ -59,7 +59,7 @@ describe("ResultPage", () => {
   it("navigates to /auth when the sign-up CTA is clicked", async () => {
     const user = userEvent.setup();
 
-    renderResultPage({ personalityType: "planner", answers: sampleAnswers });
+    renderResultPage({ personalityType: "PLANNER", answers: sampleAnswers });
     await user.click(screen.getByRole("link", { name: /sign up to play emoot bingo/i }));
 
     expect(screen.getByText(/auth page/i)).toHaveTextContent('{"from":"/bingo"}');

@@ -5,10 +5,10 @@ import type { PersonalityType, QuizAnswersMap } from "@/types/quiz";
  * Reconcile with KAN-18 when the seed lands.
  */
 export const OPTION_PERSONALITY_TYPE: Record<string, PersonalityType> = {
-  a: "planner",
-  b: "worrier",
-  c: "free-spirit",
-  d: "overwhelmed-starter",
+  a: "PLANNER",
+  b: "WORRIER",
+  c: "FREE_SPIRIT",
+  d: "OVERWHELMED_STARTER",
 };
 
 const FIRST_QUESTION_ID = "q1";
