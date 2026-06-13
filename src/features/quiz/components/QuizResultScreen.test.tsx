@@ -45,7 +45,7 @@ describe("QuizResultScreen", () => {
   });
 
   it("renders the copyright footer with the current year", () => {
-    renderQuizResultScreen("planner");
+    renderQuizResultScreen("PLANNER");
 
     expect(
       screen.getByText(`© Emoot | Happy Path Ventures Incorporated ${new Date().getFullYear()}`),
@@ -55,7 +55,7 @@ describe("QuizResultScreen", () => {
   it("links to /auth with post-sign-in destination state", async () => {
     const user = userEvent.setup();
 
-    renderQuizResultScreen("planner");
+    renderQuizResultScreen("PLANNER");
     await user.click(screen.getByRole("link", { name: /sign up to play emoot bingo/i }));
 
     expect(screen.getByText(/auth page/i)).toHaveTextContent('{"from":"/bingo"}');

@@ -5,7 +5,7 @@ import type { QuizCompletionResult } from "@/types/quiz";
 import { useQuiz } from "./useQuiz";
 
 vi.mock("@/features/quiz/quiz.logic", () => ({
-  scoreQuiz: vi.fn(() => "worrier" as const),
+  scoreQuiz: vi.fn(() => "WORRIER" as const),
 }));
 
 const mockedScoreQuiz = vi.mocked(scoreQuiz);
@@ -138,10 +138,16 @@ describe("useQuiz", () => {
     ];
 
     expect(completion).toEqual({
-      personalityType: "worrier",
+      personalityType: "WORRIER",
       answers: expectedAnswers,
     });
     expect(mockedScoreQuiz).toHaveBeenCalledOnce();
-    expect(mockedScoreQuiz).toHaveBeenCalledWith(expectedAnswers);
+    expect(mockedScoreQuiz).toHaveBeenCalledWith({
+      q1: "a",
+      q2: "b",
+      q3: "c",
+      q4: "d",
+      q5: "a",
+    });
   });
 });
