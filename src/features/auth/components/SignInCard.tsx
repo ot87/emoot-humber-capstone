@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { AUTH_CONTENT_SHELL, AUTH_SURFACE_CLASS } from "@/features/auth/auth.layout";
+import { AuthFooter } from "@/features/auth/components/AuthFooter";
+import { AuthHeader } from "@/features/auth/components/AuthHeader";
+import { AuthProductIcons } from "@/features/auth/components/AuthProductIcons";
+import { GoogleIcon } from "@/features/auth/components/GoogleIcon";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
 type SignInCardProps = {
   onSuccess: () => void;
@@ -15,25 +21,46 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/30 px-6 py-12">
-      <section className="w-full max-w-md rounded-2xl border bg-background p-8 text-center shadow-sm">
-        <h1 className="text-2xl font-semibold text-foreground">Welcome to Emoot</h1>
+    <div className={cn("flex min-h-dvh flex-col", AUTH_SURFACE_CLASS)}>
+      <AuthHeader />
 
-        <p className="mt-2 text-sm text-muted-foreground">Sign in to continue.</p>
+      <main
+        className={cn(
+          AUTH_CONTENT_SHELL,
+          "flex flex-1 flex-col items-center px-4 pb-4 pt-4 sm:px-6 sm:pt-5",
+        )}
+      >
+        <AuthProductIcons className="mb-5 sm:mb-6" />
 
-        {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
+        <section className="w-full max-w-sm bg-white px-6 py-8 text-center shadow-md sm:px-8 sm:py-10">
+          <h2 className="font-quiz-body text-2xl font-bold leading-tight text-foreground">
+            Hi there!
+          </h2>
 
-        <Button
-          type="button"
-          variant="outline"
-          size="lg"
-          className="mt-6 w-full"
-          onClick={handleSignIn}
-          disabled={isSigningIn}
-        >
-          {isSigningIn ? "Signing in..." : "Sign in with Google"}
-        </Button>
-      </section>
-    </main>
+          <p className="mt-3 font-quiz-body text-base font-normal leading-snug text-foreground">
+            Log in or Sign Up with Google.
+          </p>
+
+          {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
+
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-6 h-12 w-full gap-3 rounded-full border border-foreground bg-white px-6 font-quiz-body text-base font-normal text-foreground shadow-none hover:bg-white/90"
+            onClick={handleSignIn}
+            disabled={isSigningIn}
+          >
+            <GoogleIcon />
+            {isSigningIn ? "Signing in..." : "Continue with Google"}
+          </Button>
+
+          <hr className="mt-8 border-0 border-t border-[#E5E5E5]" aria-hidden="true" />
+        </section>
+
+        <div aria-hidden="true" className="flex-1" />
+      </main>
+
+      <AuthFooter />
+    </div>
   );
 }
