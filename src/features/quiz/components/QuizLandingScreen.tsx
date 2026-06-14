@@ -15,8 +15,8 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
           src="/assets/bg-header-torn.svg"
           alt=""
           aria-hidden="true"
-          width={1083}
-          height={172}
+          width={402}
+          height={150}
           decoding="async"
           fetchPriority="high"
           className="pointer-events-none absolute inset-0 size-full object-cover object-bottom select-none"
