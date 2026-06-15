@@ -1,5 +1,3 @@
-import { DISPLAY_TITLE_CLASS } from "@/components/title.layout";
-
 /** Shared max-width and horizontal padding shell for auth screens. */
 export const AUTH_CONTENT_SHELL =
   "mx-auto w-full max-w-[430px] px-4 sm:px-6 lg:max-w-lg lg:px-8 xl:max-w-xl";
@@ -10,8 +8,15 @@ export const AUTH_HEADER_TORN_BG = "/assets/bg-auth-header-torn.svg";
 /** Hand-drawn EMOOT wordmark. */
 export const AUTH_LOGO = "/assets/logo-emoot.svg";
 
-/** Tagline on the auth header brush — shared marker scale + auth uppercase tracking. */
-export const AUTH_TAGLINE_CLASS = `${DISPLAY_TITLE_CLASS} uppercase tracking-[0.04em]`;
+/** Horizontal padding for auth tagline inside the yellow brush. */
+export const AUTH_TAGLINE_INSET_CLASS = "px-5";
+
+/** Tagline on the auth header brush — Permanent Marker 18px, single line, uppercase. */
+export const AUTH_TAGLINE_CLASS =
+  "font-quiz-display text-[18px] font-normal leading-none text-foreground uppercase tracking-[-0.1em] whitespace-nowrap";
+
+/** Enlarged first letter per word on the auth tagline. */
+export const AUTH_TAGLINE_INITIAL_CLASS = "inline-block text-[1.12em] leading-none";
 
 /** Textured grey login background (Figma #E5E5E5). */
 export const AUTH_SURFACE_BG = "/assets/bg-auth-surface.svg";

@@ -4,9 +4,9 @@ import {
   AUTH_CONTENT_SHELL,
   AUTH_HEADER_TORN_BG,
   AUTH_LOGO,
-  AUTH_TAGLINE_CLASS,
 } from "@/features/auth/auth.layout";
 import { AuthProductIcons } from "@/features/auth/components/AuthProductIcons";
+import { AuthTagline } from "@/features/auth/components/AuthTagline";
 import { cn } from "@/lib/utils";
 
 export function AuthHeader() {
@@ -51,8 +51,8 @@ export function AuthHeader() {
             />
           </h1>
 
-          <TitleBanner variant="auth" className="mt-4 max-w-[min(100%,20rem)] sm:mt-5">
-            <p className={AUTH_TAGLINE_CLASS}>Emotion-First Cash Transfer</p>
+          <TitleBanner variant="auth" className="mt-4 sm:mt-5">
+            <AuthTagline />
           </TitleBanner>
 
           <p className="mt-2 font-quiz-body text-[0.65rem] font-normal leading-snug text-foreground sm:mt-3 sm:text-xs">
