@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
-import { QuizTitleBanner } from "@/features/quiz/components/QuizTitleBanner";
+import { TitleBanner } from "@/components/TitleBanner";
 import {
   QUIZ_CONTENT_SHELL,
   QUIZ_DISPLAY_TITLE_CLASS,
@@ -35,9 +35,9 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
             className="size-[7.5rem] sm:size-[8.5rem]"
           />
 
-          <QuizTitleBanner variant="result" className="max-w-[min(100%,22rem)]">
+          <TitleBanner variant="result" className="max-w-[min(100%,22rem)]">
             <h1 className={cn(QUIZ_DISPLAY_TITLE_CLASS, "whitespace-pre-line")}>{content.title}</h1>
-          </QuizTitleBanner>
+          </TitleBanner>
 
           <p className="max-w-[20rem] text-center font-quiz-body text-xl font-normal leading-snug text-quiz-copy sm:max-w-sm">
             {content.description}

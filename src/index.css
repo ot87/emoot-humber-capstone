@@ -58,6 +58,10 @@
   --color-quiz-result-worrier: var(--quiz-result-worrier);
   --color-quiz-result-free-spirit: var(--quiz-result-free-spirit);
   --color-quiz-result-overwhelmed-starter: var(--quiz-result-overwhelmed-starter);
+  --color-google-blue: var(--google-blue);
+  --color-google-green: var(--google-green);
+  --color-google-yellow: var(--google-yellow);
+  --color-google-red: var(--google-red);
   --color-quiz-result-footer: var(--quiz-result-footer);
   --color-quiz-result-footer-foreground: var(--quiz-result-footer-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
@@ -120,6 +124,11 @@
   --quiz-result-overwhelmed-starter: #dffffe;
   --quiz-result-footer: #1a1a1a;
   --quiz-result-footer-foreground: #ffffff;
+  /* Google Sign-In icon — official brand palette */
+  --google-blue: #4285f4;
+  --google-green: #34a853;
+  --google-yellow: #fbbc05;
+  --google-red: #ea4335;
 }
 
 .dark {

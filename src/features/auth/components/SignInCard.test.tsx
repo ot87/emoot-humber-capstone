@@ -1,0 +1,38 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { signInWithGoogle } from "@/services/auth.service";
+import type { AuthUser } from "@/types/user";
+import { SignInCard } from "./SignInCard";
+
+vi.mock("@/services/auth.service", () => ({
+  signInWithGoogle: vi.fn(),
+  signOut: vi.fn(),
+  listenToAuthChanges: vi.fn((callback: (user: AuthUser | null) => void) => {
+    callback(null);
+    return () => {};
+  }),
+}));
+
+const signedInUser: AuthUser = {
+  uid: "test-uid",
+  email: "test@example.com",
+  displayName: "Test User",
+  photoURL: null,
+};
+
+describe("SignInCard", () => {
+  beforeEach(() => {
+    vi.mocked(signInWithGoogle).mockResolvedValue(signedInUser);
+  });
+
+  it('calls signInWithGoogle and onSuccess when "Continue with Google" is clicked', async () => {
+    const user = userEvent.setup();
+    const onSuccess = vi.fn();
+
+    render(<SignInCard onSuccess={onSuccess} />);
+    await user.click(screen.getByRole("button", { name: /continue with google/i }));
+
+    expect(signInWithGoogle).toHaveBeenCalledOnce();
+    expect(onSuccess).toHaveBeenCalledOnce();
+  });
+});

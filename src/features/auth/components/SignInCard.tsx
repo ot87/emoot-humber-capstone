@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { AUTH_CONTENT_SHELL, AUTH_SURFACE_CLASS } from "@/features/auth/auth.layout";
+import {
+  AUTH_CONTENT_SHELL,
+  AUTH_MAIN_MIN_CLASS,
+  AUTH_SIGN_IN_CARD_CLASS,
+  AUTH_SURFACE_BG,
+  AUTH_SURFACE_CLASS,
+} from "@/features/auth/auth.layout";
 import { AuthFooter } from "@/features/auth/components/AuthFooter";
 import { AuthHeader } from "@/features/auth/components/AuthHeader";
-import { AuthProductIcons } from "@/features/auth/components/AuthProductIcons";
 import { GoogleIcon } from "@/features/auth/components/GoogleIcon";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -21,46 +26,62 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
   }
 
   return (
-    <div className={cn("flex min-h-dvh flex-col", AUTH_SURFACE_CLASS)}>
-      <AuthHeader />
+    <div className={cn("relative min-h-dvh", AUTH_SURFACE_CLASS)}>
+      <img
+        src={AUTH_SURFACE_BG}
+        alt=""
+        aria-hidden="true"
+        width={580}
+        height={870}
+        decoding="async"
+        fetchPriority="high"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover select-none"
+      />
 
-      <main
-        className={cn(
-          AUTH_CONTENT_SHELL,
-          "flex flex-1 flex-col items-center px-4 pb-4 pt-4 sm:px-6 sm:pt-5",
-        )}
-      >
-        <AuthProductIcons className="mb-5 sm:mb-6" />
+      <div className="relative z-10 flex min-h-dvh flex-col">
+        <AuthHeader />
 
-        <section className="w-full max-w-sm bg-white px-6 py-8 text-center shadow-md sm:px-8 sm:py-10">
-          <h2 className="font-quiz-body text-2xl font-bold leading-tight text-foreground">
-            Hi there!
-          </h2>
+        <main
+          className={cn(
+            AUTH_CONTENT_SHELL,
+            AUTH_MAIN_MIN_CLASS,
+            "flex flex-1 flex-col items-center pb-4 pt-2 sm:pt-3",
+          )}
+        >
+          <section className={AUTH_SIGN_IN_CARD_CLASS}>
+            <div>
+              <h2 className="font-quiz-body text-2xl font-bold leading-tight text-foreground">
+                Hi there!
+              </h2>
 
-          <p className="mt-3 font-quiz-body text-base font-normal leading-snug text-foreground">
-            Log in or Sign Up with Google.
-          </p>
+              <p className="mt-3 font-quiz-body text-base font-normal leading-snug text-foreground">
+                Log in or Sign Up with Google.
+              </p>
 
-          {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
+              {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
 
-          <Button
-            type="button"
-            variant="outline"
-            className="mt-6 h-12 w-full gap-3 rounded-full border border-foreground bg-white px-6 font-quiz-body text-base font-normal text-foreground shadow-none hover:bg-white/90"
-            onClick={handleSignIn}
-            disabled={isSigningIn}
-          >
-            <GoogleIcon />
-            {isSigningIn ? "Signing in..." : "Continue with Google"}
-          </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-6 h-12 w-full gap-3 rounded-full border border-foreground bg-card px-6 font-quiz-body text-base font-normal text-foreground shadow-none"
+                onClick={handleSignIn}
+                disabled={isSigningIn}
+              >
+                <GoogleIcon />
+                {isSigningIn ? "Signing in..." : "Continue with Google"}
+              </Button>
+            </div>
 
-          <hr className="mt-8 border-0 border-t border-[#E5E5E5]" aria-hidden="true" />
-        </section>
+            <div aria-hidden="true" className="min-h-8 flex-1" />
 
-        <div aria-hidden="true" className="flex-1" />
-      </main>
+            <hr className="border-0 border-t border-[#E5E5E5]" aria-hidden="true" />
+          </section>
 
-      <AuthFooter />
+          <div aria-hidden="true" className="flex-1" />
+        </main>
+
+        <AuthFooter />
+      </div>
     </div>
   );
 }

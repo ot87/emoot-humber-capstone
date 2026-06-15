@@ -1,44 +1,46 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type QuizTitleBannerVariant = "default" | "result";
+type TitleBannerVariant = "default" | "result" | "auth";
 
 const BRUSH_BY_VARIANT = {
   default: {
     src: "/assets/bg-title-brush.png",
     width: 278,
     height: 40,
-    shellClass: "min-h-[72px]",
+    shellClass: "min-h-[72px] min-w-[280px] max-w-[320px]",
   },
   result: {
     src: "/assets/bg-title-yellow-brush.svg",
     width: 281,
     height: 74,
-    shellClass: "min-h-[74px]",
+    shellClass: "min-h-[74px] min-w-[280px] max-w-[320px]",
+  },
+  auth: {
+    src: "/assets/bg-auth-title-brush.svg",
+    width: 281,
+    height: 74,
+    shellClass: "min-h-[4.625rem] min-w-[17.5rem] max-w-[20rem]",
   },
 } as const satisfies Record<
-  QuizTitleBannerVariant,
+  TitleBannerVariant,
   { src: string; width: number; height: number; shellClass: string }
 >;
 
-type QuizTitleBannerProps = {
+type TitleBannerProps = {
   children: ReactNode;
   className?: string;
-  variant?: QuizTitleBannerVariant;
+  variant?: TitleBannerVariant;
 };
 
-export function QuizTitleBanner({
-  children,
-  className,
-  variant = "default",
-}: QuizTitleBannerProps) {
+export function TitleBanner({ children, className, variant = "default" }: TitleBannerProps) {
   const brush = BRUSH_BY_VARIANT[variant];
 
   return (
     <div className={cn("relative mx-auto -rotate-1", className)}>
       <div
         className={cn(
-          "relative flex w-full min-w-[280px] max-w-[320px] items-center justify-center px-6 py-4",
+          "relative flex w-full items-center justify-center px-6 py-4",
           brush.shellClass,
         )}
       >

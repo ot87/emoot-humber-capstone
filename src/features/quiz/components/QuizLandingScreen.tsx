@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { QuizTitleBanner } from "@/features/quiz/components/QuizTitleBanner";
+import { TitleBanner } from "@/components/TitleBanner";
 import { QUIZ_CONTENT_SHELL, QUIZ_DISPLAY_TITLE_CLASS } from "@/features/quiz/quiz.layout";
 import { cn } from "@/lib/utils";
 
@@ -28,12 +28,12 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
             "relative flex h-full min-h-[inherit] flex-col justify-center pb-14 pt-8 sm:pb-16 sm:pt-10 md:pb-20 md:pt-14 lg:max-w-none lg:pb-24 lg:pt-16",
           )}
         >
-          <QuizTitleBanner>
+          <TitleBanner>
             <h1 aria-label="Find Your Money Personality" className={QUIZ_DISPLAY_TITLE_CLASS}>
               <span className="block whitespace-nowrap">Find Your Money</span>
               <span className="block whitespace-nowrap">Personality</span>
             </h1>
-          </QuizTitleBanner>
+          </TitleBanner>
         </div>
       </header>
 
