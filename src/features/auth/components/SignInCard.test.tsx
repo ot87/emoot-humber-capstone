@@ -32,6 +32,8 @@ describe("SignInCard", () => {
     render(<SignInCard onSuccess={onSuccess} />);
     await user.click(screen.getByRole("button", { name: /continue with google/i }));
 
+    expect(screen.getAllByText("Powered by Interac e-Transfer®")).toHaveLength(2);
+
     expect(signInWithGoogle).toHaveBeenCalledOnce();
     expect(onSuccess).toHaveBeenCalledOnce();
   });

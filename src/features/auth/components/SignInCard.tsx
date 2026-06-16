@@ -1,14 +1,9 @@
+import authSurfaceBg from "@/assets/bg-auth-surface.svg";
+import googleContinueBtn from "@/assets/btn-google-continue.png";
+import { AppContentShell } from "@/components/layout/AppContentShell";
 import { Button } from "@/components/ui/button";
-import {
-  AUTH_CONTENT_SHELL,
-  AUTH_MAIN_MIN_CLASS,
-  AUTH_SIGN_IN_CARD_CLASS,
-  AUTH_SURFACE_BG,
-  AUTH_SURFACE_CLASS,
-} from "@/features/auth/auth.layout";
 import { AuthFooter } from "@/features/auth/components/AuthFooter";
 import { AuthHeader } from "@/features/auth/components/AuthHeader";
-import { GoogleIcon } from "@/features/auth/components/GoogleIcon";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
@@ -26,9 +21,9 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
   }
 
   return (
-    <div className={cn("relative min-h-dvh", AUTH_SURFACE_CLASS)}>
+    <div className={cn("relative min-h-dvh bg-surface")}>
       <img
-        src={AUTH_SURFACE_BG}
+        src={authSurfaceBg}
         alt=""
         aria-hidden="true"
         width={580}
@@ -41,44 +36,49 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
       <div className="relative z-10 flex min-h-dvh flex-col">
         <AuthHeader />
 
-        <main
-          className={cn(
-            AUTH_CONTENT_SHELL,
-            AUTH_MAIN_MIN_CLASS,
-            "flex flex-1 flex-col items-center pb-4 pt-2 sm:pt-3",
-          )}
-        >
-          <section className={AUTH_SIGN_IN_CARD_CLASS}>
-            <div>
-              <h2 className="font-quiz-body text-2xl font-bold leading-tight text-foreground">
-                Hi there!
-              </h2>
+        <AppContentShell as="main" className="flex flex-1 flex-col items-center pb-4">
+          <section className="mt-12 flex h-[300px] w-[358px] max-w-full flex-col items-center bg-white px-6 pb-8 pt-14 text-center shadow-sm sm:mt-14 sm:pt-16">
+            <h2 className="font-quiz-body text-2xl font-bold leading-tight tracking-[-0.3px] text-foreground">
+              Hi there!
+            </h2>
 
-              <p className="mt-3 font-quiz-body text-base font-normal leading-snug text-foreground">
-                Log in or Sign Up with Google.
+            <p className="mt-2 font-quiz-body text-base font-normal leading-[22px] tracking-[-0.3px] text-foreground">
+              Log in or Sign Up with Google.
+            </p>
+
+            {error && (
+              <p className="mt-3 font-quiz-body text-sm tracking-[-0.3px] text-destructive">
+                {error}
               </p>
+            )}
 
-              {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-6 flex h-12 w-full items-center justify-center border-0 bg-transparent p-0 shadow-none hover:bg-transparent disabled:opacity-50"
+              onClick={handleSignIn}
+              disabled={isSigningIn}
+              aria-label={isSigningIn ? "Signing in" : "Continue with Google"}
+            >
+              {isSigningIn ? (
+                <span className="font-quiz-body text-base font-normal tracking-[-0.3px] text-foreground">
+                  Signing in...
+                </span>
+              ) : (
+                <img
+                  src={googleContinueBtn}
+                  alt=""
+                  width={229}
+                  height={48}
+                  decoding="async"
+                  className="h-full w-auto max-w-full"
+                />
+              )}
+            </Button>
 
-              <Button
-                type="button"
-                variant="outline"
-                className="mt-6 h-12 w-full gap-3 rounded-full border border-foreground bg-card px-6 font-quiz-body text-base font-normal text-foreground shadow-none"
-                onClick={handleSignIn}
-                disabled={isSigningIn}
-              >
-                <GoogleIcon />
-                {isSigningIn ? "Signing in..." : "Continue with Google"}
-              </Button>
-            </div>
-
-            <div aria-hidden="true" className="min-h-8 flex-1" />
-
-            <hr className="border-0 border-t border-[#E5E5E5]" aria-hidden="true" />
+            <hr className="mt-8 w-full border-0 border-t border-surface" aria-hidden="true" />
           </section>
-
-          <div aria-hidden="true" className="flex-1" />
-        </main>
+        </AppContentShell>
 
         <AuthFooter />
       </div>

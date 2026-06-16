@@ -1,3 +1,5 @@
+export const AUTH_INTERAC_ATTRIBUTION = "Powered by Interac e-Transfer®";
+
 export type TaglineSegment = {
   initial: string;
   rest: string;

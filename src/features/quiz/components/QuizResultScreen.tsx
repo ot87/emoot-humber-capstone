@@ -1,11 +1,7 @@
 import { Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
-import { TitleBanner } from "@/components/TitleBanner";
-import {
-  QUIZ_CONTENT_SHELL,
-  QUIZ_DISPLAY_TITLE_CLASS,
-  QUIZ_RESULT_CTA_CLASS,
-} from "@/features/quiz/quiz.layout";
+import { AppContentShell } from "@/components/layout/AppContentShell";
+import { TitleBanner } from "@/components/layout/TitleBanner";
 import { getPersonalityResultContent } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";
 import type { PersonalityType } from "@/types/quiz";
@@ -19,12 +15,7 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
 
   return (
     <div className={cn("flex min-h-dvh flex-col", content.surfaceClass)}>
-      <div
-        className={cn(
-          QUIZ_CONTENT_SHELL,
-          "flex min-h-0 flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12",
-        )}
-      >
+      <AppContentShell className="flex min-h-0 flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12">
         <div className="flex w-full flex-col items-center gap-6">
           <img
             src={content.iconSrc}
@@ -36,7 +27,14 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
           />
 
           <TitleBanner variant="result" className="max-w-[min(100%,22rem)]">
-            <h1 className={cn(QUIZ_DISPLAY_TITLE_CLASS, "whitespace-pre-line")}>{content.title}</h1>
+            <h1
+              className={cn(
+                "font-quiz-display text-display-title leading-display-title text-foreground",
+                "whitespace-pre-line",
+              )}
+            >
+              {content.title}
+            </h1>
           </TitleBanner>
 
           <p className="max-w-[20rem] text-center font-quiz-body text-xl font-normal leading-snug text-quiz-copy sm:max-w-sm">
@@ -48,12 +46,12 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
           <Link
             to="/auth"
             state={{ from: "/bingo" }}
-            className={cn(buttonVariants({ variant: "brand" }), QUIZ_RESULT_CTA_CLASS)}
+            className={cn(buttonVariants({ variant: "brand" }), "quiz-result-cta")}
           >
             Sign up to play Emoot Bingo
           </Link>
         </div>
-      </div>
+      </AppContentShell>
 
       <footer className="shrink-0 bg-quiz-result-footer px-4 py-3 text-center">
         <p className="font-quiz-body text-xs text-quiz-result-footer-foreground">

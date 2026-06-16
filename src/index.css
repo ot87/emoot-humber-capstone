@@ -4,6 +4,7 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource/permanent-marker";
 @import "@fontsource/quicksand/400.css";
+@import "@fontsource/quicksand/500.css";
 @import "@fontsource/quicksand/700.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -64,6 +65,14 @@
   --color-google-red: var(--google-red);
   --color-quiz-result-footer: var(--quiz-result-footer);
   --color-quiz-result-footer-foreground: var(--quiz-result-footer-foreground);
+  --color-surface: var(--surface);
+  --text-auth-tagline: var(--auth-tagline-size);
+  --text-display-title: var(--display-title-size);
+  --tracking-auth-tagline: var(--auth-tagline-tracking);
+  --leading-display-title: var(--display-title-leading);
+  --width-auth-logo: var(--auth-logo-width);
+  --height-auth-logo: var(--auth-logo-height);
+  --width-auth-title-brush: var(--auth-title-brush-width);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -129,6 +138,17 @@
   --google-green: #34a853;
   --google-yellow: #fbbc05;
   --google-red: #ea4335;
+  /* Textured grey surface (#E5E5E5) — auth page background and sign-in card divider */
+  --surface: #e5e5e5;
+  --auth-tagline-size: 1.125rem;
+  --auth-tagline-tracking: -0.1em;
+  --display-title-size: 1.375rem;
+  --display-title-leading: 1.15;
+  /* logo-emoot.svg — Figma baseline 114.59×60 */
+  --auth-logo-width: 7.161875rem;
+  --auth-logo-height: 3.75rem;
+  /* bg-auth-title-brush.svg — Figma 295 */
+  --auth-title-brush-width: 18.4375rem;
 }
 
 .dark {
@@ -174,5 +194,15 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer components {
+  .auth-interac-attribution {
+    @apply font-quiz-body text-xs font-medium leading-snug tracking-[-0.3px] text-foreground;
+  }
+
+  .quiz-result-cta {
+    @apply flex h-auto min-h-14 w-full max-w-[20rem] items-center justify-center whitespace-normal px-6 py-3.5 text-center text-base leading-tight uppercase no-underline sm:min-h-16 sm:max-w-xs sm:py-4 sm:text-lg md:max-w-sm;
   }
 }
