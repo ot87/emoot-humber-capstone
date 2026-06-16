@@ -1,7 +1,8 @@
+import quizHeaderTornBg from "@/assets/bg-header-torn.svg";
+import quizStarIcon from "@/assets/icon-star.svg";
 import { Button } from "@/components/ui/button";
-import { QuizTitleBanner } from "@/features/quiz/components/QuizTitleBanner";
-import { QUIZ_CONTENT_SHELL, QUIZ_DISPLAY_TITLE_CLASS } from "@/features/quiz/quiz.layout";
-import { cn } from "@/lib/utils";
+import { AppContentShell } from "@/components/layout/AppContentShell";
+import { TitleBanner } from "@/components/layout/TitleBanner";
 
 type QuizLandingScreenProps = {
   onStart: () => void;
@@ -12,39 +13,37 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="relative w-full min-h-[32svh] sm:min-h-[34svh] lg:min-h-[16rem] xl:min-h-[18rem]">
         <img
-          src="/assets/bg-header-torn.svg"
+          src={quizHeaderTornBg}
           alt=""
           aria-hidden="true"
-          width={1083}
-          height={172}
+          width={402}
+          height={150}
           decoding="async"
           fetchPriority="high"
           className="pointer-events-none absolute inset-0 size-full object-cover object-bottom select-none"
         />
 
-        <div
-          className={cn(
-            QUIZ_CONTENT_SHELL,
-            "relative flex h-full min-h-[inherit] flex-col justify-center pb-14 pt-8 sm:pb-16 sm:pt-10 md:pb-20 md:pt-14 lg:max-w-none lg:pb-24 lg:pt-16",
-          )}
-        >
-          <QuizTitleBanner>
-            <h1 aria-label="Find Your Money Personality" className={QUIZ_DISPLAY_TITLE_CLASS}>
+        <AppContentShell className="relative flex h-full min-h-[inherit] flex-col justify-center pb-14 pt-8 sm:pb-16 sm:pt-10 md:pb-20 md:pt-14 lg:max-w-none lg:pb-24 lg:pt-16">
+          <TitleBanner>
+            <h1
+              aria-label="Find Your Money Personality"
+              className="font-quiz-display text-[1.375rem] leading-[1.15] text-foreground"
+            >
               <span className="block whitespace-nowrap">Find Your Money</span>
               <span className="block whitespace-nowrap">Personality</span>
             </h1>
-          </QuizTitleBanner>
-        </div>
+          </TitleBanner>
+        </AppContentShell>
       </header>
 
-      <div className={cn(QUIZ_CONTENT_SHELL, "relative flex min-h-0 flex-1 flex-col")}>
+      <AppContentShell className="relative flex min-h-0 flex-1 flex-col">
         <div
           className="relative z-10 -mt-14 mb-[clamp(1rem,2.5vw+0.75rem,3.5rem)] flex justify-center"
           aria-hidden="true"
         >
           <div className="flex h-[111.71px] w-[108.38px] items-center justify-center rounded-full border-[5px] border-quiz-badge-ring bg-quiz-header">
             <img
-              src="/assets/icon-star.svg"
+              src={quizStarIcon}
               alt=""
               width={75}
               height={75}
@@ -85,7 +84,7 @@ export function QuizLandingScreen({ onStart }: QuizLandingScreenProps) {
             No login required
           </p>
         </div>
-      </div>
+      </AppContentShell>
     </div>
   );
 }
