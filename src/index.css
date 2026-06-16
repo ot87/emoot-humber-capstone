@@ -4,6 +4,7 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource/permanent-marker";
 @import "@fontsource/quicksand/400.css";
+@import "@fontsource/quicksand/500.css";
 @import "@fontsource/quicksand/700.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -58,8 +59,13 @@
   --color-quiz-result-worrier: var(--quiz-result-worrier);
   --color-quiz-result-free-spirit: var(--quiz-result-free-spirit);
   --color-quiz-result-overwhelmed-starter: var(--quiz-result-overwhelmed-starter);
+  --color-google-blue: var(--google-blue);
+  --color-google-green: var(--google-green);
+  --color-google-yellow: var(--google-yellow);
+  --color-google-red: var(--google-red);
   --color-quiz-result-footer: var(--quiz-result-footer);
   --color-quiz-result-footer-foreground: var(--quiz-result-footer-foreground);
+  --color-surface: var(--surface);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -120,6 +126,13 @@
   --quiz-result-overwhelmed-starter: #dffffe;
   --quiz-result-footer: #1a1a1a;
   --quiz-result-footer-foreground: #ffffff;
+  /* Google Sign-In icon — official brand palette */
+  --google-blue: #4285f4;
+  --google-green: #34a853;
+  --google-yellow: #fbbc05;
+  --google-red: #ea4335;
+  /* Textured grey surface (#E5E5E5) — auth page background and sign-in card divider */
+  --surface: #e5e5e5;
 }
 
 .dark {
@@ -165,5 +178,15 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer components {
+  .auth-interac-attribution {
+    @apply font-quiz-body text-xs font-medium leading-snug tracking-[-0.3px] text-foreground;
+  }
+
+  .quiz-result-cta {
+    @apply flex h-auto min-h-14 w-full max-w-[20rem] items-center justify-center whitespace-normal px-6 py-3.5 text-center text-base leading-tight uppercase no-underline sm:min-h-16 sm:max-w-xs sm:py-4 sm:text-lg md:max-w-sm;
   }
 }

@@ -1,4 +1,4 @@
-import { QUIZ_CONTENT_SHELL } from "@/features/quiz/quiz.layout";
+import { AppContentShell } from "@/components/layout/AppContentShell";
 import { cn } from "@/lib/utils";
 import type { Question } from "@/types/quiz";
 
@@ -23,12 +23,10 @@ export function QuizQuestion({
   const headingId = `${question.id}-heading`;
 
   return (
-    <section
+    <AppContentShell
+      as="section"
       aria-labelledby={heading ? headingId : undefined}
-      className={cn(
-        QUIZ_CONTENT_SHELL,
-        "flex min-h-0 flex-1 flex-col items-center justify-evenly overflow-y-auto py-8 sm:py-10 lg:py-12",
-      )}
+      className="flex min-h-0 flex-1 flex-col items-center justify-evenly overflow-y-auto py-8 sm:py-10 lg:py-12"
     >
       <div className="flex w-full flex-col items-center gap-4">
         {heading ? (
@@ -85,6 +83,6 @@ export function QuizQuestion({
           );
         })}
       </div>
-    </section>
+    </AppContentShell>
   );
 }

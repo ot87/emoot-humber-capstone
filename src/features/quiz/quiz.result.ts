@@ -1,3 +1,7 @@
+import iconFreeSpirit from "@/assets/icon-personality-free-spirit.svg";
+import iconOverwhelmedStarter from "@/assets/icon-personality-overwhelmed-starter.svg";
+import iconPlanner from "@/assets/icon-personality-planner.svg";
+import iconWorrier from "@/assets/icon-personality-worrier.svg";
 import type { PersonalityType } from "@/types/quiz";
 
 export type PersonalityResultContent = {
@@ -16,25 +20,25 @@ export const PERSONALITY_RESULT_CONTENT: Record<PersonalityType, PersonalityResu
     title: "THE PLANNER",
     description: "You save better with advanced goal-tracking and streak rewards.",
     surfaceClass: "bg-quiz-result-planner",
-    iconSrc: "/assets/icon-personality-planner.svg",
+    iconSrc: iconPlanner,
   },
   WORRIER: {
     title: "THE WORRIER",
     description: "You save better with comforting nudges and stress-reducing insights.",
     surfaceClass: "bg-quiz-result-worrier",
-    iconSrc: "/assets/icon-personality-worrier.svg",
+    iconSrc: iconWorrier,
   },
   FREE_SPIRIT: {
     title: "THE FREE SPIRIT",
     description: "You save better with emotion support, fun challenges, and social engagement.",
     surfaceClass: "bg-quiz-result-free-spirit",
-    iconSrc: "/assets/icon-personality-free-spirit.svg",
+    iconSrc: iconFreeSpirit,
   },
   OVERWHELMED_STARTER: {
     title: "THE OVERWHELMED\nSTARTER",
     description: "You save better with micro-steps, simple plans, and supportive guidance.",
     surfaceClass: "bg-quiz-result-overwhelmed-starter",
-    iconSrc: "/assets/icon-personality-overwhelmed-starter.svg",
+    iconSrc: iconOverwhelmedStarter,
   },
 };
 
