@@ -99,8 +99,10 @@ src/
       hooks/                # useAuth (auth state + signIn/signOut actions)
 
   components/
-    ui/                    # Shadcn components (button, dialog, input, ...)
-    layout/                # AppHeader, AppFooter, PageShell
+    ui/                    # Shadcn primitives + small own primitives (e.g. LoadingSpinner)
+    layout/                # structural composition: AppContentShell, TitleBanner, app header/footer
+
+  assets/                  # app-owned images and icons, imported so the build verifies them
 
   styles/
     index.css              # Tailwind entry + globals
@@ -114,7 +116,9 @@ src/
 - Pages are thin wrappers: the route table points at `<Feature>Page.tsx`, which composes the feature's components and holds no business logic.
 - Pure business logic lives in `*.logic.ts` next to its feature (quiz scoring, three-in-a-row), kept free of React so it is easy to unit-test.
 - Shared domain types live in `types/`, split by domain. Types internal to a feature (a component's props, a hook's local shapes) stay in that feature.
-- Shared UI is Shadcn in `components/ui`; shared layout is in `components/layout`.
+- Shared presentational primitives are Shadcn (plus small own ones like `LoadingSpinner`) in `components/ui`; shared structural pieces (`AppContentShell`, `TitleBanner`, header/footer) are in `components/layout`.
+- Styling: reuse goes through a cva variant or component; cross-cutting values are theme tokens in `index.css`; one-offs are inline canonical Tailwind utilities (arbitrary `[...]` only when no canonical value exists). No `*.layout.ts` constant files, single-use custom tokens, or `@apply` for one-offs.
+- App-owned images and icons live in `src/assets/` and are imported so the build verifies them; `public/` is only for assets that need a stable URL, are very large, or are referenced outside the build.
 - Keep nesting shallow (two to three levels). Add structure only when it earns its place.
 
 ## Where does my work go?
@@ -124,8 +128,10 @@ src/
 - Feature state or flow -> `features/<feature>/hooks/`
 - Pure logic (scoring, rules) -> `features/<feature>/<feature>.logic.ts`
 - Reading or writing data -> add a function to `services/<x>.service.ts`, consume it from a feature hook (components never call services or Firebase directly)
-- A reusable UI primitive -> `components/ui/` (Shadcn)
-- Shared layout -> `components/layout/`
+- A reusable UI primitive -> `components/ui/` (Shadcn, or a small own primitive like `LoadingSpinner`)
+- A structural / layout piece (banner, content shell, header/footer) -> `components/layout/` (e.g. `TitleBanner`, `AppContentShell`)
+- An app-owned image or icon -> import it from `src/assets/`, never a `public/` string
+- A recurring set of utility classes -> a cva variant or component; cross-cutting values -> a theme token; a one-off -> an inline canonical utility (not a constant, custom token, or `@apply`)
 - A shared domain type -> `types/<domain>.ts`
 
 ## Testing

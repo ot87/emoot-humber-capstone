@@ -12,13 +12,12 @@ Vite + React + TypeScript (strict) + Tailwind v4 + Shadcn + React Router v7
 
 ## Commands
 
-- `npm run dev` / `npm run lint` / `npm run format` / `npm run format:check` /
-  `npm run typecheck` / `npm run test` / `npm run build`
+- `npm run dev` / `npm run lint` / `npm run typecheck` / `npm run test` / `npm run build`
 - One test file: `npx vitest run src/App.test.tsx`
 - One test by name: `npx vitest run -t "<test name>"`
 
-format:check, lint, typecheck, test, and build MUST all pass before work is
-presented as done. CI runs these on every PR.
+lint, typecheck, test, and build MUST all pass before work is presented as
+done. CI runs these on every PR.
 
 ## Architecture rules
 
@@ -31,7 +30,6 @@ presented as done. CI runs these on every PR.
   `bingo.service.ts`. Services export typed async functions, no React code.
 - Feature code reaches data only through hooks. Components and pages NEVER
   import from `src/services/*` directly; hooks are the only callers of services.
-  ESLint enforces this via `no-restricted-imports`.
 
 ```ts
 // BAD - component imports the service
@@ -65,11 +63,11 @@ const onClick = async () => {
     no I/O, no React, fully unit-tested in the co-located `.test.ts`.
 - Shared domain types: `src/types/<domain>.ts`. Feature-internal types stay in
   the feature.
-- Shared UI primitives: `src/components/ui/`. Shadcn-generated files may be
-  extended through their variant/cva APIs with role-named additions; do not
-  restructure their internals. Hand-written shared UI (e.g.
-  `LoadingSpinner.tsx`) follows the same conventions as feature components.
-  Shared layout: `src/components/layout/`.
+- Shared presentational primitives: `src/components/ui/` (Shadcn, plus small
+  own primitives like `LoadingSpinner`). Shared structural/layout components:
+  `src/components/layout/` (`AppContentShell`, `TitleBanner`, app header/footer).
+  A variant-driven banner or content shell is structural composition, so it
+  lives in `layout/`, not `ui/`.
 
 ### Auth and access
 
@@ -91,19 +89,35 @@ const onClick = async () => {
 - Declared return types match what is actually produced: never narrow away
   fields the layer below provides (a hook exposing `{ uid }` while the service
   returns a full user hides real data from every consumer).
-- Imports use the `@/` path alias (mapped to `src/`). Same-directory `./`
-  imports are fine; parent-relative `../` imports are not — ESLint enforces
-  this via `no-restricted-imports`.
-- Named exports for components, hooks, and utilities. Default exports only when
-  a framework requires them (e.g. route lazy imports).
+- Styling: Tailwind utilities + Shadcn primitives only. No inline style objects.
+  `src/index.css` is the sole Tailwind entry; add only cross-cutting theme tokens
+  to it, never one-off classes.
+- Styling decision tree, for any recurring or notable styling:
+  - Reused across elements or screens -> a component or a cva variant
+    (`AppContentShell`, `TitleBanner`, the `button` variants).
+  - A cross-cutting design value -> a semantic theme token in `src/index.css`
+    (e.g. `--surface`), consumed as `bg-surface` / `text-...`.
+  - A one-off -> an inline Tailwind utility, preferring canonical utilities
+    (`h-15`, `-tracking-widest`) over arbitrary `[...]`; reach for `[...]` only
+    when no canonical value exists (Figma-exact numbers).
+    Do NOT create `*.layout.ts` className-constant files, single-use custom theme
+    tokens, or `@apply` rules for one-off classes.
+- Idiomatic Shadcn/Tailwind: build on Shadcn primitives and `cva` variants rather
+  than re-implementing them, and compose classes with `cn()`. The decision tree
+  above is the concrete form of "best practice" here - prefer it over inventing a
+  new pattern.
 - Use semantic theme tokens (`text-destructive`, `text-muted-foreground`,
-  `bg-background`), never raw palette classes like `text-red-600`.
-- Mobile-first with a proper desktop layout; wider breakpoints are additive.
+  `bg-background`, `bg-surface`), never raw palette classes like `text-red-600`.
+- App-owned images and icons live in `src/assets/` and are `import`ed, so the
+  build verifies and fingerprints them; never `public/` path strings or path
+  constants. Reserve `public/` for assets needing a stable URL, very large
+  files, or assets referenced outside the build.
 - Routing state comes from React Router hooks (`useLocation`, `useNavigate`,
   `useParams`); never read `window.location`.
 - No dead code in committed work: no commented-out blocks, leftover dev
   toggles, or unused variables surviving a rewrite. Export only what has a
   consumer.
+- Mobile-first with a proper desktop layout; wider breakpoints are additive.
 - Tests NEVER touch live Firebase: `vi.mock` the `src/services/*` module (or
   `src/lib/firebase`, which initializes eagerly at import) before rendering
   anything that transitively imports it. If a test seems to need credentials
@@ -119,8 +133,6 @@ const onClick = async () => {
 - One branch and one PR per Jira ticket, named after it (`KAN-NN-...`). Keep
   the diff inside the ticket's scope: no drive-by fixes, no opportunistic
   refactors. Report unrelated problems instead of fixing them.
-- Commit messages: `type(KAN-NN): imperative summary` (under 72 chars). Types:
-  `feat`, `fix`, `chore`, `docs`, `test`, `refactor`.
 - Smallest change that satisfies the acceptance criteria.
 - NEVER commit credentials. `.env.example` is tracked and contains placeholder
   keys only (`VITE_FIREBASE_*`); real values live only in untracked `.env.local`.
