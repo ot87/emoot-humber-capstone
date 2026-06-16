@@ -23,13 +23,13 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
             width={120}
             height={120}
             decoding="async"
-            className="size-[7.5rem] sm:size-[8.5rem]"
+            className="size-30 sm:size-34"
           />
 
           <TitleBanner variant="result" className="max-w-[min(100%,22rem)]">
             <h1
               className={cn(
-                "font-quiz-display text-display-title leading-display-title text-foreground",
+                "font-quiz-display text-[1.375rem] leading-[1.15] text-foreground",
                 "whitespace-pre-line",
               )}
             >

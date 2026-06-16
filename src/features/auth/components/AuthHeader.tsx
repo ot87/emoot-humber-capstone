@@ -28,7 +28,7 @@ export function AuthHeader() {
         width={68}
         height={45}
         decoding="async"
-        className="pointer-events-none absolute right-0 top-3 z-10 select-none"
+        className="pointer-events-none absolute right-3 top-3 z-10 select-none"
       />
 
       <div
@@ -44,7 +44,7 @@ export function AuthHeader() {
               width={114.59}
               height={60}
               decoding="async"
-              className="h-auth-logo w-auto"
+              className="h-15 w-auto sm:h-16"
             />
           </h1>
 
@@ -61,7 +61,7 @@ export function AuthHeader() {
             height={91}
             decoding="async"
             aria-hidden="true"
-            className="relative z-10 mt-3 h-auto w-[10.75rem] max-w-full translate-y-1/2 sm:mt-4 sm:w-[11.5rem]"
+            className="relative z-10 mt-3 h-auto w-43 max-w-full sm:mt-4 sm:w-46"
           />
         </div>
       </div>

@@ -25,7 +25,7 @@ const BRUSH_BY_VARIANT = {
     src: bgAuthTitleBrush,
     width: 281,
     height: 74,
-    shellClass: "relative flex h-[4.625rem] w-auth-title-brush items-center justify-center py-2.5",
+    shellClass: "relative flex h-[4.625rem] w-[18.4375rem] items-center justify-center py-2.5",
   },
 } as const satisfies Record<
   TitleBannerVariant,

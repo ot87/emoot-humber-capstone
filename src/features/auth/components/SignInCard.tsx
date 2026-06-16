@@ -1,9 +1,9 @@
 import authSurfaceBg from "@/assets/bg-auth-surface.svg";
-import googleContinueBtn from "@/assets/btn-google-continue.png";
 import { AppContentShell } from "@/components/layout/AppContentShell";
 import { Button } from "@/components/ui/button";
 import { AuthFooter } from "@/features/auth/components/AuthFooter";
 import { AuthHeader } from "@/features/auth/components/AuthHeader";
+import { GoogleIcon } from "@/features/auth/components/GoogleIcon";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
@@ -37,7 +37,7 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
         <AuthHeader />
 
         <AppContentShell as="main" className="flex flex-1 flex-col items-center pb-4">
-          <section className="mt-12 flex h-[300px] w-[358px] max-w-full flex-col items-center bg-white px-6 pb-8 pt-14 text-center shadow-sm sm:mt-14 sm:pt-16">
+          <section className="mt-12 flex h-72 w-full max-w-85.5 flex-col items-center bg-white px-6 pb-8 pt-14 text-center shadow-sm sm:mt-14 sm:pt-16">
             <h2 className="font-quiz-body text-2xl font-bold leading-tight tracking-[-0.3px] text-foreground">
               Hi there!
             </h2>
@@ -55,25 +55,12 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
             <Button
               type="button"
               variant="outline"
-              className="mt-6 flex h-12 w-full items-center justify-center border-0 bg-transparent p-0 shadow-none hover:bg-transparent disabled:opacity-50"
+              className="mt-6 h-12 w-56 gap-3 rounded-full border border-foreground bg-card px-6 font-quiz-body text-base font-normal tracking-[-0.3px] text-foreground shadow-none"
               onClick={handleSignIn}
               disabled={isSigningIn}
-              aria-label={isSigningIn ? "Signing in" : "Continue with Google"}
             >
-              {isSigningIn ? (
-                <span className="font-quiz-body text-base font-normal tracking-[-0.3px] text-foreground">
-                  Signing in...
-                </span>
-              ) : (
-                <img
-                  src={googleContinueBtn}
-                  alt=""
-                  width={229}
-                  height={48}
-                  decoding="async"
-                  className="h-full w-auto max-w-full"
-                />
-              )}
+              <GoogleIcon />
+              {isSigningIn ? "Signing in..." : "Continue with Google"}
             </Button>
 
             <hr className="mt-8 w-full border-0 border-t border-surface" aria-hidden="true" />
