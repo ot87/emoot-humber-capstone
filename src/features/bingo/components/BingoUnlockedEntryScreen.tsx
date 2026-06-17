@@ -32,13 +32,7 @@ export function BingoUnlockedEntryScreen({ personalityType }: BingoUnlockedEntry
           </p>
         </div>
 
-        <Button
-          asChild
-          type="button"
-          variant="brand"
-          size="cta"
-          className="w-full uppercase"
-        >
+        <Button asChild type="button" variant="brand" size="cta" className="w-full uppercase">
           <Link to="/bingo/board">Play Emoot Bingo</Link>
         </Button>
       </div>

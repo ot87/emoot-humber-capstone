@@ -30,17 +30,14 @@ export function BingoEntryLayout({ children }: BingoEntryLayoutProps) {
             </h1>
           </TitleBanner>
 
-          <p className="mt-3 font-quiz-body text-base font-normal leading-snug tracking-[-0.3px] text-foreground">
+          <p className="mt-3 font-quiz-body text-xs font-medium leading-snug tracking-[-0.3px] text-foreground">
             Your money saving personality
           </p>
         </AppContentShell>
       </header>
 
       <AppContentShell className="relative flex flex-col pb-3 sm:pb-4">
-        <div
-          className="relative z-10 -mt-14 mb-4 flex justify-center"
-          aria-hidden="true"
-        >
+        <div className="relative z-10 -mt-14 mb-4 flex justify-center" aria-hidden="true">
           <div className="flex h-[111.71px] w-[108.38px] items-center justify-center rounded-full border-[5px] border-quiz-badge-ring bg-quiz-header">
             <img
               src={questionIcon}

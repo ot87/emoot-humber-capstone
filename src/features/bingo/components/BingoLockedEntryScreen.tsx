@@ -4,6 +4,16 @@ import { Button } from "@/components/ui/button";
 import { BingoEntryLayout } from "@/features/bingo/components/BingoEntryLayout";
 import { BingoLockedGrid } from "@/features/bingo/components/BingoLockedGrid";
 
+function renderCapsCtaLabel(text: string) {
+  return text.split(" ").map((word, index) => (
+    <span key={`${word}-${index}`}>
+      {index > 0 ? " " : null}
+      <span className="text-[1.15em]">{word.charAt(0)}</span>
+      {word.slice(1)}
+    </span>
+  ));
+}
+
 export function BingoLockedEntryScreen() {
   return (
     <BingoEntryLayout>
@@ -18,25 +28,21 @@ export function BingoLockedEntryScreen() {
             className="mx-auto size-[17px]"
             aria-hidden="true"
           />
-          <h2 className="mt-3 font-quiz-body text-xl font-bold tracking-[-0.3px] text-foreground">
+          <h2 className="mt-3 font-quiz-body text-base font-bold tracking-[-0.3px] text-foreground">
             Emoot Bingo is locked
           </h2>
           <p className="mt-3 font-quiz-body text-base font-normal leading-snug tracking-[-0.3px] text-foreground">
-            Take the Money Personality Quiz to unlock your personalized Emoot Bingo, and your
-            chance to win $100.
+            Take the Money Personality Quiz to unlock your personalized Emoot Bingo, and your chance
+            to win $100.
           </p>
         </section>
 
         <BingoLockedGrid />
 
-        <Button
-          asChild
-          type="button"
-          variant="brand"
-          size="cta"
-          className="w-full uppercase"
-        >
-          <Link to="/quiz">Take the quiz to unlock</Link>
+        <Button asChild type="button" variant="brand" size="cta" className="w-full text-[18px]">
+          <Link to="/quiz" aria-label="Take the quiz to unlock">
+            {renderCapsCtaLabel("TAKE THE QUIZ TO UNLOCK")}
+          </Link>
         </Button>
       </div>
     </BingoEntryLayout>
