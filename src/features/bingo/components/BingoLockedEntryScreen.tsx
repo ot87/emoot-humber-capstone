@@ -1,0 +1,44 @@
+import lockIcon from "@/assets/icon-lock-sm.svg";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { BingoEntryLayout } from "@/features/bingo/components/BingoEntryLayout";
+import { BingoLockedGrid } from "@/features/bingo/components/BingoLockedGrid";
+
+export function BingoLockedEntryScreen() {
+  return (
+    <BingoEntryLayout>
+      <div className="flex flex-col gap-6">
+        <section className="rounded-xl bg-surface px-5 py-8 text-center sm:px-6">
+          <img
+            src={lockIcon}
+            alt=""
+            width={17}
+            height={17}
+            decoding="async"
+            className="mx-auto size-[17px]"
+            aria-hidden="true"
+          />
+          <h2 className="mt-3 font-quiz-body text-xl font-bold tracking-[-0.3px] text-foreground">
+            Emoot Bingo is locked
+          </h2>
+          <p className="mt-3 font-quiz-body text-base font-normal leading-snug tracking-[-0.3px] text-foreground">
+            Take the Money Personality Quiz to unlock your personalized Emoot Bingo, and your
+            chance to win $100.
+          </p>
+        </section>
+
+        <BingoLockedGrid />
+
+        <Button
+          asChild
+          type="button"
+          variant="brand"
+          size="cta"
+          className="w-full uppercase"
+        >
+          <Link to="/quiz">Take the quiz to unlock</Link>
+        </Button>
+      </div>
+    </BingoEntryLayout>
+  );
+}

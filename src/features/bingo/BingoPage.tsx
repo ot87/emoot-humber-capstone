@@ -1,13 +1,26 @@
-import SignOutButton from "@/features/auth/components/SignOutButton";
-export default function BingoPage() {
-  return (
-    <main className="p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Bingo</h1>
-        <SignOutButton />
-      </div>
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { BingoLockedEntryScreen } from "@/features/bingo/components/BingoLockedEntryScreen";
+import { BingoUnlockedEntryScreen } from "@/features/bingo/components/BingoUnlockedEntryScreen";
+import { useSavedQuizResult } from "@/features/bingo/hooks/useSavedQuizResult";
 
-      <div className="mt-6">Bingo</div>
-    </main>
-  );
+export function BingoPage() {
+  const { savedResult, loading, error, hasSavedResult } = useSavedQuizResult();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center px-4">
+        <p className="text-center font-quiz-body text-sm text-destructive">{error}</p>
+      </div>
+    );
+  }
+
+  if (!hasSavedResult || !savedResult) {
+    return <BingoLockedEntryScreen />;
+  }
+
+  return <BingoUnlockedEntryScreen personalityType={savedResult.personalityType} />;
 }
