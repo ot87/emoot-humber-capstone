@@ -45,10 +45,10 @@ export function BingoEntryLayout({ children }: BingoEntryLayoutProps) {
             <img
               src={questionIcon}
               alt=""
-              width={75}
-              height={75}
+              width={69}
+              height={69}
               decoding="async"
-              className="size-[65px]"
+              className="size-[65px] object-contain"
             />
           </div>
         </div>
