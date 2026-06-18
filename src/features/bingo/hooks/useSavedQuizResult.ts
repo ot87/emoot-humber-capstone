@@ -13,8 +13,11 @@ export type SavedQuizResultState = {
 export function useSavedQuizResult(): SavedQuizResultState {
   const { user, loading: authLoading } = useAuth();
   const [savedResult, setSavedResult] = useState<SavedQuizResult | null>(null);
-  const [fetchLoading, setFetchLoading] = useState(false);
+  const [loadedForUid, setLoadedForUid] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  const uid = user?.uid ?? null;
+  const awaitingFetch = uid !== null && loadedForUid !== uid;
 
   useEffect(() => {
     if (authLoading || !user) {
@@ -22,26 +25,22 @@ export function useSavedQuizResult(): SavedQuizResultState {
     }
 
     let cancelled = false;
-    const uid = user.uid;
+    const currentUid = user.uid;
 
     async function loadSavedResult(): Promise<void> {
-      setFetchLoading(true);
-      setError("");
-
       try {
-        const result = await getSavedQuizResult(uid);
+        const result = await getSavedQuizResult(currentUid);
         if (!cancelled) {
           setSavedResult(result);
+          setLoadedForUid(currentUid);
+          setError("");
         }
       } catch (err) {
         console.error(err);
         if (!cancelled) {
           setSavedResult(null);
+          setLoadedForUid(currentUid);
           setError("Could not load your quiz result. Please try again.");
-        }
-      } finally {
-        if (!cancelled) {
-          setFetchLoading(false);
         }
       }
     }
@@ -57,7 +56,7 @@ export function useSavedQuizResult(): SavedQuizResultState {
 
   return {
     savedResult: resolvedResult,
-    loading: authLoading || (user !== null && fetchLoading),
+    loading: authLoading || awaitingFetch,
     error,
     hasSavedResult: resolvedResult !== null,
   };

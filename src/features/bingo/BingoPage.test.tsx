@@ -73,17 +73,11 @@ describe("BingoPage", () => {
     expect(screen.getByText("Quiz landing")).toBeInTheDocument();
   });
 
-  it("renders the unlocked entry when a saved quiz result exists", async () => {
+  it("redirects to /bingo/board when a saved quiz result exists", async () => {
     vi.mocked(getSavedQuizResult).mockResolvedValue(savedResult);
 
     renderBingoPage();
 
-    expect(
-      await screen.findByRole("heading", { name: /your bingo board is ready/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /play emoot bingo/i })).toHaveAttribute(
-      "href",
-      "/bingo/board",
-    );
+    expect(await screen.findByText("Bingo board")).toBeInTheDocument();
   });
 });
