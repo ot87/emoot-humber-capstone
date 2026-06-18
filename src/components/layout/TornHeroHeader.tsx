@@ -14,9 +14,6 @@ type TornHeroHeaderProps = {
   children?: ReactNode;
 };
 
-const BADGE_CIRCLE_CLASS =
-  "flex h-[111.71px] w-[108.38px] items-center justify-center rounded-full border-[5px] border-quiz-badge-ring bg-quiz-header";
-
 export function TornHeroHeader({
   title,
   subtitle,
@@ -56,7 +53,9 @@ export function TornHeroHeader({
           className={cn("relative z-10 -mt-14 flex justify-center", badgeMarginClassName)}
           aria-hidden="true"
         >
-          <div className={BADGE_CIRCLE_CLASS}>{badge}</div>
+          <div className="flex size-28 items-center justify-center rounded-full border-4 border-quiz-badge-ring bg-quiz-header">
+            {badge}
+          </div>
         </div>
 
         {children}
