@@ -32,3 +32,13 @@ export type QuizCompletionResult = {
   personalityType: PersonalityType;
   answers: QuizAnswer[];
 };
+
+/** Persisted quiz result — matches userQuizResults/{uid} in docs/data-model/quiz.md */
+export type SavedQuizResult = {
+  userId: string;
+  quizId: string;
+  personalityType: PersonalityType;
+  answers: QuizAnswersMap;
+  completedAt: Date | null;
+  updatedAt: Date | null;
+};
