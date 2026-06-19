@@ -14,7 +14,9 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -b",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seed:emulator": "SEED_TARGET=emulator tsx scripts/seed/seed.ts",
+    "seed:prod": "SEED_TARGET=prod tsx scripts/seed/seed.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
@@ -47,10 +49,13 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
+    "firebase-admin": "^14.0.0",
+    "firebase-tools": "^15.21.0",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.3.0",
+    "tsx": "^4.22.4",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
