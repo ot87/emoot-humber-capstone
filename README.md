@@ -23,13 +23,24 @@ Working in this repo with an AI agent (Cursor, Claude)? The rules live in [AGENT
 
 ## Getting started
 
+**Prerequisites:** Node.js (with npm) and a Java JDK 11+ on your PATH - the Firestore emulator runs on the JVM. Verify with `node -v` and `java -version`.
+
 ```
 git clone https://github.com/ot87/emoot-humber-capstone.git
 cd emoot-humber-capstone
 npm install
-cp .env.example .env.local   # then fill in the Firebase config
-npm run dev
+cp .env.example .env.local        # fill in the real Firebase web config (see Firebase below)
+
+# Point the CLI and emulator at the project. Write .firebaserc by hand (no login):
+#   { "projects": { "default": "<your VITE_FIREBASE_PROJECT_ID>" } }
+#   or run `npx firebase login && npx firebase use --add` for the interactive picker.
+
+npx firebase emulators:start --only firestore   # terminal 1: local Firestore on 8080
+npm run seed:emulator                            # terminal 2: load content into the emulator
+npm run dev                                       # terminal 3: app
 ```
+
+In dev the app signs in against the real Firebase project but reads and writes Firestore in the local emulator, so you never touch production data. You need the emulator running (and seeded) for the app to have content.
 
 ## Scripts
 
@@ -39,10 +50,24 @@ npm run dev
 - `npm run typecheck` - type-check without emitting
 - `npm run preview` - preview the production build
 - `npm run test` - run unit tests
+- `npm run seed:emulator` - load content into the local Firestore emulator (see [`scripts/seed/README.md`](scripts/seed/README.md))
+- `npm run seed:prod` - one-time content seed to the real project (guarded; see the seed README)
 
-## Environment setup (Firebase)
+## Firebase
 
-The app talks to Firebase directly (a serverless setup where the client connects to Firestore, protected by security rules). Create a Firebase project, enable Authentication (Google sign-in provider) and Firestore, and put the web config in `.env.local`:
+The app talks to Firebase directly (serverless: the client connects to Firestore, protected by security rules). `src/lib/firebase.ts` initializes the SDK from `.env.local` and, when `import.meta.env.DEV` is set, points Firestore at the local emulator while leaving Auth on the real project.
+
+**Local development.** Auth uses real Google sign-in against the real project; Firestore runs in the emulator. Two ids must agree: `VITE_FIREBASE_PROJECT_ID` in `.env.local` (what the app uses) and the `default` in `.firebaserc` (what the emulator and the seed read). Set them to the same real project. If they drift, the app connects to a different emulator namespace than the seed wrote and you get an empty Firestore with no error.
+
+Set `.firebaserc` either by hand:
+
+```json
+{ "projects": { "default": "<your project id>" } }
+```
+
+or with `npx firebase use --add` (which needs `npx firebase login` first - sign in with the Google account that has access to the project). Login is only required for `firebase use --add` and for deploying; the local emulator, `seed:emulator`, and `seed:prod` (which uses a service-account key) do not need it.
+
+**Connecting to the real Firebase project.** The web config in `.env.local` is the real project's:
 
 ```
 VITE_FIREBASE_API_KEY=
@@ -53,7 +78,7 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
 
-`.env.example` is the tracked template and contains placeholder keys only; real values live only in `.env.local`, which git ignores.
+`.env.example` is the tracked template with placeholders only; real values live only in `.env.local`, which git ignores.
 
 Security rules enforce per-user access: a user can read and write only their own data. [TODO: link the rules file once written.]
 
