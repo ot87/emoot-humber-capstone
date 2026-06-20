@@ -129,25 +129,19 @@ describe("useQuiz", () => {
       completion = result.current.complete();
     });
 
-    const expectedAnswers = [
-      { questionId: "q1", optionId: "a" },
-      { questionId: "q2", optionId: "b" },
-      { questionId: "q3", optionId: "c" },
-      { questionId: "q4", optionId: "d" },
-      { questionId: "q5", optionId: "a" },
-    ];
-
-    expect(completion).toEqual({
-      personalityType: "WORRIER",
-      answers: expectedAnswers,
-    });
-    expect(mockedScoreQuiz).toHaveBeenCalledOnce();
-    expect(mockedScoreQuiz).toHaveBeenCalledWith({
+    const expectedAnswersMap = {
       q1: "a",
       q2: "b",
       q3: "c",
       q4: "d",
       q5: "a",
+    } as const;
+
+    expect(completion).toEqual({
+      personalityType: "WORRIER",
+      answers: expectedAnswersMap,
     });
+    expect(mockedScoreQuiz).toHaveBeenCalledOnce();
+    expect(mockedScoreQuiz).toHaveBeenCalledWith(expectedAnswersMap);
   });
 });

@@ -9,36 +9,67 @@ export const PERSONALITY_TYPES = [
 
 export type PersonalityType = (typeof PERSONALITY_TYPES)[number];
 
-export type QuizOption = {
+export type QUIZ_OPTION = {
   id: string;
   text: string;
 };
 
-export type Question = {
+export type QUIZ_QUESTION = {
   id: string;
   text: string;
-  options: QuizOption[];
+  options: QUIZ_OPTION[];
 };
+
+export type QUIZ_ANSWER_MAP = Record<string, string>;
 
 export type QuizAnswer = {
   questionId: string;
   optionId: string;
 };
 
-/** User answers keyed by question id — input shape for scoreQuiz. */
-export type QuizAnswersMap = Record<string, string>;
-
-export type QuizCompletionResult = {
+export type QUIZ_COMPLETION_RESULT = {
   personalityType: PersonalityType;
-  answers: QuizAnswer[];
+  answers: QUIZ_ANSWER_MAP;
 };
 
-/** Persisted quiz result — matches userQuizResults/{uid} in docs/data-model/quiz.md */
-export type SavedQuizResult = {
+export type QUIZ_RESULT_DEFINITION = {
+  personalityType: PersonalityType;
+  displayName: string;
+  description: string;
+};
+
+/** Persisted quiz result keyed by Auth uid. */
+export type SAVED_QUIZ_RESULT = {
   userId: string;
   quizId: string;
   personalityType: PersonalityType;
-  answers: QuizAnswersMap;
+  answers: QUIZ_ANSWER_MAP;
   completedAt: Date | null;
   updatedAt: Date | null;
 };
+
+export type SAVE_QUIZ_RESULT_INPUT = {
+  uid: string;
+  quizId: string;
+  personalityType: PersonalityType;
+  answers: QUIZ_ANSWER_MAP;
+  completedAt: Date;
+};
+
+// Legacy camelCase aliases used across the app; keep them as
+// aliases to the canonical QUIZ_* types to avoid duplication.
+
+export type QuizOption = QUIZ_OPTION;
+
+export type Question = QUIZ_QUESTION;
+
+/** User answers keyed by question id — input shape for scoreQuiz. */
+export type QuizAnswersMap = QUIZ_ANSWER_MAP;
+
+export type QuizCompletionResult = QUIZ_COMPLETION_RESULT;
+
+export type QuizResultDefinition = QUIZ_RESULT_DEFINITION;
+
+export type SavedQuizResult = SAVED_QUIZ_RESULT;
+
+export type SaveQuizResultInput = SAVE_QUIZ_RESULT_INPUT;

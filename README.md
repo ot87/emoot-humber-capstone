@@ -127,7 +127,7 @@ src/
 
   services/                # DATA LAYER - the only place that calls Firestore/Auth (lib/firebase.ts does init)
     auth.service.ts        # signInWithGoogle, signOut, listenToAuthChanges
-    quiz.service.ts        # getQuestions, saveQuizResult, getSavedQuizResult
+    quiz.service.ts        # getQuestions, saveQuizResult, getSavedQuizResult, getResultDefinitions
     bingo.service.ts       # getChallenges, getBoardState, updateChallengeStatus
 
   features/

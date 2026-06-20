@@ -23,7 +23,7 @@ function renderResultPage(state: unknown, initialEntry = "/result") {
   );
 }
 
-const sampleAnswers: QuizCompletionResult["answers"] = [{ questionId: "q1", optionId: "a" }];
+const sampleAnswers: QuizCompletionResult["answers"] = { q1: "a" };
 
 describe("ResultPage", () => {
   it.each(PERSONALITY_TYPES)("renders the %s result screen from route state", (personalityType) => {

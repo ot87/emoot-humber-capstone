@@ -94,9 +94,11 @@ export function useQuiz(items: QuizFlowItem[]): UseQuizState {
       return null;
     }
 
+    const answersMap = answersToMap(answers);
+
     return {
-      personalityType: scoreQuiz(answersToMap(answers)),
-      answers,
+      personalityType: scoreQuiz(answersMap),
+      answers: answersMap,
     };
   }, [answers, items]);
 
