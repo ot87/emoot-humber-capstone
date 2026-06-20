@@ -23,24 +23,40 @@ Working in this repo with an AI agent (Cursor, Claude)? The rules live in [AGENT
 
 ## Getting started
 
-**Prerequisites:** Node.js (with npm) and a Java JDK 11+ on your PATH - the Firestore emulator runs on the JVM. Verify with `node -v` and `java -version`.
+### Prerequisites
+
+- Node.js 20+ (with npm).
+- A Java JDK 11+ on your PATH - the Firestore emulator runs on the JVM.
+- A Google account added to the Firebase project - the emulator is pinned to the real project id, so it needs you logged in.
+  Verify the toolchain with `node -v` and `java -version`.
+
+### One-time setup
 
 ```
 git clone https://github.com/ot87/emoot-humber-capstone.git
 cd emoot-humber-capstone
 npm install
 cp .env.example .env.local        # fill in the real Firebase web config (see Firebase below)
+npx firebase login                # sign in with your Google account (the one added to the project)
+```
 
-# Point the CLI and emulator at the project. Write .firebaserc by hand (no login):
-#   { "projects": { "default": "<your VITE_FIREBASE_PROJECT_ID>" } }
-#   or run `npx firebase login && npx firebase use --add` for the interactive picker.
+The emulator is pinned to the real project id, so it will not start until you have logged in. `.firebaserc` is already committed, so there is nothing to write by hand.
 
+### Running locally
+
+```
 npm run emulators        # terminal 1: local Firestore on 8080 (pinned to the project id)
 npm run seed:emulator    # terminal 2: load content into the emulator
 npm run dev              # terminal 3: app
 ```
 
 In dev the app signs in against the real Firebase project but reads and writes Firestore in the local emulator, so you never touch production data. You need the emulator running (and seeded) for the app to have content. To inspect or edit the seeded data, open the Emulator UI at `http://127.0.0.1:4000/firestore`.
+
+**Two emulator scripts - which to use.**
+
+- `npm run emulators` starts empty, so you re-seed each time (`npm run seed:emulator`). Use it for a clean slate, or to seed exactly what the repo defines right now.
+- `npm run emulators:persist` imports and re-exports `./.emulator-data`, so seeded data survives restarts and you can skip re-seeding. The export only writes on a clean **Ctrl-C** exit (closing the terminal skips it).
+  `.emulator-data` is gitignored, so on a fresh clone it does not exist yet. Bootstrap it in one go: run `npm run emulators:persist`, `npm run seed:emulator`, then Ctrl-C - the export-on-exit creates `.emulator-data`, and every start after that imports it. (The pinned firebase-tools warns and continues when the import folder is missing rather than erroring, so the first `:persist` run works before the folder exists. If a future firebase-tools bump changes that, bootstrap instead with `npm run emulators` + `npx firebase emulators:export ./.emulator-data --project emoot-my-savings-goal`.)
 
 ## Scripts
 
@@ -51,6 +67,7 @@ In dev the app signs in against the real Firebase project but reads and writes F
 - `npm run preview` - preview the production build
 - `npm run test` - run unit tests
 - `npm run emulators` - start the local Firestore emulator, pinned with `--project` so the Emulator UI shows the same namespace the seed writes
+- `npm run emulators:persist` - same, but imports/exports `./.emulator-data` so seeded data survives restarts
 - `npm run seed:emulator` - load content into the local Firestore emulator (see [`scripts/seed/README.md`](scripts/seed/README.md))
 - `npm run seed:prod` - one-time content seed to the real project (guarded; see the seed README)
 
@@ -58,15 +75,11 @@ In dev the app signs in against the real Firebase project but reads and writes F
 
 The app talks to Firebase directly (serverless: the client connects to Firestore, protected by security rules). `src/lib/firebase.ts` initializes the SDK from `.env.local` and, when `import.meta.env.DEV` is set, points Firestore at the local emulator while leaving Auth on the real project.
 
-**Local development.** Auth uses real Google sign-in against the real project; Firestore runs in the emulator. Two ids must agree: `VITE_FIREBASE_PROJECT_ID` in `.env.local` (what the app uses) and the `default` in `.firebaserc` (what the emulator and the seed read). Set them to the same real project. If they drift, the app connects to a different emulator namespace than the seed wrote and you get an empty Firestore with no error.
+**Local development.** Auth uses real Google sign-in against the real project; Firestore runs in the emulator. Two ids must agree: `VITE_FIREBASE_PROJECT_ID` in `.env.local` (what the app uses) and the `default` in `.firebaserc` (what the emulator and the seed read). Both point at the same real project. If they drift, the app connects to a different emulator namespace than the seed wrote and you get an empty Firestore with no error.
 
-Set `.firebaserc` either by hand:
+`.firebaserc` is committed with `default` set to the project id, so there is nothing to write by hand.
 
-```json
-{ "projects": { "default": "<your project id>" } }
-```
-
-or with `npx firebase use --add` (which needs `npx firebase login` first - sign in with the Google account that has access to the project). Login is only required for `firebase use --add` and for deploying; the local emulator, `seed:emulator`, and `seed:prod` (which uses a service-account key) do not need it.
+**Login is required once.** The emulator is pinned to the real project id (`emoot-my-savings-goal`), and firebase-tools authenticates to resolve a real project, so `npm run emulators` will not start until you have run `npx firebase login`. `seed:emulator` and the app's reads do not call login themselves, but the emulator they depend on does; `seed:prod` uses a service-account key, not login.
 
 **Connecting to the real Firebase project.** The web config in `.env.local` is the real project's:
 
@@ -88,6 +101,7 @@ Security rules enforce per-user access: a user can read and write only their own
 Issues the team hit during first setup, with fixes:
 
 - **`firebase: command not found`.** The Firebase CLI is a dev dependency, not a global install. Prefix commands with `npx` (`npx firebase ...`) or use the `npm run` scripts.
+- **Emulator won't start: "Failed to authenticate, have you run firebase login?"** The emulator is pinned to the real project id, and a real project needs an authenticated CLI. Run `npx firebase login` once - it is a one-time step per machine.
 - **Emulator won't start: "Could not spawn `java`" / "java not found".** The Firestore emulator runs on the JVM and needs a Java JDK 11+ on your PATH. Install one (e.g. Temurin), reopen the terminal, then confirm with `java -version`.
 - **Seed fails with "No project id" (or seems to write nothing).** `.firebaserc` needs a `default` entry equal to `VITE_FIREBASE_PROJECT_ID`. An alias like `staging` on its own is not enough - the seed reads `projects.default`. Correct shape:
 
@@ -103,9 +117,7 @@ Issues the team hit during first setup, with fixes:
 
 The app is unaffected by this: it reads through the SDK using `VITE_FIREBASE_PROJECT_ID`, the same namespace the seed writes.
 
-- **Data is gone after restarting the emulator.** Emulator data is in-memory. Either re-run `npm run seed:emulator` after each start, or persist it with `npm run emulators:persist` (see below). On first use the `.emulator-data` folder does not exist yet and `--import` will error - bootstrap it once: start `npm run emulators`, seed, then in another terminal run `npx firebase emulators:export ./.emulator-data --project emoot-my-savings-goal`. After that, `npm run emulators:persist` loads it on every start.
-
-Add `.emulator-data/` to `.gitignore` if you use the persist script.
+- **`:persist` export lands in the repo root, or data is empty on re-run.** The persist script must give `--export-on-exit` an explicit path (`--export-on-exit=./.emulator-data`), or the export goes to the current directory. It also only writes on a clean Ctrl-C exit. For the bootstrap and the two-script split, see "Two emulator scripts" under Running locally.
 
 ## Project structure
 
