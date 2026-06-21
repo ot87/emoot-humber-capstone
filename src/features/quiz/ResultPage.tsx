@@ -16,6 +16,7 @@ function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
     isPersonalityType(candidate.personalityType) &&
     typeof candidate.answers === "object" &&
     candidate.answers !== null &&
+    Object.keys(candidate.answers).every((k) => typeof k === "string") &&
     Object.values(candidate.answers).every((optionId) => typeof optionId === "string")
   );
 }

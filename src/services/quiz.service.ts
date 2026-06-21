@@ -13,12 +13,13 @@ import {
   type Timestamp as FirestoreTimestamp,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import type {
-  PersonalityType,
-  QUIZ_QUESTION,
-  QUIZ_ANSWER_MAP,
-  QUIZ_RESULT_DEFINITION,
-  SAVED_QUIZ_RESULT,
+import {
+  PERSONALITY_TYPES,
+  type PersonalityType,
+  type Question,
+  type QuizAnswersMap,
+  type QuizResultDefinition,
+  type SavedQuizResult,
 } from "@/types/quiz";
 
 type FirestoreQuizOption = {
@@ -42,7 +43,7 @@ type FirestoreSavedQuizResult = {
   userId: string;
   quizId: string;
   personalityType: PersonalityType;
-  answers: { questionId: string; optionId: string }[] | QUIZ_ANSWER_MAP;
+  answers: QuizAnswersMap;
   completedAt?: FirestoreTimestamp | null;
   updatedAt?: FirestoreTimestamp | null;
 };
@@ -51,29 +52,20 @@ const QUIZZES_COLLECTION = "quizzes";
 const PERSONALITY_TYPES_COLLECTION = "personalityTypes";
 const USER_RESULTS_COLLECTION = "userQuizResults";
 
+function isPersonalityType(value: unknown): value is PersonalityType {
+  return PERSONALITY_TYPES.some((type) => type === value);
+}
+
 function toDate(value?: Timestamp | null): Date | null {
   return value ? value.toDate() : null;
 }
 
-function normalizeAnswersToMap(answers: FirestoreSavedQuizResult["answers"]): QUIZ_ANSWER_MAP {
-  if (Array.isArray(answers)) {
-    return answers.reduce<QUIZ_ANSWER_MAP>((acc, answer) => {
-      if (answer.questionId && answer.optionId) {
-        acc[answer.questionId] = answer.optionId;
-      }
-      return acc;
-    }, {});
-  }
-
-  return answers;
-}
-
-function mapSavedResult(data: FirestoreSavedQuizResult): SAVED_QUIZ_RESULT {
+function mapSavedResult(data: FirestoreSavedQuizResult): SavedQuizResult {
   return {
     userId: data.userId,
     quizId: data.quizId,
     personalityType: data.personalityType,
-    answers: normalizeAnswersToMap(data.answers),
+    answers: data.answers,
     completedAt: toDate(data.completedAt),
     updatedAt: toDate(data.updatedAt),
   };
@@ -95,9 +87,15 @@ async function resolveQuizId(explicitQuizId?: string): Promise<string | null> {
   return activeQuizDoc ? activeQuizDoc.id : null;
 }
 
-export async function getQuestions(quizId?: string): Promise<QUIZ_QUESTION[]> {
+export async function getQuestions(quizId?: string): Promise<Question[]> {
   const resolvedQuizId = await resolveQuizId(quizId);
   if (!resolvedQuizId) {
+    return [];
+  }
+
+  const quizRef = doc(db, QUIZZES_COLLECTION, resolvedQuizId);
+  const quizSnapshot = await getDoc(quizRef);
+  if (!quizSnapshot.exists()) {
     return [];
   }
 
@@ -123,10 +121,10 @@ export async function getQuestions(quizId?: string): Promise<QUIZ_QUESTION[]> {
 export async function saveQuizResult(
   uid: string,
   quizId: string,
-  answers: QUIZ_ANSWER_MAP,
+  answers: QuizAnswersMap,
   personalityType: PersonalityType,
   completedAt: Date,
-): Promise<SAVED_QUIZ_RESULT> {
+): Promise<SavedQuizResult> {
   const resultRef = doc(db, USER_RESULTS_COLLECTION, uid);
   const existingSnapshot = await getDoc(resultRef);
   const existingData = existingSnapshot.exists()
@@ -159,7 +157,7 @@ export async function saveQuizResult(
   };
 }
 
-export async function getSavedQuizResult(uid: string): Promise<SAVED_QUIZ_RESULT | null> {
+export async function getSavedQuizResult(uid: string): Promise<SavedQuizResult | null> {
   const resultRef = doc(db, USER_RESULTS_COLLECTION, uid);
   const snapshot = await getDoc(resultRef);
 
@@ -170,15 +168,23 @@ export async function getSavedQuizResult(uid: string): Promise<SAVED_QUIZ_RESULT
   return mapSavedResult(snapshot.data() as FirestoreSavedQuizResult);
 }
 
-export async function getResultDefinitions(): Promise<QUIZ_RESULT_DEFINITION[]> {
+export async function getResultDefinitions(): Promise<QuizResultDefinition[]> {
   const definitionsSnapshot = await getDocs(collection(db, PERSONALITY_TYPES_COLLECTION));
 
-  return definitionsSnapshot.docs.map((definitionDoc) => {
+  return definitionsSnapshot.docs.flatMap((definitionDoc) => {
     const data = definitionDoc.data() as FirestoreResultDefinition;
-    return {
-      personalityType: data.personalityType ?? (definitionDoc.id as PersonalityType),
-      displayName: data.displayName,
-      description: data.description,
-    };
+    const personalityType = data.personalityType ?? definitionDoc.id;
+
+    if (!isPersonalityType(personalityType)) {
+      return [];
+    }
+
+    return [
+      {
+        personalityType,
+        displayName: data.displayName,
+        description: data.description,
+      },
+    ];
   });
 }

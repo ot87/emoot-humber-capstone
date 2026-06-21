@@ -51,6 +51,7 @@ describe("ResultPage", () => {
   it.each([
     ["missing", null],
     ["malformed", { personalityType: "bogus", answers: [] }],
+    ["non-string answer values", { personalityType: "PLANNER", answers: { q1: 42 } }],
   ])("redirects to /quiz when route state is %s", (_label, state) => {
     renderResultPage(state);
     expect(screen.getByText("Quiz landing")).toBeInTheDocument();

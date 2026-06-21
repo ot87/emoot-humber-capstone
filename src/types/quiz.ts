@@ -1,5 +1,3 @@
-/** Provisional domain types — reconcile with KAN-17 when it closes. */
-
 export const PERSONALITY_TYPES = [
   "PLANNER",
   "WORRIER",
@@ -9,67 +7,42 @@ export const PERSONALITY_TYPES = [
 
 export type PersonalityType = (typeof PERSONALITY_TYPES)[number];
 
-export type QUIZ_OPTION = {
+export type QuizOption = {
   id: string;
   text: string;
 };
 
-export type QUIZ_QUESTION = {
+export type Question = {
   id: string;
   text: string;
-  options: QUIZ_OPTION[];
+  options: QuizOption[];
 };
 
-export type QUIZ_ANSWER_MAP = Record<string, string>;
+/** User answers keyed by question id — input shape for scoreQuiz. */
+export type QuizAnswersMap = Record<string, string>;
 
 export type QuizAnswer = {
   questionId: string;
   optionId: string;
 };
 
-export type QUIZ_COMPLETION_RESULT = {
+export type QuizCompletionResult = {
   personalityType: PersonalityType;
-  answers: QUIZ_ANSWER_MAP;
+  answers: QuizAnswersMap;
 };
 
-export type QUIZ_RESULT_DEFINITION = {
+export type QuizResultDefinition = {
   personalityType: PersonalityType;
   displayName: string;
   description: string;
 };
 
 /** Persisted quiz result keyed by Auth uid. */
-export type SAVED_QUIZ_RESULT = {
+export type SavedQuizResult = {
   userId: string;
   quizId: string;
   personalityType: PersonalityType;
-  answers: QUIZ_ANSWER_MAP;
+  answers: QuizAnswersMap;
   completedAt: Date | null;
   updatedAt: Date | null;
 };
-
-export type SAVE_QUIZ_RESULT_INPUT = {
-  uid: string;
-  quizId: string;
-  personalityType: PersonalityType;
-  answers: QUIZ_ANSWER_MAP;
-  completedAt: Date;
-};
-
-// Legacy camelCase aliases used across the app; keep them as
-// aliases to the canonical QUIZ_* types to avoid duplication.
-
-export type QuizOption = QUIZ_OPTION;
-
-export type Question = QUIZ_QUESTION;
-
-/** User answers keyed by question id — input shape for scoreQuiz. */
-export type QuizAnswersMap = QUIZ_ANSWER_MAP;
-
-export type QuizCompletionResult = QUIZ_COMPLETION_RESULT;
-
-export type QuizResultDefinition = QUIZ_RESULT_DEFINITION;
-
-export type SavedQuizResult = SAVED_QUIZ_RESULT;
-
-export type SaveQuizResultInput = SAVE_QUIZ_RESULT_INPUT;
