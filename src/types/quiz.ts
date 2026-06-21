@@ -1,5 +1,3 @@
-/** Provisional domain types — reconcile with KAN-17 when it closes. */
-
 export const PERSONALITY_TYPES = [
   "PLANNER",
   "WORRIER",
@@ -20,20 +18,26 @@ export type Question = {
   options: QuizOption[];
 };
 
+/** User answers keyed by question id — input shape for scoreQuiz. */
+export type QuizAnswersMap = Record<string, string>;
+
 export type QuizAnswer = {
   questionId: string;
   optionId: string;
 };
 
-/** User answers keyed by question id — input shape for scoreQuiz. */
-export type QuizAnswersMap = Record<string, string>;
-
 export type QuizCompletionResult = {
   personalityType: PersonalityType;
-  answers: QuizAnswer[];
+  answers: QuizAnswersMap;
 };
 
-/** Persisted quiz result — matches userQuizResults/{uid} in docs/data-model/quiz.md */
+export type QuizResultDefinition = {
+  personalityType: PersonalityType;
+  displayName: string;
+  description: string;
+};
+
+/** Persisted quiz result keyed by Auth uid. */
 export type SavedQuizResult = {
   userId: string;
   quizId: string;

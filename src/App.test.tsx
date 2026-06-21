@@ -2,10 +2,12 @@ import { render, screen } from "@testing-library/react";
 import App from "@/App";
 import type { AuthUser } from "@/types/user";
 
-// Replace the whole auth service so rendering App never reaches lib/firebase
-// (which calls initializeApp at import time and throws without env vars).
-// listenToAuthChanges synchronously reports "signed out" so useAuth settles
-// to loading=false and the default /quiz route renders.
+// Mock services before App/routes load so lib/firebase (initializeApp at import
+// time) is never reached without valid VITE_FIREBASE_* env vars.
+vi.mock("@/services/quiz.service", () => ({
+  getSavedQuizResult: vi.fn(),
+}));
+
 vi.mock("@/services/auth.service", () => ({
   signInWithGoogle: vi.fn(),
   signOut: vi.fn(),

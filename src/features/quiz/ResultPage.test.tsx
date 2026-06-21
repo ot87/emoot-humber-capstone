@@ -23,7 +23,7 @@ function renderResultPage(state: unknown, initialEntry = "/result") {
   );
 }
 
-const sampleAnswers: QuizCompletionResult["answers"] = [{ questionId: "q1", optionId: "a" }];
+const sampleAnswers: QuizCompletionResult["answers"] = { q1: "a" };
 
 describe("ResultPage", () => {
   it.each(PERSONALITY_TYPES)("renders the %s result screen from route state", (personalityType) => {
@@ -51,6 +51,7 @@ describe("ResultPage", () => {
   it.each([
     ["missing", null],
     ["malformed", { personalityType: "bogus", answers: [] }],
+    ["non-string answer values", { personalityType: "PLANNER", answers: { q1: 42 } }],
   ])("redirects to /quiz when route state is %s", (_label, state) => {
     renderResultPage(state);
     expect(screen.getByText("Quiz landing")).toBeInTheDocument();
