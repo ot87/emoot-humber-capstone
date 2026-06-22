@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
-import { quizQuestions } from "@/features/quiz/quiz.questions";
+import { testQuizFlowItems } from "@/features/quiz/quiz.test-fixtures";
 import { scoreQuiz } from "@/features/quiz/quiz.logic";
 import type { QuizCompletionResult } from "@/types/quiz";
 import { useQuiz } from "./useQuiz";
@@ -34,7 +34,7 @@ describe("useQuiz", () => {
   });
 
   it("moves forward through all questions while preserving answers", () => {
-    const { result } = renderHook(() => useQuiz(quizQuestions));
+    const { result } = renderHook(() => useQuiz(testQuizFlowItems));
 
     act(() => {
       result.current.start();
@@ -45,7 +45,7 @@ describe("useQuiz", () => {
     optionIds.forEach((optionId, index) => {
       expect(result.current.currentItem?.question.id).toBe(`q${index + 1}`);
       answerCurrent(result, optionId);
-      if (index < quizQuestions.length - 1) {
+      if (index < testQuizFlowItems.length - 1) {
         goNext(result);
       }
     });
@@ -61,7 +61,7 @@ describe("useQuiz", () => {
   });
 
   it("reflects current question position in progress percent", () => {
-    const { result } = renderHook(() => useQuiz(quizQuestions));
+    const { result } = renderHook(() => useQuiz(testQuizFlowItems));
 
     act(() => {
       result.current.start();
@@ -83,7 +83,7 @@ describe("useQuiz", () => {
   });
 
   it("restores a prior answer on back navigation and allows changing it", () => {
-    const { result } = renderHook(() => useQuiz(quizQuestions));
+    const { result } = renderHook(() => useQuiz(testQuizFlowItems));
 
     act(() => {
       result.current.start();
@@ -110,7 +110,7 @@ describe("useQuiz", () => {
   });
 
   it("derives the personality type on completion via scoreQuiz", () => {
-    const { result } = renderHook(() => useQuiz(quizQuestions));
+    const { result } = renderHook(() => useQuiz(testQuizFlowItems));
 
     act(() => {
       result.current.start();
@@ -118,7 +118,7 @@ describe("useQuiz", () => {
 
     ["a", "b", "c", "d", "a"].forEach((optionId, index) => {
       answerCurrent(result, optionId);
-      if (index < quizQuestions.length - 1) {
+      if (index < testQuizFlowItems.length - 1) {
         goNext(result);
       }
     });

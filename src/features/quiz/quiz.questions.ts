@@ -1,7 +1,13 @@
-export type { QuizFlowItem } from "@/features/quiz/quiz.data";
+import type { Question } from "@/types/quiz";
 
-/**
- * TEMPORARY question source — KAN-28 replaces this export at this seam (one-line swap).
- * Delete the mock in quiz.data.ts when KAN-28 lands; this ticket is not reopened.
- */
-export { mockQuizItems as quizQuestions } from "@/features/quiz/quiz.data";
+export type QuizFlowItem = {
+  heading: string;
+  question: Question;
+};
+
+export function toQuizFlowItems(questions: Question[]): QuizFlowItem[] {
+  return questions.map((question, index) => ({
+    heading: `Q${index + 1}`,
+    question,
+  }));
+}

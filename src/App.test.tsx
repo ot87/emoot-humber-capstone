@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import App from "@/App";
 import type { AuthUser } from "@/types/user";
 
@@ -6,6 +6,7 @@ import type { AuthUser } from "@/types/user";
 // time) is never reached without valid VITE_FIREBASE_* env vars.
 vi.mock("@/services/quiz.service", () => ({
   getSavedQuizResult: vi.fn(),
+  getQuestions: vi.fn().mockResolvedValue([]),
 }));
 
 vi.mock("@/services/auth.service", () => ({
@@ -18,11 +19,15 @@ vi.mock("@/services/auth.service", () => ({
 }));
 
 describe("App", () => {
-  it("renders the default route", () => {
+  it("renders the default route", async () => {
     render(<App />);
-    expect(
-      screen.getByRole("heading", { name: /find your money personality/i }),
-    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: /find your money personality/i }),
+      ).toBeInTheDocument();
+    });
+
     expect(screen.getByRole("button", { name: /start quiz/i })).toBeInTheDocument();
   });
 });
