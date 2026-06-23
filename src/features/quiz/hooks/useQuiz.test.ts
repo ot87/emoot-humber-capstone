@@ -146,6 +146,9 @@ describe("useQuiz", () => {
       answers: expectedAnswersMap,
     });
     expect(mockedScoreQuiz).toHaveBeenCalledOnce();
-    expect(mockedScoreQuiz).toHaveBeenCalledWith(expectedAnswersMap);
+    expect(mockedScoreQuiz).toHaveBeenCalledWith(
+      testQuizFlowItems.map((item) => item.question),
+      expectedAnswersMap,
+    );
   });
 });

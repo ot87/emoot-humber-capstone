@@ -95,9 +95,10 @@ export function useQuiz(items: QuizFlowItem[]): UseQuizState {
     }
 
     const answersMap = answersToMap(answers);
+    const questions = items.map((item) => item.question);
 
     return {
-      personalityType: scoreQuiz(answersMap),
+      personalityType: scoreQuiz(questions, answersMap),
       answers: answersMap,
     };
   }, [answers, items]);

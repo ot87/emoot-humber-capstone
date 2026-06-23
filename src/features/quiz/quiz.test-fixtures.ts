@@ -1,13 +1,19 @@
 import { toQuizFlowItems } from "@/features/quiz/quiz.logic";
-import type { Question } from "@/types/quiz";
+import type { PersonalityType, Question } from "@/types/quiz";
+
+const OPTION_PERSONALITY_TYPES: PersonalityType[] = [
+  "PLANNER",
+  "WORRIER",
+  "FREE_SPIRIT",
+  "OVERWHELMED_STARTER",
+];
 
 function fourOptions(texts: [string, string, string, string]): Question["options"] {
-  return [
-    { id: "a", text: texts[0] },
-    { id: "b", text: texts[1] },
-    { id: "c", text: texts[2] },
-    { id: "d", text: texts[3] },
-  ];
+  return OPTION_PERSONALITY_TYPES.map((personalityType, index) => ({
+    id: String.fromCharCode(97 + index),
+    text: texts[index],
+    personalityType,
+  }));
 }
 
 export const testQuizQuestions: Question[] = [

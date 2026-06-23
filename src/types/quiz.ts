@@ -10,6 +10,7 @@ export type PersonalityType = (typeof PERSONALITY_TYPES)[number];
 export type QuizOption = {
   id: string;
   text: string;
+  personalityType: PersonalityType;
 };
 
 export type Question = {
