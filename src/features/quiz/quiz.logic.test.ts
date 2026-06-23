@@ -9,10 +9,7 @@ const OPTION_PERSONALITY_TYPES: PersonalityType[] = [
   "OVERWHELMED_STARTER",
 ];
 
-function makeQuestion(
-  questionId: string,
-  optionIds: [string, string, string, string],
-): Question {
+function makeQuestion(questionId: string, optionIds: [string, string, string, string]): Question {
   return {
     id: questionId,
     text: questionId,
