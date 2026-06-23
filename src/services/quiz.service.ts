@@ -72,6 +72,10 @@ function mapSavedResult(data: FirestoreSavedQuizResult): SavedQuizResult {
   };
 }
 
+export async function getActiveQuizId(): Promise<string | null> {
+  return resolveQuizId();
+}
+
 async function resolveQuizId(explicitQuizId?: string): Promise<string | null> {
   if (explicitQuizId) {
     return explicitQuizId;

@@ -1,5 +1,8 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { QuizResultScreen } from "@/features/quiz/components/QuizResultScreen";
+import { useQuizResult } from "@/features/quiz/hooks/useQuizResult";
+import { toQuizCompletionResult } from "@/features/quiz/quiz.result";
 import { PERSONALITY_TYPES, type PersonalityType, type QuizCompletionResult } from "@/types/quiz";
 
 function isPersonalityType(value: unknown): value is PersonalityType {
@@ -23,11 +26,29 @@ function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
 
 export default function ResultPage() {
   const location = useLocation();
-  const result = isQuizCompletionResult(location.state) ? location.state : null;
+  const { savedResult, loading, error } = useQuizResult();
+  const routeResult = isQuizCompletionResult(location.state) ? location.state : null;
 
-  if (!result) {
-    return <Navigate to="/quiz" replace />;
+  if (routeResult) {
+    return <QuizResultScreen personalityType={routeResult.personalityType} />;
   }
 
-  return <QuizResultScreen personalityType={result.personalityType} />;
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center px-4">
+        <p className="text-center font-quiz-body text-sm text-destructive">{error}</p>
+      </div>
+    );
+  }
+
+  if (savedResult) {
+    const completion = toQuizCompletionResult(savedResult);
+    return <QuizResultScreen personalityType={completion.personalityType} />;
+  }
+
+  return <Navigate to="/quiz" replace />;
 }

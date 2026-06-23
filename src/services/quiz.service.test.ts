@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 import {
+  getActiveQuizId,
   getQuestions,
   getResultDefinitions,
   getSavedQuizResult,
@@ -101,6 +102,24 @@ describe("quiz.service", () => {
     expect(firestoreMocks.getDoc).toHaveBeenCalledTimes(1);
     expect(firestoreMocks.getDocs).toHaveBeenCalledTimes(1);
     expect(firestoreMocks.orderBy).toHaveBeenCalledWith("displayOrder", "asc");
+  });
+
+  it("getActiveQuizId returns the active quiz document id", async () => {
+    firestoreMocks.getDocs.mockResolvedValue({
+      docs: [{ id: "active-quiz-id" }],
+    });
+
+    await expect(getActiveQuizId()).resolves.toBe("active-quiz-id");
+
+    expect(firestoreMocks.collection).toHaveBeenCalledWith("mock-db", "quizzes");
+    expect(firestoreMocks.query).toHaveBeenCalledWith(
+      "mock-collection-ref",
+      "mock-where",
+      "mock-limit",
+    );
+    expect(firestoreMocks.where).toHaveBeenCalledWith("active", "==", true);
+    expect(firestoreMocks.limit).toHaveBeenCalledWith(1);
+    expect(firestoreMocks.getDocs).toHaveBeenCalledWith("mock-query-ref");
   });
 
   it("getQuestions without quizId resolves the active quiz and loads its questions", async () => {

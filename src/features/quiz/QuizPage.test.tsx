@@ -1,16 +1,29 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getQuestions } from "@/services/quiz.service";
 import { testQuizQuestions } from "./quiz.test-fixtures";
 import QuizPage from "./QuizPage";
 import ResultPage from "./ResultPage";
+import { useQuizResult } from "./hooks/useQuizResult";
 
 vi.mock("@/services/quiz.service", () => ({
   getQuestions: vi.fn(),
 }));
 
+vi.mock("@/features/auth/hooks/useAuth", () => ({
+  useAuth: vi.fn(),
+}));
+
+vi.mock("@/features/quiz/hooks/useQuizResult", () => ({
+  useQuizResult: vi.fn(),
+}));
+
 const mockedGetQuestions = vi.mocked(getQuestions);
+const mockedUseAuth = vi.mocked(useAuth);
+const mockedUseQuizResult = vi.mocked(useQuizResult);
+const mockSaveCompletion = vi.fn().mockResolvedValue(true);
 
 function renderQuizFlow(initialEntry = "/quiz") {
   return render(
@@ -37,6 +50,24 @@ describe("QuizPage", () => {
   beforeEach(() => {
     mockedGetQuestions.mockReset();
     mockedGetQuestions.mockResolvedValue(testQuizQuestions);
+    mockedUseAuth.mockReturnValue({
+      user: null,
+      loading: false,
+      signIn: vi.fn(),
+      signOut: vi.fn(),
+      isSigningIn: false,
+      isSigningOut: false,
+      error: "",
+    });
+    mockSaveCompletion.mockReset();
+    mockSaveCompletion.mockResolvedValue(true);
+    mockedUseQuizResult.mockReturnValue({
+      savedResult: null,
+      loading: false,
+      error: "",
+      hasSavedResult: false,
+      saveCompletion: mockSaveCompletion,
+    });
   });
 
   it("shows the landing header and spinner while questions are loading", () => {
@@ -113,5 +144,52 @@ describe("QuizPage", () => {
       "href",
       "/auth",
     );
+    expect(mockSaveCompletion).not.toHaveBeenCalled();
+  });
+
+  it("saves the quiz result when a signed-in user finishes the quiz", async () => {
+    const user = userEvent.setup();
+
+    mockedUseAuth.mockReturnValue({
+      user: {
+        uid: "test-uid",
+        email: "test@example.com",
+        displayName: "Test User",
+        photoURL: null,
+      },
+      loading: false,
+      signIn: vi.fn(),
+      signOut: vi.fn(),
+      isSigningIn: false,
+      isSigningOut: false,
+      error: "",
+    });
+
+    renderQuizFlow();
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /start quiz/i })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: /start quiz/i }));
+
+    for (let index = 0; index < testQuizQuestions.length; index += 1) {
+      await answerCurrentQuestionAndAdvance(user, index === testQuizQuestions.length - 1);
+    }
+
+    await waitFor(() => {
+      expect(mockSaveCompletion).toHaveBeenCalledOnce();
+    });
+
+    expect(mockSaveCompletion).toHaveBeenCalledWith({
+      personalityType: "PLANNER",
+      answers: {
+        q1: "a",
+        q2: "a",
+        q3: "a",
+        q4: "a",
+        q5: "a",
+      },
+    });
   });
 });

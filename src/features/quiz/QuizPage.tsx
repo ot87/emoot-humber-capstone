@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";
 import { useQuiz } from "./hooks/useQuiz";
+import { useQuizResult } from "./hooks/useQuizResult";
 
 export default function QuizPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { saveCompletion } = useQuizResult();
   const { questions, loading, error } = useQuestions();
   const quiz = useQuiz(questions);
 
@@ -25,6 +29,9 @@ export default function QuizPage() {
     if (quiz.isLastQuestion) {
       const result = quiz.complete();
       if (result) {
+        if (user) {
+          void saveCompletion(result);
+        }
         navigate("/result", { state: result });
       }
       return;

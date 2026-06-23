@@ -2,7 +2,7 @@ import iconFreeSpirit from "@/assets/icon-personality-free-spirit.svg";
 import iconOverwhelmedStarter from "@/assets/icon-personality-overwhelmed-starter.svg";
 import iconPlanner from "@/assets/icon-personality-planner.svg";
 import iconWorrier from "@/assets/icon-personality-worrier.svg";
-import type { PersonalityType } from "@/types/quiz";
+import type { PersonalityType, QuizCompletionResult, SavedQuizResult } from "@/types/quiz";
 
 export type PersonalityResultContent = {
   title: string;
@@ -12,8 +12,8 @@ export type PersonalityResultContent = {
 };
 
 /**
- * Temporary presentation seam for KAN-30; replace with persisted quiz result data in KAN-32.
- * Copy and theme per personality — reconcile with KAN-17 when it closes.
+ * Presentation seam for quiz result screens. Copy and theme per personality —
+ * reconcile with KAN-17 when it closes.
  */
 export const PERSONALITY_RESULT_CONTENT: Record<PersonalityType, PersonalityResultContent> = {
   PLANNER: {
@@ -46,4 +46,11 @@ export function getPersonalityResultContent(
   personalityType: PersonalityType,
 ): PersonalityResultContent {
   return PERSONALITY_RESULT_CONTENT[personalityType];
+}
+
+export function toQuizCompletionResult(saved: SavedQuizResult): QuizCompletionResult {
+  return {
+    personalityType: saved.personalityType,
+    answers: saved.answers,
+  };
 }
