@@ -1,12 +1,14 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import App from "@/App";
+import { testQuizQuestions } from "@/features/quiz/quiz.test-fixtures";
+import { getQuestions } from "@/services/quiz.service";
 import type { AuthUser } from "@/types/user";
 
 // Mock services before App/routes load so lib/firebase (initializeApp at import
 // time) is never reached without valid VITE_FIREBASE_* env vars.
 vi.mock("@/services/quiz.service", () => ({
   getSavedQuizResult: vi.fn(),
-  getQuestions: vi.fn().mockResolvedValue([]),
+  getQuestions: vi.fn(),
 }));
 
 vi.mock("@/services/auth.service", () => ({
@@ -18,7 +20,13 @@ vi.mock("@/services/auth.service", () => ({
   }),
 }));
 
+const mockedGetQuestions = vi.mocked(getQuestions);
+
 describe("App", () => {
+  beforeEach(() => {
+    mockedGetQuestions.mockResolvedValue(testQuizQuestions);
+  });
+
   it("renders the default route", async () => {
     render(<App />);
 
@@ -28,6 +36,6 @@ describe("App", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByRole("button", { name: /start quiz/i })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /start quiz/i })).toBeInTheDocument();
   });
 });
