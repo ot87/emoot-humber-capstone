@@ -7,10 +7,18 @@ const sampleQuestion: Question = {
   id: "q1",
   text: "How do you usually approach saving?",
   options: [
-    { id: "a", text: "I set a goal and work toward it constantly" },
-    { id: "b", text: "I save when I feel stressed about money" },
-    { id: "c", text: "I save only when I have extra left over." },
-    { id: "d", text: "I intend to save, but rarely follow through" },
+    { id: "a", text: "I set a goal and work toward it constantly", personalityType: "PLANNER" },
+    { id: "b", text: "I save when I feel stressed about money", personalityType: "WORRIER" },
+    {
+      id: "c",
+      text: "I save only when I have extra left over.",
+      personalityType: "FREE_SPIRIT",
+    },
+    {
+      id: "d",
+      text: "I intend to save, but rarely follow through",
+      personalityType: "OVERWHELMED_STARTER",
+    },
   ],
 };
 

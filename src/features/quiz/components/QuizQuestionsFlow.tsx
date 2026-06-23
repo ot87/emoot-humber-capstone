@@ -1,4 +1,4 @@
-import type { QuizFlowItem } from "@/features/quiz/quiz.questions";
+import type { QuizFlowItem } from "@/features/quiz/quiz.logic";
 import { QuizNavigation } from "@/features/quiz/components/QuizNavigation";
 import { QuizProgressBar } from "@/features/quiz/components/QuizProgressBar";
 import { QuizQuestion } from "@/features/quiz/components/QuizQuestion";

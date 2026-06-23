@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import type { QuizFlowItem } from "@/features/quiz/quiz.questions";
+import type { QuizFlowItem } from "@/features/quiz/quiz.logic";
 import { scoreQuiz } from "@/features/quiz/quiz.logic";
 import type { QuizAnswer, QuizAnswersMap, QuizCompletionResult } from "@/types/quiz";
 
@@ -95,9 +95,10 @@ export function useQuiz(items: QuizFlowItem[]): UseQuizState {
     }
 
     const answersMap = answersToMap(answers);
+    const questions = items.map((item) => item.question);
 
     return {
-      personalityType: scoreQuiz(answersMap),
+      personalityType: scoreQuiz(questions, answersMap),
       answers: answersMap,
     };
   }, [answers, items]);

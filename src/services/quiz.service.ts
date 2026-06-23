@@ -25,6 +25,7 @@ import {
 type FirestoreQuizOption = {
   optionId: string;
   label: string;
+  personalityType: PersonalityType;
 };
 
 type FirestoreQuizQuestion = {
@@ -113,6 +114,7 @@ export async function getQuestions(quizId?: string): Promise<Question[]> {
       options: data.options.map((option) => ({
         id: option.optionId,
         text: option.label,
+        personalityType: option.personalityType,
       })),
     };
   });

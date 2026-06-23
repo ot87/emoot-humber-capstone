@@ -1,12 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
+import { useQuestions } from "./hooks/useQuestions";
 import { useQuiz } from "./hooks/useQuiz";
-import { quizQuestions } from "./quiz.questions";
 
 export default function QuizPage() {
   const navigate = useNavigate();
-  const quiz = useQuiz(quizQuestions);
+  const { questions, loading, error } = useQuestions();
+  const quiz = useQuiz(questions);
+
+  if (error) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center px-4">
+        <p className="text-center font-quiz-body text-sm text-destructive">{error}</p>
+      </div>
+    );
+  }
 
   const handleNext = (): void => {
     if (!quiz.canGoNext) {
@@ -42,5 +51,5 @@ export default function QuizPage() {
     );
   }
 
-  return <QuizLandingScreen onStart={quiz.start} />;
+  return <QuizLandingScreen loading={loading} itemCount={questions.length} onStart={quiz.start} />;
 }
