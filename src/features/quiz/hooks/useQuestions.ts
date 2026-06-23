@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getQuestions } from "@/services/quiz.service";
-import { toQuizFlowItems, type QuizFlowItem } from "@/features/quiz/quiz.questions";
+import { toQuizFlowItems, type QuizFlowItem } from "@/features/quiz/quiz.logic";
 
 export type UseQuestionsState = {
   questions: QuizFlowItem[];

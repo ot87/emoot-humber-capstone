@@ -1,4 +1,4 @@
-import { toQuizFlowItems } from "@/features/quiz/quiz.questions";
+import { toQuizFlowItems } from "@/features/quiz/quiz.logic";
 import type { Question } from "@/types/quiz";
 
 function fourOptions(texts: [string, string, string, string]): Question["options"] {

@@ -35,7 +35,35 @@ async function answerCurrentQuestionAndAdvance(
 
 describe("QuizPage", () => {
   beforeEach(() => {
+    mockedGetQuestions.mockReset();
     mockedGetQuestions.mockResolvedValue(testQuizQuestions);
+  });
+
+  it("shows the landing header and spinner while questions are loading", () => {
+    mockedGetQuestions.mockReturnValue(new Promise(() => {}));
+
+    renderQuizFlow();
+
+    expect(screen.getByLabelText(/find your money personality/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/loading/i)).toBeInTheDocument();
+    expect(screen.queryByText(/how do you really feel about money/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /start quiz/i })).not.toBeInTheDocument();
+  });
+
+  it("shows a user-facing error when getQuestions rejects", async () => {
+    mockedGetQuestions.mockRejectedValue(new Error("network failure"));
+
+    renderQuizFlow();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/could not load quiz questions\. please try again\./i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByLabelText(/find your money personality/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/loading/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /start quiz/i })).not.toBeInTheDocument();
   });
 
   it("shows the first quiz question after start quiz is clicked", async () => {
@@ -51,6 +79,20 @@ describe("QuizPage", () => {
 
     expect(screen.getByText("Q1")).toBeInTheDocument();
     expect(screen.getByText(testQuizQuestions[0].text)).toBeInTheDocument();
+  });
+
+  it("shows an empty state instead of start quiz when no questions are available", async () => {
+    mockedGetQuestions.mockResolvedValue([]);
+
+    renderQuizFlow();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/no quiz questions are available right now/i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByRole("button", { name: /start quiz/i })).not.toBeInTheDocument();
   });
 
   it("navigates to /result after finishing question 5", async () => {

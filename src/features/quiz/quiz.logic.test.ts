@@ -1,4 +1,4 @@
-import { scoreQuiz } from "./quiz.logic";
+import { scoreQuiz, toQuizFlowItems } from "./quiz.logic";
 import type { QuizAnswersMap } from "@/types/quiz";
 
 function allAnswers(optionId: string): QuizAnswersMap {
@@ -78,5 +78,43 @@ describe("scoreQuiz", () => {
         q5: "a",
       }),
     ).toThrow("Missing answer for question 1");
+  });
+});
+
+describe("toQuizFlowItems", () => {
+  it("returns an empty array for no questions", () => {
+    expect(toQuizFlowItems([])).toEqual([]);
+  });
+
+  it("assigns sequential Q headings and preserves each question", () => {
+    const question = {
+      id: "q1",
+      text: "Sample question",
+      options: [
+        { id: "a", text: "Option A" },
+        { id: "b", text: "Option B" },
+        { id: "c", text: "Option C" },
+        { id: "d", text: "Option D" },
+      ],
+    };
+
+    expect(toQuizFlowItems([question])).toEqual([
+      {
+        heading: "Q1",
+        question,
+      },
+    ]);
+  });
+
+  it("maps each question to a flow item with a one-based heading", () => {
+    const questions = [
+      { id: "q1", text: "First", options: [{ id: "a", text: "A" }] },
+      { id: "q2", text: "Second", options: [{ id: "a", text: "A" }] },
+    ];
+
+    expect(toQuizFlowItems(questions)).toEqual([
+      { heading: "Q1", question: questions[0] },
+      { heading: "Q2", question: questions[1] },
+    ]);
   });
 });

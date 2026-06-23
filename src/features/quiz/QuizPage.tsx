@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";
@@ -9,10 +8,6 @@ export default function QuizPage() {
   const navigate = useNavigate();
   const { questions, loading, error } = useQuestions();
   const quiz = useQuiz(questions);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
 
   if (error) {
     return (
@@ -56,5 +51,11 @@ export default function QuizPage() {
     );
   }
 
-  return <QuizLandingScreen onStart={quiz.start} />;
+  return (
+    <QuizLandingScreen
+      loading={loading}
+      itemCount={questions.length}
+      onStart={quiz.start}
+    />
+  );
 }

@@ -1,4 +1,16 @@
-import type { PersonalityType, QuizAnswersMap } from "@/types/quiz";
+import type { PersonalityType, Question, QuizAnswersMap } from "@/types/quiz";
+
+export type QuizFlowItem = {
+  heading: string;
+  question: Question;
+};
+
+export function toQuizFlowItems(questions: Question[]): QuizFlowItem[] {
+  return questions.map((question, index) => ({
+    heading: `Q${index + 1}`,
+    question,
+  }));
+}
 
 /**
  * One-to-one option → type mapping from the quiz seed.

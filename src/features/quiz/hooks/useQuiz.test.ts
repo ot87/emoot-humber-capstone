@@ -4,9 +4,13 @@ import { scoreQuiz } from "@/features/quiz/quiz.logic";
 import type { QuizCompletionResult } from "@/types/quiz";
 import { useQuiz } from "./useQuiz";
 
-vi.mock("@/features/quiz/quiz.logic", () => ({
-  scoreQuiz: vi.fn(() => "WORRIER" as const),
-}));
+vi.mock("@/features/quiz/quiz.logic", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/quiz/quiz.logic")>();
+  return {
+    ...actual,
+    scoreQuiz: vi.fn(() => "WORRIER" as const),
+  };
+});
 
 const mockedScoreQuiz = vi.mocked(scoreQuiz);
 
