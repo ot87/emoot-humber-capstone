@@ -51,11 +51,5 @@ export default function QuizPage() {
     );
   }
 
-  return (
-    <QuizLandingScreen
-      loading={loading}
-      itemCount={questions.length}
-      onStart={quiz.start}
-    />
-  );
+  return <QuizLandingScreen loading={loading} itemCount={questions.length} onStart={quiz.start} />;
 }

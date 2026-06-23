@@ -87,9 +87,7 @@ describe("QuizPage", () => {
     renderQuizFlow();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/no quiz questions are available right now/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/no quiz questions are available right now/i)).toBeInTheDocument();
     });
 
     expect(screen.queryByRole("button", { name: /start quiz/i })).not.toBeInTheDocument();
