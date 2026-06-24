@@ -11,6 +11,15 @@ vi.mock("@/services/quiz.service", () => ({
   getQuestions: vi.fn(),
 }));
 
+vi.mock("@/features/quiz/hooks/useLoadQuizResult", () => ({
+  useLoadQuizResult: vi.fn(() => ({
+    savedResult: null,
+    loading: false,
+    error: "",
+    hasSavedResult: false,
+  })),
+}));
+
 vi.mock("@/features/quiz/hooks/useSaveQuizResult", () => ({
   SAVE_QUIZ_RESULT_ERROR: "Could not save your quiz result. Please try again.",
   useSaveQuizResult: vi.fn(),
