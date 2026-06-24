@@ -17,7 +17,6 @@ import {
   PERSONALITY_TYPES,
   type LoadedQuiz,
   type PersonalityType,
-  type Question,
   type QuizAnswersMap,
   type QuizResultDefinition,
   type SavedQuizResult,
