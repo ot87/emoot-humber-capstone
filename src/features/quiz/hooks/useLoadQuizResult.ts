@@ -1,26 +1,29 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { getActiveQuizId, getSavedQuizResult, saveQuizResult } from "@/services/quiz.service";
-import type { QuizCompletionResult, SavedQuizResult } from "@/types/quiz";
+import { getSavedQuizResult } from "@/services/quiz.service";
+import type { SavedQuizResult } from "@/types/quiz";
 
-export type UseQuizResultState = {
+export type UseLoadQuizResultState = {
   savedResult: SavedQuizResult | null;
   loading: boolean;
   error: string;
   hasSavedResult: boolean;
-  saveCompletion: (completion: QuizCompletionResult, quizId?: string) => Promise<boolean>;
 };
 
-export function useQuizResult(): UseQuizResultState {
+export function useLoadQuizResult(): UseLoadQuizResultState {
   const { user, loading: authLoading } = useAuth();
   const [savedResult, setSavedResult] = useState<SavedQuizResult | null>(null);
+  // Uid we last fetched (or attempted) for; keyed by uid so auth user object
+  // reference changes alone do not trigger another Firestore read.
   const [loadedForUid, setLoadedForUid] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   const uid = user?.uid ?? null;
+  // Signed in but saved result not yet resolved for this uid.
   const awaitingFetch = uid !== null && loadedForUid !== uid;
 
   useEffect(() => {
+    // Skip until auth settles, user is signed out, or we already fetched for this uid.
     if (authLoading || uid === null || loadedForUid === uid) {
       return;
     }
@@ -53,39 +56,6 @@ export function useQuizResult(): UseQuizResultState {
     };
   }, [authLoading, uid, loadedForUid]);
 
-  const saveCompletion = useCallback(
-    async (completion: QuizCompletionResult, quizId?: string): Promise<boolean> => {
-      if (!uid) {
-        return false;
-      }
-
-      try {
-        const resolvedQuizId = quizId ?? (await getActiveQuizId());
-        if (!resolvedQuizId) {
-          setError("Could not save your quiz result. Please try again.");
-          return false;
-        }
-
-        const saved = await saveQuizResult(
-          uid,
-          resolvedQuizId,
-          completion.answers,
-          completion.personalityType,
-          new Date(),
-        );
-        setSavedResult(saved);
-        setLoadedForUid(uid);
-        setError("");
-        return true;
-      } catch (err) {
-        console.error(err);
-        setError("Could not save your quiz result. Please try again.");
-        return false;
-      }
-    },
-    [uid],
-  );
-
   const resolvedResult = user ? savedResult : null;
 
   return {
@@ -93,6 +63,5 @@ export function useQuizResult(): UseQuizResultState {
     loading: authLoading || awaitingFetch,
     error,
     hasSavedResult: resolvedResult !== null,
-    saveCompletion,
   };
 }

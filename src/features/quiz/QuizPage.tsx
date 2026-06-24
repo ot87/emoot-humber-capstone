@@ -1,16 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";
 import { useQuiz } from "./hooks/useQuiz";
-import { useQuizResult } from "./hooks/useQuizResult";
+import { SAVE_QUIZ_RESULT_ERROR, useSaveQuizResult } from "./hooks/useSaveQuizResult";
 
 export default function QuizPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { saveCompletion } = useQuizResult();
-  const { questions, loading, error } = useQuestions();
+  const { saveCompletion } = useSaveQuizResult();
+  const { questions, quizId, loading, error } = useQuestions();
   const quiz = useQuiz(questions);
 
   if (error) {
@@ -21,7 +19,7 @@ export default function QuizPage() {
     );
   }
 
-  const handleNext = (): void => {
+  const handleNext = async (): Promise<void> => {
     if (!quiz.canGoNext) {
       return;
     }
@@ -29,10 +27,13 @@ export default function QuizPage() {
     if (quiz.isLastQuestion) {
       const result = quiz.complete();
       if (result) {
-        if (user) {
-          void saveCompletion(result);
-        }
-        navigate("/result", { state: result });
+        const saveOutcome = quizId !== null ? await saveCompletion(result, quizId) : "skipped";
+        navigate("/result", {
+          state: {
+            ...result,
+            ...(saveOutcome === "failed" ? { saveError: SAVE_QUIZ_RESULT_ERROR } : {}),
+          },
+        });
       }
       return;
     }

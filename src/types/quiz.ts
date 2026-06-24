@@ -19,6 +19,11 @@ export type Question = {
   options: QuizOption[];
 };
 
+export type LoadedQuiz = {
+  quizId: string | null;
+  questions: Question[];
+};
+
 /** User answers keyed by question id — input shape for scoreQuiz. */
 export type QuizAnswersMap = Record<string, string>;
 

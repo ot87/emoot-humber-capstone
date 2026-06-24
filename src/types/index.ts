@@ -1,5 +1,6 @@
 export { PERSONALITY_TYPES } from "@/types/quiz";
 export type {
+  LoadedQuiz,
   PersonalityType,
   QuizAnswer,
   QuizAnswersMap,

@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { QuizResultScreen } from "@/features/quiz/components/QuizResultScreen";
-import { useQuizResult } from "@/features/quiz/hooks/useQuizResult";
+import { useLoadQuizResult } from "@/features/quiz/hooks/useLoadQuizResult";
 import { toQuizCompletionResult } from "@/features/quiz/quiz.result";
 import { PERSONALITY_TYPES, type PersonalityType, type QuizCompletionResult } from "@/types/quiz";
 
@@ -24,13 +24,36 @@ function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
   );
 }
 
+function getRouteSaveError(state: unknown): string | null {
+  if (!state || typeof state !== "object" || !("saveError" in state)) {
+    return null;
+  }
+
+  const saveError = (state as { saveError: unknown }).saveError;
+  return typeof saveError === "string" ? saveError : null;
+}
+
 export default function ResultPage() {
   const location = useLocation();
-  const { savedResult, loading, error } = useQuizResult();
+  const { savedResult, loading, error } = useLoadQuizResult();
   const routeResult = isQuizCompletionResult(location.state) ? location.state : null;
 
   if (routeResult) {
-    return <QuizResultScreen personalityType={routeResult.personalityType} />;
+    const saveError = getRouteSaveError(location.state);
+
+    return (
+      <div className="flex min-h-dvh flex-col">
+        {saveError ? (
+          <p
+            role="alert"
+            className="bg-destructive/10 px-4 py-3 text-center font-quiz-body text-sm text-destructive"
+          >
+            {saveError}
+          </p>
+        ) : null}
+        <QuizResultScreen personalityType={routeResult.personalityType} />
+      </div>
+    );
   }
 
   if (loading) {

@@ -1,6 +1,5 @@
 import { Timestamp } from "firebase/firestore";
 import {
-  getActiveQuizId,
   getQuestions,
   getResultDefinitions,
   getSavedQuizResult,
@@ -79,13 +78,16 @@ describe("quiz.service", () => {
       ],
     });
 
-    await expect(getQuestions("moneyPersonalityQuiz")).resolves.toEqual([
-      {
-        id: "q1",
-        text: "Question one",
-        options: [{ id: "q1a", text: "Option A", personalityType: "PLANNER" }],
-      },
-    ]);
+    await expect(getQuestions("moneyPersonalityQuiz")).resolves.toEqual({
+      quizId: "moneyPersonalityQuiz",
+      questions: [
+        {
+          id: "q1",
+          text: "Question one",
+          options: [{ id: "q1a", text: "Option A", personalityType: "PLANNER" }],
+        },
+      ],
+    });
 
     expect(firestoreMocks.collection).toHaveBeenCalledWith(
       "mock-db",
@@ -102,24 +104,6 @@ describe("quiz.service", () => {
     expect(firestoreMocks.getDoc).toHaveBeenCalledTimes(1);
     expect(firestoreMocks.getDocs).toHaveBeenCalledTimes(1);
     expect(firestoreMocks.orderBy).toHaveBeenCalledWith("displayOrder", "asc");
-  });
-
-  it("getActiveQuizId returns the active quiz document id", async () => {
-    firestoreMocks.getDocs.mockResolvedValue({
-      docs: [{ id: "active-quiz-id" }],
-    });
-
-    await expect(getActiveQuizId()).resolves.toBe("active-quiz-id");
-
-    expect(firestoreMocks.collection).toHaveBeenCalledWith("mock-db", "quizzes");
-    expect(firestoreMocks.query).toHaveBeenCalledWith(
-      "mock-collection-ref",
-      "mock-where",
-      "mock-limit",
-    );
-    expect(firestoreMocks.where).toHaveBeenCalledWith("active", "==", true);
-    expect(firestoreMocks.limit).toHaveBeenCalledWith(1);
-    expect(firestoreMocks.getDocs).toHaveBeenCalledWith("mock-query-ref");
   });
 
   it("getQuestions without quizId resolves the active quiz and loads its questions", async () => {
@@ -149,13 +133,16 @@ describe("quiz.service", () => {
         ],
       });
 
-    await expect(getQuestions()).resolves.toEqual([
-      {
-        id: "q1",
-        text: "Question one",
-        options: [{ id: "q1a", text: "Option A", personalityType: "PLANNER" }],
-      },
-    ]);
+    await expect(getQuestions()).resolves.toEqual({
+      quizId: "active-quiz-id",
+      questions: [
+        {
+          id: "q1",
+          text: "Question one",
+          options: [{ id: "q1a", text: "Option A", personalityType: "PLANNER" }],
+        },
+      ],
+    });
 
     expect(firestoreMocks.collection).toHaveBeenCalledWith("mock-db", "quizzes");
     expect(firestoreMocks.collection).toHaveBeenCalledWith(
@@ -184,7 +171,7 @@ describe("quiz.service", () => {
       docs: [],
     });
 
-    await expect(getQuestions()).resolves.toEqual([]);
+    await expect(getQuestions()).resolves.toEqual({ quizId: null, questions: [] });
 
     expect(firestoreMocks.collection).toHaveBeenCalledWith("mock-db", "quizzes");
     expect(firestoreMocks.query).toHaveBeenCalledWith(
@@ -206,7 +193,10 @@ describe("quiz.service", () => {
       data: () => undefined,
     });
 
-    await expect(getQuestions("missing-quiz-id")).resolves.toEqual([]);
+    await expect(getQuestions("missing-quiz-id")).resolves.toEqual({
+      quizId: null,
+      questions: [],
+    });
 
     expect(firestoreMocks.doc).toHaveBeenCalledWith("mock-db", "quizzes", "missing-quiz-id");
     expect(firestoreMocks.getDoc).toHaveBeenCalledWith({ id: "missing-quiz-id" });

@@ -15,6 +15,7 @@ import {
 import { db } from "@/lib/firebase";
 import {
   PERSONALITY_TYPES,
+  type LoadedQuiz,
   type PersonalityType,
   type Question,
   type QuizAnswersMap,
@@ -72,10 +73,6 @@ function mapSavedResult(data: FirestoreSavedQuizResult): SavedQuizResult {
   };
 }
 
-export async function getActiveQuizId(): Promise<string | null> {
-  return resolveQuizId();
-}
-
 async function resolveQuizId(explicitQuizId?: string): Promise<string | null> {
   if (explicitQuizId) {
     return explicitQuizId;
@@ -92,16 +89,16 @@ async function resolveQuizId(explicitQuizId?: string): Promise<string | null> {
   return activeQuizDoc ? activeQuizDoc.id : null;
 }
 
-export async function getQuestions(quizId?: string): Promise<Question[]> {
+export async function getQuestions(quizId?: string): Promise<LoadedQuiz> {
   const resolvedQuizId = await resolveQuizId(quizId);
   if (!resolvedQuizId) {
-    return [];
+    return { quizId: null, questions: [] };
   }
 
   const quizRef = doc(db, QUIZZES_COLLECTION, resolvedQuizId);
   const quizSnapshot = await getDoc(quizRef);
   if (!quizSnapshot.exists()) {
-    return [];
+    return { quizId: null, questions: [] };
   }
 
   const questionsQuery = query(
@@ -110,18 +107,21 @@ export async function getQuestions(quizId?: string): Promise<Question[]> {
   );
   const questionsSnapshot = await getDocs(questionsQuery);
 
-  return questionsSnapshot.docs.map((questionDoc) => {
-    const data = questionDoc.data() as FirestoreQuizQuestion;
-    return {
-      id: data.questionId,
-      text: data.text,
-      options: data.options.map((option) => ({
-        id: option.optionId,
-        text: option.label,
-        personalityType: option.personalityType,
-      })),
-    };
-  });
+  return {
+    quizId: resolvedQuizId,
+    questions: questionsSnapshot.docs.map((questionDoc) => {
+      const data = questionDoc.data() as FirestoreQuizQuestion;
+      return {
+        id: data.questionId,
+        text: data.text,
+        options: data.options.map((option) => ({
+          id: option.optionId,
+          text: option.label,
+          personalityType: option.personalityType,
+        })),
+      };
+    }),
+  };
 }
 
 export async function saveQuizResult(

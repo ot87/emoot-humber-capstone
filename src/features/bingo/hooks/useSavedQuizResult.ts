@@ -1,20 +1,10 @@
-import { useQuizResult } from "@/features/quiz/hooks/useQuizResult";
-import type { SavedQuizResult } from "@/types/quiz";
+import {
+  useLoadQuizResult,
+  type UseLoadQuizResultState,
+} from "@/features/quiz/hooks/useLoadQuizResult";
 
-export type SavedQuizResultState = {
-  savedResult: SavedQuizResult | null;
-  loading: boolean;
-  error: string;
-  hasSavedResult: boolean;
-};
+export type SavedQuizResultState = UseLoadQuizResultState;
 
 export function useSavedQuizResult(): SavedQuizResultState {
-  const { savedResult, loading, error, hasSavedResult } = useQuizResult();
-
-  return {
-    savedResult,
-    loading,
-    error,
-    hasSavedResult,
-  };
+  return useLoadQuizResult();
 }

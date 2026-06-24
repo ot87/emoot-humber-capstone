@@ -69,4 +69,9 @@ export const testQuizQuestions: Question[] = [
   },
 ];
 
+export const testLoadedQuiz = {
+  quizId: "moneyPersonalityQuiz",
+  questions: testQuizQuestions,
+};
+
 export const testQuizFlowItems = toQuizFlowItems(testQuizQuestions);

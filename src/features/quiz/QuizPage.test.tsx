@@ -1,29 +1,24 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getQuestions } from "@/services/quiz.service";
-import { testQuizQuestions } from "./quiz.test-fixtures";
+import { testLoadedQuiz, testQuizQuestions } from "./quiz.test-fixtures";
 import QuizPage from "./QuizPage";
 import ResultPage from "./ResultPage";
-import { useQuizResult } from "./hooks/useQuizResult";
+import { useSaveQuizResult } from "./hooks/useSaveQuizResult";
 
 vi.mock("@/services/quiz.service", () => ({
   getQuestions: vi.fn(),
 }));
 
-vi.mock("@/features/auth/hooks/useAuth", () => ({
-  useAuth: vi.fn(),
-}));
-
-vi.mock("@/features/quiz/hooks/useQuizResult", () => ({
-  useQuizResult: vi.fn(),
+vi.mock("@/features/quiz/hooks/useSaveQuizResult", () => ({
+  SAVE_QUIZ_RESULT_ERROR: "Could not save your quiz result. Please try again.",
+  useSaveQuizResult: vi.fn(),
 }));
 
 const mockedGetQuestions = vi.mocked(getQuestions);
-const mockedUseAuth = vi.mocked(useAuth);
-const mockedUseQuizResult = vi.mocked(useQuizResult);
-const mockSaveCompletion = vi.fn().mockResolvedValue(true);
+const mockedUseSaveQuizResult = vi.mocked(useSaveQuizResult);
+const mockSaveCompletion = vi.fn().mockResolvedValue("skipped");
 
 function renderQuizFlow(initialEntry = "/quiz") {
   return render(
@@ -49,23 +44,10 @@ async function answerCurrentQuestionAndAdvance(
 describe("QuizPage", () => {
   beforeEach(() => {
     mockedGetQuestions.mockReset();
-    mockedGetQuestions.mockResolvedValue(testQuizQuestions);
-    mockedUseAuth.mockReturnValue({
-      user: null,
-      loading: false,
-      signIn: vi.fn(),
-      signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
-      error: "",
-    });
+    mockedGetQuestions.mockResolvedValue(testLoadedQuiz);
     mockSaveCompletion.mockReset();
-    mockSaveCompletion.mockResolvedValue(true);
-    mockedUseQuizResult.mockReturnValue({
-      savedResult: null,
-      loading: false,
-      error: "",
-      hasSavedResult: false,
+    mockSaveCompletion.mockResolvedValue("skipped");
+    mockedUseSaveQuizResult.mockReturnValue({
       saveCompletion: mockSaveCompletion,
     });
   });
@@ -113,7 +95,7 @@ describe("QuizPage", () => {
   });
 
   it("shows an empty state instead of start quiz when no questions are available", async () => {
-    mockedGetQuestions.mockResolvedValue([]);
+    mockedGetQuestions.mockResolvedValue({ quizId: null, questions: [] });
 
     renderQuizFlow();
 
@@ -144,26 +126,13 @@ describe("QuizPage", () => {
       "href",
       "/auth",
     );
-    expect(mockSaveCompletion).not.toHaveBeenCalled();
+    expect(mockSaveCompletion).toHaveBeenCalledOnce();
   });
 
   it("saves the quiz result when a signed-in user finishes the quiz", async () => {
     const user = userEvent.setup();
 
-    mockedUseAuth.mockReturnValue({
-      user: {
-        uid: "test-uid",
-        email: "test@example.com",
-        displayName: "Test User",
-        photoURL: null,
-      },
-      loading: false,
-      signIn: vi.fn(),
-      signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
-      error: "",
-    });
+    mockSaveCompletion.mockResolvedValue("saved");
 
     renderQuizFlow();
 
@@ -181,15 +150,42 @@ describe("QuizPage", () => {
       expect(mockSaveCompletion).toHaveBeenCalledOnce();
     });
 
-    expect(mockSaveCompletion).toHaveBeenCalledWith({
-      personalityType: "PLANNER",
-      answers: {
-        q1: "a",
-        q2: "a",
-        q3: "a",
-        q4: "a",
-        q5: "a",
+    expect(mockSaveCompletion).toHaveBeenCalledWith(
+      {
+        personalityType: "PLANNER",
+        answers: {
+          q1: "a",
+          q2: "a",
+          q3: "a",
+          q4: "a",
+          q5: "a",
+        },
       },
+      "moneyPersonalityQuiz",
+    );
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("shows a save error banner on the result page when saving fails", async () => {
+    const user = userEvent.setup();
+
+    mockSaveCompletion.mockResolvedValue("failed");
+
+    renderQuizFlow();
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /start quiz/i })).toBeInTheDocument();
     });
+
+    await user.click(screen.getByRole("button", { name: /start quiz/i }));
+
+    for (let index = 0; index < testQuizQuestions.length; index += 1) {
+      await answerCurrentQuestionAndAdvance(user, index === testQuizQuestions.length - 1);
+    }
+
+    expect(
+      await screen.findByText(/could not save your quiz result\. please try again\./i),
+    ).toBeInTheDocument();
+    expect(screen.getByText("THE PLANNER")).toBeInTheDocument();
   });
 });
