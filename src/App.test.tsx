@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import App from "@/App";
-import { testQuizQuestions } from "@/features/quiz/quiz.test-fixtures";
+import { testLoadedQuiz } from "@/features/quiz/quiz.test-fixtures";
 import { getQuestions } from "@/services/quiz.service";
 import type { AuthUser } from "@/types/user";
 
@@ -24,7 +24,7 @@ const mockedGetQuestions = vi.mocked(getQuestions);
 
 describe("App", () => {
   beforeEach(() => {
-    mockedGetQuestions.mockResolvedValue(testQuizQuestions);
+    mockedGetQuestions.mockResolvedValue(testLoadedQuiz);
   });
 
   it("renders the default route", async () => {
