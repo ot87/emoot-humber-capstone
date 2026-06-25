@@ -2,7 +2,11 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { getQuestions } from "@/services/quiz.service";
-import { testLoadedQuiz, testQuizQuestions } from "./quiz.test-fixtures";
+import {
+  testLoadedQuiz,
+  testQuizQuestions,
+  testResultDefinitionsByType,
+} from "./quiz.test-fixtures";
 import QuizPage from "./QuizPage";
 import ResultPage from "./ResultPage";
 import { useSaveQuizResult } from "./hooks/useSaveQuizResult";
@@ -17,6 +21,15 @@ vi.mock("@/features/quiz/hooks/useLoadQuizResult", () => ({
     loading: false,
     error: "",
     hasSavedResult: false,
+  })),
+}));
+
+vi.mock("@/features/quiz/hooks/useResultDefinitions", () => ({
+  LOAD_RESULT_DEFINITIONS_ERROR: "Could not load personality results. Please try again.",
+  useResultDefinitions: vi.fn(() => ({
+    definitionsByType: testResultDefinitionsByType,
+    loading: false,
+    error: "",
   })),
 }));
 
@@ -130,7 +143,7 @@ describe("QuizPage", () => {
       await answerCurrentQuestionAndAdvance(user, index === testQuizQuestions.length - 1);
     }
 
-    expect(screen.getByText("THE PLANNER")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /the planner/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
       "href",
       "/auth",
@@ -195,6 +208,6 @@ describe("QuizPage", () => {
     expect(
       await screen.findByText(/could not save your quiz result\. please try again\./i),
     ).toBeInTheDocument();
-    expect(screen.getByText("THE PLANNER")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /the planner/i })).toBeInTheDocument();
   });
 });

@@ -2,23 +2,23 @@ import { Link } from "react-router-dom";
 import { buttonVariants } from "@/components/ui/button";
 import { AppContentShell } from "@/components/layout/AppContentShell";
 import { TitleBanner } from "@/components/layout/TitleBanner";
-import { getPersonalityResultContent } from "@/features/quiz/quiz.result";
+import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";
-import type { PersonalityType } from "@/types/quiz";
+import type { QuizResultDefinition } from "@/types/quiz";
 
 type QuizResultScreenProps = {
-  personalityType: PersonalityType;
+  definition: QuizResultDefinition;
 };
 
-export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
-  const content = getPersonalityResultContent(personalityType);
+export function QuizResultScreen({ definition }: QuizResultScreenProps) {
+  const theme = getPersonalityResultTheme(definition.personalityType);
 
   return (
-    <div className={cn("flex min-h-dvh flex-col", content.surfaceClass)}>
+    <div className={cn("flex min-h-dvh flex-col", theme.surfaceClass)}>
       <AppContentShell className="flex min-h-0 flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12">
         <div className="flex w-full flex-col items-center gap-6">
           <img
-            src={content.iconSrc}
+            src={theme.iconSrc}
             alt=""
             width={120}
             height={120}
@@ -27,18 +27,13 @@ export function QuizResultScreen({ personalityType }: QuizResultScreenProps) {
           />
 
           <TitleBanner variant="result" className="max-w-[min(100%,22rem)]">
-            <h1
-              className={cn(
-                "font-quiz-display text-[1.375rem] leading-[1.15] text-foreground",
-                "whitespace-pre-line",
-              )}
-            >
-              {content.title}
+            <h1 className="font-quiz-display text-[1.375rem] leading-[1.15] text-foreground">
+              {definition.displayName}
             </h1>
           </TitleBanner>
 
           <p className="max-w-[20rem] text-center font-quiz-body text-xl font-normal leading-snug text-quiz-copy sm:max-w-sm">
-            {content.description}
+            {definition.description}
           </p>
         </div>
 

@@ -1,5 +1,5 @@
 import { toQuizFlowItems } from "@/features/quiz/quiz.logic";
-import type { PersonalityType, Question } from "@/types/quiz";
+import type { PersonalityType, Question, QuizResultDefinition } from "@/types/quiz";
 
 const OPTION_PERSONALITY_TYPES: PersonalityType[] = [
   "PLANNER",
@@ -73,5 +73,32 @@ export const testLoadedQuiz = {
   quizId: "moneyPersonalityQuiz",
   questions: testQuizQuestions,
 };
+
+export const testResultDefinitions: QuizResultDefinition[] = [
+  {
+    personalityType: "PLANNER",
+    displayName: "The Planner",
+    description: "You save better with advanced goal-tracking and streak rewards.",
+  },
+  {
+    personalityType: "WORRIER",
+    displayName: "The Worrier",
+    description: "You save better with comforting nudges and stress-reducing insights.",
+  },
+  {
+    personalityType: "FREE_SPIRIT",
+    displayName: "The Free Spirit",
+    description: "You save better with emotion support, fun challenges, and social engagement.",
+  },
+  {
+    personalityType: "OVERWHELMED_STARTER",
+    displayName: "The Overwhelmed Starter",
+    description: "You save better with micro-steps, simple plans, and supportive guidance.",
+  },
+];
+
+export const testResultDefinitionsByType = Object.fromEntries(
+  testResultDefinitions.map((definition) => [definition.personalityType, definition]),
+) as Record<PersonalityType, QuizResultDefinition>;
 
 export const testQuizFlowItems = toQuizFlowItems(testQuizQuestions);

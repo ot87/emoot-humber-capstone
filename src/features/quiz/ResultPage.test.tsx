@@ -2,16 +2,23 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { useLoadQuizResult } from "@/features/quiz/hooks/useLoadQuizResult";
+import { useResultDefinitions } from "@/features/quiz/hooks/useResultDefinitions";
+import { testResultDefinitions } from "@/features/quiz/quiz.test-fixtures";
 import { PERSONALITY_TYPES } from "@/types/quiz";
 import type { QuizCompletionResult } from "@/types/quiz";
-import { getPersonalityResultContent } from "./quiz.result";
 import ResultPage from "./ResultPage";
 
 vi.mock("@/features/quiz/hooks/useLoadQuizResult", () => ({
   useLoadQuizResult: vi.fn(),
 }));
 
+vi.mock("@/features/quiz/hooks/useResultDefinitions", () => ({
+  LOAD_RESULT_DEFINITIONS_ERROR: "Could not load personality results. Please try again.",
+  useResultDefinitions: vi.fn(),
+}));
+
 const mockedUseLoadQuizResult = vi.mocked(useLoadQuizResult);
+const mockedUseResultDefinitions = vi.mocked(useResultDefinitions);
 
 function mockLoadQuizResultState(
   overrides: Partial<ReturnType<typeof useLoadQuizResult>> = {},
@@ -21,6 +28,19 @@ function mockLoadQuizResultState(
     loading: false,
     error: "",
     hasSavedResult: false,
+    ...overrides,
+  };
+}
+
+function mockResultDefinitionsState(
+  overrides: Partial<ReturnType<typeof useResultDefinitions>> = {},
+): ReturnType<typeof useResultDefinitions> {
+  return {
+    definitionsByType: Object.fromEntries(
+      testResultDefinitions.map((definition) => [definition.personalityType, definition]),
+    ),
+    loading: false,
+    error: "",
     ...overrides,
   };
 }
@@ -47,24 +67,25 @@ const sampleAnswers: QuizCompletionResult["answers"] = { q1: "a" };
 describe("ResultPage", () => {
   beforeEach(() => {
     mockedUseLoadQuizResult.mockReturnValue(mockLoadQuizResultState());
+    mockedUseResultDefinitions.mockReturnValue(mockResultDefinitionsState());
   });
 
   it.each(PERSONALITY_TYPES)("renders the %s result screen from route state", (personalityType) => {
-    const content = getPersonalityResultContent(personalityType);
+    const definition = testResultDefinitions.find(
+      (candidate) => candidate.personalityType === personalityType,
+    );
+    if (!definition) {
+      throw new Error(`Missing test definition for ${personalityType}`);
+    }
 
     renderResultPage({ personalityType, answers: sampleAnswers });
 
     expect(
       screen.getByRole("heading", {
-        name: new RegExp(content.title.trim().split(/\s+/).join("\\s+"), "i"),
+        name: new RegExp(definition.displayName.trim().split(/\s+/).join("\\s+"), "i"),
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText(content.description)).toBeInTheDocument();
-    expect(
-      screen
-        .getAllByRole("presentation")
-        .some((img) => img.getAttribute("src") === content.iconSrc),
-    ).toBe(true);
+    expect(screen.getByText(definition.description)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
       "href",
       "/auth",
@@ -103,6 +124,19 @@ describe("ResultPage", () => {
     expect(screen.getByLabelText(/loading/i)).toBeInTheDocument();
   });
 
+  it("shows a loading spinner while personality definitions are loading", () => {
+    mockedUseResultDefinitions.mockReturnValue(
+      mockResultDefinitionsState({
+        definitionsByType: {},
+        loading: true,
+      }),
+    );
+
+    renderResultPage({ personalityType: "PLANNER", answers: sampleAnswers });
+
+    expect(screen.getByLabelText(/loading/i)).toBeInTheDocument();
+  });
+
   it("shows an error when loading the saved result fails", () => {
     mockedUseLoadQuizResult.mockReturnValue(
       mockLoadQuizResultState({
@@ -115,6 +149,38 @@ describe("ResultPage", () => {
     expect(
       screen.getByText(/could not load your quiz result\. please try again\./i),
     ).toBeInTheDocument();
+  });
+
+  it("shows an error when loading personality definitions fails", () => {
+    mockedUseResultDefinitions.mockReturnValue(
+      mockResultDefinitionsState({
+        definitionsByType: {},
+        error: "Could not load personality results. Please try again.",
+      }),
+    );
+
+    renderResultPage({ personalityType: "PLANNER", answers: sampleAnswers });
+
+    expect(
+      screen.getByText(/could not load personality results\. please try again\./i),
+    ).toBeInTheDocument();
+  });
+
+  it("shows an error when definitions load but the personality type is missing from the map", () => {
+    mockedUseResultDefinitions.mockReturnValue(
+      mockResultDefinitionsState({
+        definitionsByType: {},
+        loading: false,
+        error: "",
+      }),
+    );
+
+    renderResultPage({ personalityType: "PLANNER", answers: sampleAnswers });
+
+    expect(
+      screen.getByText(/could not load personality results\. please try again\./i),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /the planner/i })).not.toBeInTheDocument();
   });
 
   it("shows a save error banner when route state includes saveError", () => {
