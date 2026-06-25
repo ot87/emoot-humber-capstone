@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { getPersonalityResultContent } from "@/features/quiz/quiz.result";
+import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
+import { testResultDefinitions } from "@/features/quiz/quiz.test-fixtures";
 import { PERSONALITY_TYPES, type PersonalityType } from "@/types/quiz";
 import { QuizResultScreen } from "./QuizResultScreen";
 
@@ -11,10 +12,17 @@ function AuthStub() {
 }
 
 function renderQuizResultScreen(personalityType: PersonalityType) {
+  const definition = testResultDefinitions.find(
+    (candidate) => candidate.personalityType === personalityType,
+  );
+  if (!definition) {
+    throw new Error(`Missing test definition for ${personalityType}`);
+  }
+
   return render(
     <MemoryRouter initialEntries={["/result"]}>
       <Routes>
-        <Route path="/result" element={<QuizResultScreen personalityType={personalityType} />} />
+        <Route path="/result" element={<QuizResultScreen definition={definition} />} />
         <Route path="/auth" element={<AuthStub />} />
       </Routes>
     </MemoryRouter>,
@@ -22,27 +30,36 @@ function renderQuizResultScreen(personalityType: PersonalityType) {
 }
 
 describe("QuizResultScreen", () => {
-  it.each(PERSONALITY_TYPES)("renders %s content from personalityType prop", (personalityType) => {
-    const content = getPersonalityResultContent(personalityType);
+  it.each(PERSONALITY_TYPES)(
+    "renders %s content from the service definition",
+    (personalityType) => {
+      const definition = testResultDefinitions.find(
+        (candidate) => candidate.personalityType === personalityType,
+      );
+      if (!definition) {
+        throw new Error(`Missing test definition for ${personalityType}`);
+      }
+      const theme = getPersonalityResultTheme(personalityType);
 
-    renderQuizResultScreen(personalityType);
+      renderQuizResultScreen(personalityType);
 
-    expect(
-      screen.getByRole("heading", {
-        name: new RegExp(content.title.trim().split(/\s+/).join("\\s+"), "i"),
-      }),
-    ).toBeInTheDocument();
-    expect(screen.getByText(content.description)).toBeInTheDocument();
-    expect(
-      screen
-        .getAllByRole("presentation")
-        .some((img) => img.getAttribute("src") === content.iconSrc),
-    ).toBe(true);
-    expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
-      "href",
-      "/auth",
-    );
-  });
+      expect(
+        screen.getByRole("heading", {
+          name: new RegExp(definition.displayName.trim().split(/\s+/).join("\\s+"), "i"),
+        }),
+      ).toBeInTheDocument();
+      expect(screen.getByText(definition.description)).toBeInTheDocument();
+      expect(
+        screen
+          .getAllByRole("presentation")
+          .some((img) => img.getAttribute("src") === theme.iconSrc),
+      ).toBe(true);
+      expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
+        "href",
+        "/auth",
+      );
+    },
+  );
 
   it("renders the copyright footer with the current year", () => {
     renderQuizResultScreen("PLANNER");
