@@ -166,6 +166,23 @@ describe("ResultPage", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows an error when definitions load but the personality type is missing from the map", () => {
+    mockedUseResultDefinitions.mockReturnValue(
+      mockResultDefinitionsState({
+        definitionsByType: {},
+        loading: false,
+        error: "",
+      }),
+    );
+
+    renderResultPage({ personalityType: "PLANNER", answers: sampleAnswers });
+
+    expect(
+      screen.getByText(/could not load personality results\. please try again\./i),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /the planner/i })).not.toBeInTheDocument();
+  });
+
   it("shows a save error banner when route state includes saveError", () => {
     renderResultPage({
       personalityType: "PLANNER",

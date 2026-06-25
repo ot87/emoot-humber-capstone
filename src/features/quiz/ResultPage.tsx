@@ -49,7 +49,7 @@ function resolveDefinition(
   return definitionsByType[personalityType] ?? null;
 }
 
-function ResultDefinitionsError({ message }: { message: string }) {
+function ResultPageError({ message }: { message: string }) {
   return (
     <div className="flex min-h-dvh items-center justify-center px-4">
       <p className="text-center font-quiz-body text-sm text-destructive">{message}</p>
@@ -95,12 +95,12 @@ export default function ResultPage() {
     }
 
     if (definitionsError) {
-      return <ResultDefinitionsError message={definitionsError} />;
+      return <ResultPageError message={definitionsError} />;
     }
 
     const definition = resolveDefinition(routeResult.personalityType, definitionsByType);
     if (!definition) {
-      return <ResultDefinitionsError message={LOAD_RESULT_DEFINITIONS_ERROR} />;
+      return <ResultPageError message={LOAD_RESULT_DEFINITIONS_ERROR} />;
     }
 
     return (
@@ -116,18 +116,18 @@ export default function ResultPage() {
   }
 
   if (savedError) {
-    return <ResultDefinitionsError message={savedError} />;
+    return <ResultPageError message={savedError} />;
   }
 
   if (definitionsError) {
-    return <ResultDefinitionsError message={definitionsError} />;
+    return <ResultPageError message={definitionsError} />;
   }
 
   if (savedResult) {
     const completion = toQuizCompletionResult(savedResult);
     const definition = resolveDefinition(completion.personalityType, definitionsByType);
     if (!definition) {
-      return <ResultDefinitionsError message={LOAD_RESULT_DEFINITIONS_ERROR} />;
+      return <ResultPageError message={LOAD_RESULT_DEFINITIONS_ERROR} />;
     }
 
     return <QuizResultScreen definition={definition} />;

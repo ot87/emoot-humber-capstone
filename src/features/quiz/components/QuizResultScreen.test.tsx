@@ -30,36 +30,31 @@ function renderQuizResultScreen(personalityType: PersonalityType) {
 }
 
 describe("QuizResultScreen", () => {
-  it.each(PERSONALITY_TYPES)(
-    "renders %s content from the service definition",
-    (personalityType) => {
-      const definition = testResultDefinitions.find(
-        (candidate) => candidate.personalityType === personalityType,
-      );
-      if (!definition) {
-        throw new Error(`Missing test definition for ${personalityType}`);
-      }
-      const theme = getPersonalityResultTheme(personalityType);
+  it.each(PERSONALITY_TYPES)("renders %s definition copy and theme", (personalityType) => {
+    const definition = testResultDefinitions.find(
+      (candidate) => candidate.personalityType === personalityType,
+    );
+    if (!definition) {
+      throw new Error(`Missing test definition for ${personalityType}`);
+    }
+    const theme = getPersonalityResultTheme(personalityType);
 
-      renderQuizResultScreen(personalityType);
+    renderQuizResultScreen(personalityType);
 
-      expect(
-        screen.getByRole("heading", {
-          name: new RegExp(definition.displayName.trim().split(/\s+/).join("\\s+"), "i"),
-        }),
-      ).toBeInTheDocument();
-      expect(screen.getByText(definition.description)).toBeInTheDocument();
-      expect(
-        screen
-          .getAllByRole("presentation")
-          .some((img) => img.getAttribute("src") === theme.iconSrc),
-      ).toBe(true);
-      expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
-        "href",
-        "/auth",
-      );
-    },
-  );
+    expect(
+      screen.getByRole("heading", {
+        name: new RegExp(definition.displayName.trim().split(/\s+/).join("\\s+"), "i"),
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(definition.description)).toBeInTheDocument();
+    expect(
+      screen.getAllByRole("presentation").some((img) => img.getAttribute("src") === theme.iconSrc),
+    ).toBe(true);
+    expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
+      "href",
+      "/auth",
+    );
+  });
 
   it("renders the copyright footer with the current year", () => {
     renderQuizResultScreen("PLANNER");
