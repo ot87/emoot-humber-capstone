@@ -15,6 +15,7 @@
     "typecheck": "tsc -b",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:rules": "firebase emulators:exec --only firestore --project emoot-my-savings-goal \"vitest run --config vitest.rules.config.ts\"",
     "emulators": "firebase emulators:start --only firestore --project emoot-my-savings-goal",
     "emulators:persist": "firebase emulators:start --only firestore --project emoot-my-savings-goal --import=./.emulator-data --export-on-exit=./.emulator-data",
     "seed:emulator": "SEED_TARGET=emulator tsx scripts/seed/seed.ts",
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@firebase/rules-unit-testing": "^5.0.1",
     "@tailwindcss/vite": "^4.3.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
