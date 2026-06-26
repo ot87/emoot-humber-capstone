@@ -1,16 +1,18 @@
 import emootLogo from "@/assets/logo-emoot.svg";
 import { cn } from "@/lib/utils";
+import type { AppNavLinkComponent } from "@/components/layout/appNavLink";
 
 export type AppHeaderProps = {
-  homeHref: string;
+  navLink: AppNavLinkComponent;
+  homeTo: string;
   className?: string;
 };
 
-export function AppHeader({ homeHref, className }: AppHeaderProps) {
+export function AppHeader({ navLink: NavLink, homeTo, className }: AppHeaderProps) {
   return (
-    <header className={cn("shrink-0 border-b border-border/60 bg-background", className)}>
+    <header className={cn("shrink-0 border-b border-border bg-background shadow-app-header", className)}>
       <div className="mx-auto flex h-15 w-full max-w-[402px] items-center justify-center">
-        <a href={homeHref} aria-label="EMOOT home" className="leading-none">
+        <NavLink to={homeTo} aria-label="EMOOT home" className="leading-none">
           <img
             src={emootLogo}
             alt="EMOOT"
@@ -19,7 +21,7 @@ export function AppHeader({ homeHref, className }: AppHeaderProps) {
             decoding="async"
             className="h-[38px] w-[78.36px]"
           />
-        </a>
+        </NavLink>
       </div>
     </header>
   );

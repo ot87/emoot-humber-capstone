@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import quizNavIcon from "@/assets/icon-nav-quiz.png";
 import bingoNavIcon from "@/assets/icon-nav-bingo.png";
 import { AppFooter } from "@/components/layout/AppFooter";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { AppShellVisibilityProvider } from "@/components/layout/AppShellVisibilityProvider";
+
+function getQuizNavActive(pathname: string): boolean {
+  return pathname === "/quiz";
+}
 
 function getBingoNavActive(pathname: string): boolean {
   return pathname === "/bingo" || pathname.startsWith("/bingo/");
@@ -13,26 +17,30 @@ function getBingoNavActive(pathname: string): boolean {
 export function AppLayout() {
   const location = useLocation();
   const [headerVisible, setHeaderVisible] = useState(true);
+  const quizNavActive = getQuizNavActive(location.pathname);
   const bingoNavActive = getBingoNavActive(location.pathname);
 
   return (
     <AppShellVisibilityProvider setHeaderVisible={setHeaderVisible}>
-      <div className="flex h-dvh flex-col overflow-hidden bg-background">
-        {headerVisible ? <AppHeader homeHref="/quiz" /> : null}
+      <div className="flex h-svh w-full flex-col overflow-hidden bg-background">
+        {headerVisible ? <AppHeader navLink={Link} homeTo="/quiz" /> : null}
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-          <Outlet />
+          <div className="flex min-h-0 flex-1 flex-col">
+            <Outlet />
+          </div>
         </div>
 
         <AppFooter
+          navLink={Link}
           quizNav={{
-            href: "/quiz",
+            to: "/quiz",
             label: "Quiz",
             iconSrc: quizNavIcon,
-            isActive: !bingoNavActive,
+            isActive: quizNavActive,
           }}
           bingoNav={{
-            href: "/bingo",
+            to: "/bingo",
             label: "Bingo",
             iconSrc: bingoNavIcon,
             isActive: bingoNavActive,

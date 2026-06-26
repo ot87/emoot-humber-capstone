@@ -20,7 +20,9 @@ function renderAppLayout(initialEntry: string, page: React.ReactNode) {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/quiz" element={page} />
+          <Route path="/result" element={<div>Result page</div>} />
           <Route path="/bingo" element={<div>Bingo page</div>} />
+          <Route path="/bingo/board" element={<div>Bingo board page</div>} />
           <Route path="/auth" element={<div>Auth page</div>} />
         </Route>
       </Routes>
@@ -37,12 +39,39 @@ describe("AppLayout", () => {
     expect(screen.getByText(/happy path ventures incorporated/i)).toBeInTheDocument();
   });
 
-  it("highlights bingo navigation on bingo routes", () => {
+  it("highlights quiz navigation only on /quiz", () => {
+    renderAppLayout("/quiz", <div>Quiz page</div>);
+
+    expect(screen.getByRole("link", { name: /quiz/i })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /bingo/i })).not.toHaveAttribute("aria-current");
+  });
+
+  it("does not highlight quiz navigation on /auth", () => {
+    renderAppLayout("/auth", <div>Auth page</div>);
+
+    expect(screen.getByRole("link", { name: /quiz/i })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: /bingo/i })).not.toHaveAttribute("aria-current");
+  });
+
+  it("does not highlight quiz navigation on /result", () => {
+    renderAppLayout("/result", <div>Result page</div>);
+
+    expect(screen.getByRole("link", { name: /quiz/i })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: /bingo/i })).not.toHaveAttribute("aria-current");
+  });
+
+  it("highlights bingo navigation on /bingo", () => {
     renderAppLayout("/bingo", <div>Bingo page</div>);
 
     expect(screen.getByRole("link", { name: /bingo/i })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: /quiz/i })).not.toHaveAttribute("aria-current");
-    expect(screen.getByRole("navigation", { name: /app navigation/i })).toBeInTheDocument();
+  });
+
+  it("highlights bingo navigation on /bingo/board", () => {
+    renderAppLayout("/bingo/board", <div>Bingo board page</div>);
+
+    expect(screen.getByRole("link", { name: /bingo/i })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /quiz/i })).not.toHaveAttribute("aria-current");
   });
 
   it("hides the shared header when a page requests it", async () => {
@@ -56,5 +85,22 @@ describe("AppLayout", () => {
 
     expect(screen.queryByRole("link", { name: /emoot home/i })).not.toBeInTheDocument();
     expect(screen.getByText(/happy path ventures incorporated/i)).toBeInTheDocument();
+  });
+
+  it("navigates between shell routes via client-side footer links", async () => {
+    const user = userEvent.setup();
+
+    renderAppLayout("/quiz", <div>Quiz page</div>);
+
+    await user.click(screen.getByRole("link", { name: /bingo/i }));
+
+    expect(screen.getByText("Bingo page")).toBeInTheDocument();
+    expect(screen.queryByText("Quiz page")).not.toBeInTheDocument();
+    expect(screen.getByText(/happy path ventures incorporated/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: /quiz/i }));
+
+    expect(screen.getByText("Quiz page")).toBeInTheDocument();
+    expect(screen.queryByText("Bingo page")).not.toBeInTheDocument();
   });
 });

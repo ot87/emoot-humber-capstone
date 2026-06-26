@@ -37,7 +37,7 @@ export function QuizLandingScreen({ loading = false, itemCount, onStart }: QuizL
     >
       {loading ? (
         <>
-          <LoadingSpinner className="min-h-0 flex-1 py-8" />
+          <LoadingSpinner className="py-8" />
 
           <div className="flex w-full flex-col items-center pb-3 sm:pb-4" />
         </>

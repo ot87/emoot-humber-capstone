@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
-    "@fontsource/inter": "^5.2.8",
     "@fontsource/permanent-marker": "^5.2.7",
     "@fontsource/quicksand": "^5.2.10",
     "class-variance-authority": "^0.7.1",

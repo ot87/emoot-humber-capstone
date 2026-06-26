@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppShellHeaderVisibility } from "@/components/layout/useAppShellHeaderVisibility";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";
@@ -9,22 +7,13 @@ import { SAVE_QUIZ_RESULT_ERROR, useSaveQuizResult } from "./hooks/useSaveQuizRe
 
 export default function QuizPage() {
   const navigate = useNavigate();
-  const { setHeaderVisible } = useAppShellHeaderVisibility();
   const { saveCompletion } = useSaveQuizResult();
   const { questions, quizId, loading, error } = useQuestions();
   const quiz = useQuiz(questions);
 
-  useEffect(() => {
-    setHeaderVisible(quiz.step === "questions");
-
-    return () => {
-      setHeaderVisible(true);
-    };
-  }, [quiz.step, setHeaderVisible]);
-
   if (error) {
     return (
-      <div className="flex flex-1 items-center justify-center px-4">
+      <div className="flex min-h-0 flex-1 items-center justify-center px-4">
         <p className="text-center font-quiz-body text-sm text-destructive">{error}</p>
       </div>
     );
@@ -54,7 +43,8 @@ export default function QuizPage() {
 
   if (quiz.step === "questions" && quiz.currentItem) {
     return (
-      <QuizQuestionsFlow
+      <div className="flex min-h-0 flex-1 flex-col">
+        <QuizQuestionsFlow
         item={quiz.currentItem}
         currentQuestionNumber={quiz.currentIndex + 1}
         totalQuestions={quiz.totalQuestions}
@@ -67,8 +57,13 @@ export default function QuizPage() {
         onBack={quiz.goBack}
         onNext={handleNext}
       />
+      </div>
     );
   }
 
-  return <QuizLandingScreen loading={loading} itemCount={questions.length} onStart={quiz.start} />;
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <QuizLandingScreen loading={loading} itemCount={questions.length} onStart={quiz.start} />
+    </div>
+  );
 }
