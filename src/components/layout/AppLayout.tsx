@@ -30,7 +30,7 @@ export function AppLayout() {
         {headerVisible ? <AppHeader navLink={Link} homeTo="/quiz" /> : null}
 
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-          <div className="flex min-h-0 flex-1 flex-col">
+          <div className="flex min-h-full flex-1 flex-col">
             <Outlet />
           </div>
         </div>

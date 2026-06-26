@@ -11,6 +11,7 @@ type TornHeroHeaderProps = {
   badgeMarginClassName?: string;
   titleShellClassName?: string;
   contentShellClassName?: string;
+  className?: string;
   children?: ReactNode;
 };
 
@@ -21,10 +22,11 @@ export function TornHeroHeader({
   badgeMarginClassName = "mb-4",
   titleShellClassName,
   contentShellClassName,
+  className,
   children,
 }: TornHeroHeaderProps) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-background">
+    <div className={cn("flex min-h-0 flex-1 flex-col bg-background", className)}>
       <header className="relative w-full min-h-[32svh] sm:min-h-[34svh] lg:min-h-[16rem] xl:min-h-[18rem]">
         <img
           src={headerTornBg}

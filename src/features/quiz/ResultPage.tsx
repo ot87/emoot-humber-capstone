@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { useAnonymousQuizVisitorFooterNav } from "@/components/layout/useAnonymousQuizVisitorFooterNav";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { QuizResultScreen } from "@/features/quiz/components/QuizResultScreen";
 import {
@@ -81,6 +82,7 @@ function ResultScreenWithOptionalBanner({
 
 export default function ResultPage() {
   const location = useLocation();
+  useAnonymousQuizVisitorFooterNav();
   const { savedResult, loading: savedLoading, error: savedError } = useLoadQuizResult();
   const {
     definitionsByType,
