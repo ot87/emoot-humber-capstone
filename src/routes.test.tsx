@@ -79,4 +79,19 @@ describe("bingo result gate", () => {
 
     expect(await screen.findByRole("heading", { name: /hi there!/i })).toBeInTheDocument();
   });
+
+  it("renders login without the shared app shell", async () => {
+    authMock.user = null;
+
+    render(
+      <MemoryRouter initialEntries={["/auth"]}>
+        <AppRoutes />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByRole("heading", { name: /hi there!/i })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /emoot home/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: /app navigation/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/happy path ventures incorporated/i)).not.toBeInTheDocument();
+  });
 });

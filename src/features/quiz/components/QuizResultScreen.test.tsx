@@ -56,14 +56,6 @@ describe("QuizResultScreen", () => {
     );
   });
 
-  it("renders the copyright footer with the current year", () => {
-    renderQuizResultScreen("PLANNER");
-
-    expect(
-      screen.getByText(`© Emoot | Happy Path Ventures Incorporated ${new Date().getFullYear()}`),
-    ).toBeInTheDocument();
-  });
-
   it("links to /auth with post-sign-in destination state", async () => {
     const user = userEvent.setup();
 

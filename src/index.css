@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@fontsource/inter/400.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource/permanent-marker";
 @import "@fontsource/quicksand/400.css";
@@ -14,6 +15,7 @@
   --font-sans: "Geist Variable", sans-serif;
   --font-quiz-display: "Permanent Marker", cursive;
   --font-quiz-body: "Quicksand", sans-serif;
+  --font-app-footer: "Inter", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -67,6 +69,7 @@
   --color-quiz-result-footer-foreground: var(--quiz-result-footer-foreground);
   --color-surface: var(--surface);
   --color-bingo-locked-tile: var(--bingo-locked-tile);
+  --color-app-footer-nav-selected: var(--app-footer-nav-selected);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -136,6 +139,8 @@
   --surface: #e5e5e5;
   /* Bingo locked grid tile fill — Figma exact */
   --bingo-locked-tile: #d9d9d9;
+  /* App footer nav — active tab pill (Figma exact) */
+  --app-footer-nav-selected: #ffd870;
 }
 
 .dark {

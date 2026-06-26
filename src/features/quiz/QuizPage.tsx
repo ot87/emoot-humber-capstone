@@ -13,7 +13,7 @@ export default function QuizPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-dvh items-center justify-center px-4">
+      <div className="flex flex-1 items-center justify-center px-4">
         <p className="text-center font-quiz-body text-sm text-destructive">{error}</p>
       </div>
     );

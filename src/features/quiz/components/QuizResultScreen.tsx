@@ -14,7 +14,7 @@ export function QuizResultScreen({ definition }: QuizResultScreenProps) {
   const theme = getPersonalityResultTheme(definition.personalityType);
 
   return (
-    <div className={cn("flex min-h-dvh flex-col", theme.surfaceClass)}>
+    <div className={cn("flex min-h-0 flex-1 flex-col", theme.surfaceClass)}>
       <AppContentShell className="flex min-h-0 flex-1 flex-col items-center justify-evenly py-8 sm:py-10 lg:py-12">
         <div className="flex w-full flex-col items-center gap-6">
           <img
@@ -47,12 +47,6 @@ export function QuizResultScreen({ definition }: QuizResultScreenProps) {
           </Link>
         </div>
       </AppContentShell>
-
-      <footer className="shrink-0 bg-quiz-result-footer px-4 py-3 text-center">
-        <p className="font-quiz-body text-xs text-quiz-result-footer-foreground">
-          © Emoot | Happy Path Ventures Incorporated {new Date().getFullYear()}
-        </p>
-      </footer>
     </div>
   );
 }
