@@ -27,7 +27,7 @@ This makes the `VAR=value` script syntax behave the same everywhere - a no-op on
 
 Placeholders are marked `FLAG` (search both data files). The seeder warns about any remaining `FLAG` values but seeds anyway, so you can populate the emulator with partial content and fill the rest later.
 
-- `quiz-data.ts`: the 5 questions' `text` and option `label`s, and confirm each option's `personalityType` (the A/B/C/D mapping there is a guess).
+- `quiz-data.ts`: the 5 questions' `text` and option `label`s, and confirm each option's `personalityType` - done.
 - `bingo-data.ts`: filled from the sheet; a few cells need attention - search `FLAG` (Planner "Reach 25% of your goal" is blank; the "automate a bill" Why-it-Matters is truncated; Planner's "automate a bill" rationale is pasted from the wrong type).
 
 ## Seed the emulator (sandbox)
