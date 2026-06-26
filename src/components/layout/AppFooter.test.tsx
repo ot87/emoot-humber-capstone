@@ -74,7 +74,7 @@ describe("AppFooter", () => {
   it("renders only the copyright line when navigation is hidden", () => {
     render(
       <MemoryRouter>
-        <AppFooter {...defaultProps} navVisible={false} />
+        <AppFooter {...defaultProps} isNavVisible={false} />
       </MemoryRouter>,
     );
 

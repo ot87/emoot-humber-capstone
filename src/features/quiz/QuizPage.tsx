@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAnonymousQuizVisitorFooterNav } from "@/components/layout/useAnonymousQuizVisitorFooterNav";
+import { useAnonymousQuizVisitorFooterNav } from "./hooks/useAnonymousQuizVisitorFooterNav";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";

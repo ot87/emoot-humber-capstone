@@ -17,7 +17,7 @@ function getBingoNavActive(pathname: string): boolean {
 export function AppLayout() {
   const location = useLocation();
   const [headerVisible, setHeaderVisible] = useState(true);
-  const [footerNavVisible, setFooterNavVisible] = useState(true);
+  const [isFooterNavVisible, setFooterNavVisible] = useState(true);
   const quizNavActive = getQuizNavActive(location.pathname);
   const bingoNavActive = getBingoNavActive(location.pathname);
 
@@ -37,7 +37,7 @@ export function AppLayout() {
 
         <AppFooter
           navLink={Link}
-          navVisible={footerNavVisible}
+          isNavVisible={isFooterNavVisible}
           quizNav={{
             to: "/quiz",
             label: "Quiz",

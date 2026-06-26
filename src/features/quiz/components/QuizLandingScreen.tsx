@@ -74,21 +74,15 @@ export function QuizLandingScreen({ loading = false, itemCount, onStart }: QuizL
 
             <div className="flex w-full flex-col items-center pb-3 sm:pb-4">
               {hasQuestions ? (
-                <>
-                  <Button
-                    type="button"
-                    variant="brand"
-                    size="cta"
-                    className="w-full max-w-[18rem] sm:max-w-xs md:max-w-sm lg:max-w-md"
-                    onClick={onStart}
-                  >
-                    Start Quiz
-                  </Button>
-
-                  <p className="mt-3 font-quiz-body text-sm font-normal leading-[22px] tracking-[-0.3px] text-quiz-footer sm:mt-4">
-                    No login required
-                  </p>
-                </>
+                <Button
+                  type="button"
+                  variant="brand"
+                  size="cta"
+                  className="w-full max-w-[18rem] sm:max-w-xs md:max-w-sm lg:max-w-md"
+                  onClick={onStart}
+                >
+                  Start Quiz
+                </Button>
               ) : (
                 <p
                   role="status"

@@ -13,7 +13,7 @@ export type AppFooterProps = {
   navLink: AppNavLinkComponent;
   quizNav: AppFooterNavItem;
   bingoNav: AppFooterNavItem;
-  navVisible?: boolean;
+  isNavVisible?: boolean;
   className?: string;
 };
 
@@ -56,12 +56,12 @@ export function AppFooter({
   navLink,
   quizNav,
   bingoNav,
-  navVisible = true,
+  isNavVisible = true,
   className,
 }: AppFooterProps) {
   return (
     <footer className={cn("w-full shrink-0", className)}>
-      {navVisible ? (
+      {isNavVisible ? (
         <nav aria-label="App navigation" className="w-full bg-app-footer-nav-bg">
           <div className="flex h-app-footer-nav w-full items-center justify-center gap-8">
             <AppFooterNavLink navLink={navLink} item={quizNav} />
