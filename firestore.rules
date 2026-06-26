@@ -1,0 +1,56 @@
+rules_version = '2';
+
+// Access model for the Emoot app. See docs/data-model (Security model and indexes)
+// and ADR-0004. Per-user documents are owner-only; quiz content is publicly
+// readable; reference/content collections are read-only to clients. "Writes
+// seed/admin only" is expressed as `allow write: if false` because seeding runs
+// through the Admin SDK, which bypasses these rules entirely.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Quiz content — publicly readable (the quiz is taken without an account,
+    // ADR-0004); writes are seed/admin only.
+    match /quizzes/{quizId} {
+      allow read: if true;
+      allow write: if false;
+
+      // Questions live in a subcollection; same public-read, no-client-write.
+      match /questions/{questionId} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    // Result definitions — publicly readable; writes are seed/admin only.
+    match /personalityTypes/{type} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Bingo challenges — read-only to signed-in users (bingo is played after
+    // sign-in); writes are seed/admin only.
+    match /bingoChallenges/{type} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // A user's saved quiz result — readable and writable only by its owner.
+    match /userQuizResults/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // A user's bingo board — readable and writable only by its owner.
+    match /bingoBoards/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Feedback — a signed-in user may create their own document; there are no
+    // client reads (admin/analytics only) and feedback is never updated or deleted.
+    match /feedback/{docId} {
+      allow read: if false;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+  }
+}
