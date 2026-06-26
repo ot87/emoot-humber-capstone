@@ -27,7 +27,7 @@ export function TornHeroHeader({
 }: TornHeroHeaderProps) {
   return (
     <div className={cn("flex min-h-0 flex-1 flex-col bg-background", className)}>
-      <header className="relative w-full min-h-[32svh] sm:min-h-[34svh] lg:min-h-[16rem] xl:min-h-[18rem]">
+      <header className="relative w-full min-h-3/12 sm:min-h-1/3 lg:min-h-64 xl:min-h-72">
         <img
           src={headerTornBg}
           alt=""
