@@ -1,8 +1,18 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import type { AuthUser } from "@/types/user";
 import { AppLayout } from "./AppLayout";
 import { useAppShellHeaderVisibility } from "./useAppShellHeaderVisibility";
+
+vi.mock("@/services/auth.service", () => ({
+  signInWithGoogle: vi.fn(),
+  signOut: vi.fn(),
+  listenToAuthChanges: vi.fn((callback: (user: AuthUser | null) => void) => {
+    callback(null);
+    return () => {};
+  }),
+}));
 
 function HeaderVisibilityProbe({ visible }: { visible: boolean }) {
   const { setHeaderVisible } = useAppShellHeaderVisibility();
