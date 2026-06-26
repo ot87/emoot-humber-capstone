@@ -1,7 +1,18 @@
 import { render, screen } from "@testing-library/react";
 import { Link, MemoryRouter } from "react-router-dom";
 import type { AppNavLinkProps } from "@/components/layout/appNavLink";
+import { listenToAuthChanges } from "@/services/auth.service";
+import type { AuthUser } from "@/types/user";
 import { AppHeader } from "./AppHeader";
+
+vi.mock("@/services/auth.service", () => ({
+  signInWithGoogle: vi.fn(),
+  signOut: vi.fn(),
+  listenToAuthChanges: vi.fn((callback: (user: AuthUser | null) => void) => {
+    callback(null);
+    return () => {};
+  }),
+}));
 
 function StubNavLink({ to, children, ...props }: AppNavLinkProps) {
   return (
@@ -27,11 +38,37 @@ describe("AppHeader", () => {
   });
 
   it("renders the home target through the supplied client nav link component", () => {
-    render(<AppHeader navLink={StubNavLink} homeTo="/quiz" />);
+    render(
+      <MemoryRouter>
+        <AppHeader navLink={StubNavLink} homeTo="/quiz" />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByRole("link", { name: /emoot home/i })).toHaveAttribute(
       "data-nav-kind",
       "client",
     );
+  });
+
+  it("renders the hamburger menu when a user is signed in", () => {
+    const signedInUser: AuthUser = {
+      uid: "test-uid",
+      email: "test@example.com",
+      displayName: "Test User",
+      photoURL: null,
+    };
+
+    vi.mocked(listenToAuthChanges).mockImplementation((callback) => {
+      callback(signedInUser);
+      return () => {};
+    });
+
+    render(
+      <MemoryRouter>
+        <AppHeader navLink={Link} homeTo="/quiz" />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByRole("button", { name: /open menu/i })).toBeInTheDocument();
   });
 });
