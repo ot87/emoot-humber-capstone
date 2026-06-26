@@ -17,10 +17,10 @@ export function AppLayout() {
 
   return (
     <AppShellVisibilityProvider setHeaderVisible={setHeaderVisible}>
-      <div className="flex min-h-dvh flex-col bg-background">
+      <div className="flex h-dvh flex-col overflow-hidden bg-background">
         {headerVisible ? <AppHeader homeHref="/quiz" /> : null}
 
-        <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           <Outlet />
         </div>
 
