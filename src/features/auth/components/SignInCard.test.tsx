@@ -32,7 +32,7 @@ describe("SignInCard", () => {
     render(<SignInCard onSuccess={onSuccess} />);
     await user.click(screen.getByRole("button", { name: /continue with google/i }));
 
-    expect(screen.getAllByText("Powered by Interac e-Transfer®")).toHaveLength(2);
+    expect(screen.getByText("Powered by Interac e-Transfer®")).toBeInTheDocument();
 
     expect(signInWithGoogle).toHaveBeenCalledOnce();
     expect(onSuccess).toHaveBeenCalledOnce();

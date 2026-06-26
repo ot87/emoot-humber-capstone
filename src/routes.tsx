@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { AppLayout } from "@/components/layout/AppLayout";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { BingoBoardPage } from "@/features/bingo/BingoBoardPage";
 import { BingoPage } from "@/features/bingo/BingoPage";
@@ -40,27 +41,36 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/quiz" replace />} />
-      <Route path="/quiz" element={<QuizPage />} />
-      <Route path="/result" element={<ResultPage />} />
       <Route
-        path="/bingo"
+        path="/auth"
         element={
-          <RequireAuth>
-            <BingoPage />
-          </RequireAuth>
+          <div className="flex h-svh w-full flex-col overflow-hidden bg-background">
+            <AuthPage />
+          </div>
         }
       />
-      <Route
-        path="/bingo/board"
-        element={
-          <RequireAuth>
-            <RequireSavedQuizResult>
-              <BingoBoardPage />
-            </RequireSavedQuizResult>
-          </RequireAuth>
-        }
-      />
-      <Route path="/auth" element={<AuthPage />} />
+      <Route element={<AppLayout />}>
+        <Route path="/quiz" element={<QuizPage />} />
+        <Route path="/result" element={<ResultPage />} />
+        <Route
+          path="/bingo"
+          element={
+            <RequireAuth>
+              <BingoPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/bingo/board"
+          element={
+            <RequireAuth>
+              <RequireSavedQuizResult>
+                <BingoBoardPage />
+              </RequireSavedQuizResult>
+            </RequireAuth>
+          }
+        />
+      </Route>
     </Routes>
   );
 }

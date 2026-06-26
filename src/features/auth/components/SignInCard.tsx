@@ -1,7 +1,6 @@
 import authSurfaceBg from "@/assets/bg-auth-surface.svg";
 import { AppContentShell } from "@/components/layout/AppContentShell";
 import { Button } from "@/components/ui/button";
-import { AuthFooter } from "@/features/auth/components/AuthFooter";
 import { AuthHeader } from "@/features/auth/components/AuthHeader";
 import { GoogleIcon } from "@/features/auth/components/GoogleIcon";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -21,7 +20,7 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
   }
 
   return (
-    <div className={cn("relative min-h-dvh bg-surface")}>
+    <div className={cn("relative flex min-h-0 flex-1 flex-col bg-surface")}>
       <img
         src={authSurfaceBg}
         alt=""
@@ -33,7 +32,7 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
         className="pointer-events-none absolute inset-0 h-full w-full object-cover select-none"
       />
 
-      <div className="relative z-10 flex min-h-dvh flex-col">
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col">
         <AuthHeader />
 
         <AppContentShell as="main" className="flex flex-1 flex-col items-center pb-4">
@@ -66,8 +65,6 @@ export function SignInCard({ onSuccess }: SignInCardProps) {
             <hr className="mt-8 w-full border-0 border-t border-surface" aria-hidden="true" />
           </section>
         </AppContentShell>
-
-        <AuthFooter />
       </div>
     </div>
   );

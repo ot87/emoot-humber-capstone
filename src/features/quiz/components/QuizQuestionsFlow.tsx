@@ -31,7 +31,7 @@ export function QuizQuestionsFlow({
   onNext,
 }: QuizQuestionsFlowProps) {
   return (
-    <main className="flex min-h-dvh flex-col bg-background">
+    <main className="flex min-h-0 flex-1 flex-col bg-background">
       <QuizProgressBar
         currentQuestion={currentQuestionNumber}
         totalQuestions={totalQuestions}
