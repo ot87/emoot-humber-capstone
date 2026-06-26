@@ -45,18 +45,18 @@ export default function QuizPage() {
     return (
       <div className="flex min-h-0 flex-1 flex-col">
         <QuizQuestionsFlow
-        item={quiz.currentItem}
-        currentQuestionNumber={quiz.currentIndex + 1}
-        totalQuestions={quiz.totalQuestions}
-        progressPercent={quiz.progressPercent}
-        selectedOptionId={quiz.selectedOptionId}
-        canGoBack={quiz.canGoBack}
-        canGoNext={quiz.canGoNext}
-        isLastQuestion={quiz.isLastQuestion}
-        onSelect={quiz.selectOption}
-        onBack={quiz.goBack}
-        onNext={handleNext}
-      />
+          item={quiz.currentItem}
+          currentQuestionNumber={quiz.currentIndex + 1}
+          totalQuestions={quiz.totalQuestions}
+          progressPercent={quiz.progressPercent}
+          selectedOptionId={quiz.selectedOptionId}
+          canGoBack={quiz.canGoBack}
+          canGoNext={quiz.canGoNext}
+          isLastQuestion={quiz.isLastQuestion}
+          onSelect={quiz.selectOption}
+          onBack={quiz.goBack}
+          onNext={handleNext}
+        />
       </div>
     );
   }

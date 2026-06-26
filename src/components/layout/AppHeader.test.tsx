@@ -29,6 +29,9 @@ describe("AppHeader", () => {
   it("renders the home target through the supplied client nav link component", () => {
     render(<AppHeader navLink={StubNavLink} homeTo="/quiz" />);
 
-    expect(screen.getByRole("link", { name: /emoot home/i })).toHaveAttribute("data-nav-kind", "client");
+    expect(screen.getByRole("link", { name: /emoot home/i })).toHaveAttribute(
+      "data-nav-kind",
+      "client",
+    );
   });
 });

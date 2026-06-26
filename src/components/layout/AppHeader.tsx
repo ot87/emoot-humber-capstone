@@ -10,7 +10,9 @@ export type AppHeaderProps = {
 
 export function AppHeader({ navLink: NavLink, homeTo, className }: AppHeaderProps) {
   return (
-    <header className={cn("shrink-0 border-b border-border bg-background shadow-app-header", className)}>
+    <header
+      className={cn("shrink-0 border-b border-border bg-background shadow-app-header", className)}
+    >
       <div className="mx-auto flex h-15 w-full max-w-[402px] items-center justify-center">
         <NavLink to={homeTo} aria-label="EMOOT home" className="leading-none">
           <img
