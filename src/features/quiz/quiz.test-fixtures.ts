@@ -20,6 +20,7 @@ export const testQuizQuestions: Question[] = [
   {
     id: "q1",
     text: "How do you usually approach saving?",
+    category: "Emotional Trigger",
     options: fourOptions([
       "I set a goal and work toward it constantly",
       "I save when I feel stressed about money",
@@ -30,6 +31,7 @@ export const testQuizQuestions: Question[] = [
   {
     id: "q2",
     text: "When you get unexpected money, what do you usually do?",
+    category: "Saving Style",
     options: fourOptions([
       "Put most of it straight into savings",
       "Worry about whether I should save or spend it",
@@ -40,6 +42,7 @@ export const testQuizQuestions: Question[] = [
   {
     id: "q3",
     text: "How do you feel when checking your bank balance?",
+    category: "Spending Behaviour",
     options: fourOptions([
       "Calm — I know where I stand",
       "Anxious — I brace myself",
@@ -50,6 +53,7 @@ export const testQuizQuestions: Question[] = [
   {
     id: "q4",
     text: "Which best describes your approach to financial goals?",
+    category: "Social Influence",
     options: fourOptions([
       "I write them down and track progress regularly",
       "I think about them often but rarely act",
@@ -60,6 +64,7 @@ export const testQuizQuestions: Question[] = [
   {
     id: "q5",
     text: "What role does money play in your daily decisions?",
+    category: "Goal Motivation",
     options: fourOptions([
       "A tool I use deliberately to reach my plans",
       "A source of worry that influences most choices",

@@ -72,6 +72,7 @@ describe("quiz.service", () => {
           data: () => ({
             questionId: "q1",
             text: "Question one",
+            category: "Emotional Trigger",
             options: [{ optionId: "q1a", label: "Option A", personalityType: "PLANNER" }],
           }),
         },
@@ -84,6 +85,7 @@ describe("quiz.service", () => {
         {
           id: "q1",
           text: "Question one",
+          category: "Emotional Trigger",
           options: [{ id: "q1a", text: "Option A", personalityType: "PLANNER" }],
         },
       ],
@@ -127,6 +129,7 @@ describe("quiz.service", () => {
             data: () => ({
               questionId: "q1",
               text: "Question one",
+              category: "Emotional Trigger",
               options: [{ optionId: "q1a", label: "Option A", personalityType: "PLANNER" }],
             }),
           },
@@ -139,6 +142,7 @@ describe("quiz.service", () => {
         {
           id: "q1",
           text: "Question one",
+          category: "Emotional Trigger",
           options: [{ id: "q1a", text: "Option A", personalityType: "PLANNER" }],
         },
       ],

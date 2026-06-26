@@ -112,7 +112,7 @@ describe("QuizPage", () => {
 
     await user.click(screen.getByRole("button", { name: /start quiz/i }));
 
-    expect(screen.getByText("Q1")).toBeInTheDocument();
+    expect(screen.getByText(`Q1. ${testQuizQuestions[0].category}`)).toBeInTheDocument();
     expect(screen.getByText(testQuizQuestions[0].text)).toBeInTheDocument();
   });
 

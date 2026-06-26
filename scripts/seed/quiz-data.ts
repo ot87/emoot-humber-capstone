@@ -35,6 +35,7 @@ export const questions: QuizQuestion[] = [
   {
     questionId: "q1",
     text: "When you think about saving money, what emotion shows up first?",
+    category: "Emotional Trigger",
     displayOrder: 1,
     options: [
       {
@@ -62,6 +63,7 @@ export const questions: QuizQuestion[] = [
   {
     questionId: "q2",
     text: "How do you usually approach saving money?",
+    category: "Saving Style",
     displayOrder: 2,
     options: [
       {
@@ -89,6 +91,7 @@ export const questions: QuizQuestion[] = [
   {
     questionId: "q3",
     text: "When you get unexpected money, what do you typically do?",
+    category: "Spending Behaviour",
     displayOrder: 3,
     options: [
       {
@@ -116,6 +119,7 @@ export const questions: QuizQuestion[] = [
   {
     questionId: "q4",
     text: "How does your social circle affect your money choices?",
+    category: "Social Influence",
     displayOrder: 4,
     options: [
       {
@@ -143,6 +147,7 @@ export const questions: QuizQuestion[] = [
   {
     questionId: "q5",
     text: "What motivates you most to save?",
+    category: "Goal Motivation",
     displayOrder: 5,
     options: [
       {

@@ -7,7 +7,7 @@ export type QuizFlowItem = {
 
 export function toQuizFlowItems(questions: Question[]): QuizFlowItem[] {
   return questions.map((question, index) => ({
-    heading: `Q${index + 1}`,
+    heading: `Q${index + 1}. ${question.category}`,
     question,
   }));
 }
