@@ -32,7 +32,7 @@ describe("useQuestions", () => {
     expect(mockedGetQuestions).toHaveBeenCalledWith(undefined);
     expect(result.current.quizId).toBe("moneyPersonalityQuiz");
     expect(result.current.questions).toHaveLength(testQuizQuestions.length);
-    expect(result.current.questions[0]?.heading).toBe("Q1");
+    expect(result.current.questions[0]?.heading).toBe(`Q1. ${testQuizQuestions[0].category}`);
     expect(result.current.questions[0]?.question).toEqual(testQuizQuestions[0]);
     expect(result.current.error).toBe("");
   });

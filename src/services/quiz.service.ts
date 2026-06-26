@@ -31,6 +31,7 @@ type FirestoreQuizOption = {
 type FirestoreQuizQuestion = {
   questionId: string;
   text: string;
+  category: string;
   options: FirestoreQuizOption[];
 };
 
@@ -113,6 +114,7 @@ export async function getQuestions(quizId?: string): Promise<LoadedQuiz> {
       return {
         id: data.questionId,
         text: data.text,
+        category: data.category,
         options: data.options.map((option) => ({
           id: option.optionId,
           text: option.label,

@@ -32,6 +32,7 @@ export type QuizOption = z.infer<typeof quizOptionSchema>;
 export const quizQuestionSchema = z.object({
   questionId: z.string().min(1),
   text: z.string().min(1),
+  category: z.string().min(1),
   displayOrder: z.number().int().positive(),
   options: z.array(quizOptionSchema).length(4),
 });

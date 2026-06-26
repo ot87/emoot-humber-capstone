@@ -16,6 +16,7 @@ export type QuizOption = {
 export type Question = {
   id: string;
   text: string;
+  category: string;
   options: QuizOption[];
 };
 

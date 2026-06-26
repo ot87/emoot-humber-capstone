@@ -13,6 +13,7 @@ function makeQuestion(questionId: string, optionIds: [string, string, string, st
   return {
     id: questionId,
     text: questionId,
+    category: questionId,
     options: optionIds.map((optionId, index) => ({
       id: optionId,
       text: optionId,
@@ -139,7 +140,7 @@ describe("toQuizFlowItems", () => {
 
     expect(toQuizFlowItems([question])).toEqual([
       {
-        heading: "Q1",
+        heading: `Q1. ${question.category}`,
         question,
       },
     ]);
@@ -149,8 +150,8 @@ describe("toQuizFlowItems", () => {
     const questions = testQuizQuestions.slice(0, 2);
 
     expect(toQuizFlowItems(questions)).toEqual([
-      { heading: "Q1", question: questions[0] },
-      { heading: "Q2", question: questions[1] },
+      { heading: `Q1. ${questions[0].category}`, question: questions[0] },
+      { heading: `Q2. ${questions[1].category}`, question: questions[1] },
     ]);
   });
 });
