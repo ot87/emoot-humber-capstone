@@ -37,5 +37,7 @@ describe("App", () => {
     });
 
     expect(await screen.findByRole("button", { name: /start quiz/i })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /emoot home/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: /app navigation/i })).toBeInTheDocument();
   });
 });

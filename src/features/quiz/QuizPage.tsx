@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppShellHeaderVisibility } from "@/components/layout/useAppShellHeaderVisibility";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";
@@ -7,9 +9,18 @@ import { SAVE_QUIZ_RESULT_ERROR, useSaveQuizResult } from "./hooks/useSaveQuizRe
 
 export default function QuizPage() {
   const navigate = useNavigate();
+  const { setHeaderVisible } = useAppShellHeaderVisibility();
   const { saveCompletion } = useSaveQuizResult();
   const { questions, quizId, loading, error } = useQuestions();
   const quiz = useQuiz(questions);
+
+  useEffect(() => {
+    setHeaderVisible(quiz.step === "questions");
+
+    return () => {
+      setHeaderVisible(true);
+    };
+  }, [quiz.step, setHeaderVisible]);
 
   if (error) {
     return (

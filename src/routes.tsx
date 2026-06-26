@@ -62,8 +62,8 @@ export default function AppRoutes() {
             </RequireAuth>
           }
         />
+        <Route path="/auth" element={<AuthPage />} />
       </Route>
-      <Route path="/auth" element={<AuthPage />} />
     </Routes>
   );
 }
