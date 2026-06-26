@@ -13,6 +13,8 @@ export function AppShellVisibilityProvider({
   const value = useMemo(() => ({ setHeaderVisible }), [setHeaderVisible]);
 
   return (
-    <AppShellVisibilityContext.Provider value={value}>{children}</AppShellVisibilityContext.Provider>
+    <AppShellVisibilityContext.Provider value={value}>
+      {children}
+    </AppShellVisibilityContext.Provider>
   );
 }

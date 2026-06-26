@@ -48,10 +48,7 @@ function AppFooterNavLink({ item }: AppFooterNavLinkProps) {
 export function AppFooter({ quizNav, bingoNav, className }: AppFooterProps) {
   return (
     <footer className={cn("shrink-0", className)}>
-      <nav
-        aria-label="App navigation"
-        className="border-t border-border/40 bg-quiz-header"
-      >
+      <nav aria-label="App navigation" className="border-t border-border/40 bg-quiz-header">
         <div className="mx-auto flex h-[70px] w-full max-w-[402px] items-center justify-center gap-8">
           <AppFooterNavLink item={quizNav} />
           <AppFooterNavLink item={bingoNav} />
