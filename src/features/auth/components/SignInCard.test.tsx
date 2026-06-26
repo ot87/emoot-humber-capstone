@@ -36,5 +36,6 @@ describe("SignInCard", () => {
 
     expect(signInWithGoogle).toHaveBeenCalledOnce();
     expect(onSuccess).toHaveBeenCalledOnce();
+    expect(onSuccess).toHaveBeenCalledWith(signedInUser);
   });
 });

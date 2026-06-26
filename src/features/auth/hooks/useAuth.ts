@@ -9,7 +9,7 @@ import type { AuthUser } from "@/types/user";
 export interface AuthState {
   user: AuthUser | null;
   loading: boolean;
-  signIn: () => Promise<boolean>;
+  signIn: () => Promise<AuthUser | null>;
   signOut: () => Promise<boolean>;
   isSigningIn: boolean;
   isSigningOut: boolean;
@@ -32,17 +32,17 @@ export function useAuth(): AuthState {
     return unsubscribe;
   }, []);
 
-  async function signIn(): Promise<boolean> {
+  async function signIn(): Promise<AuthUser | null> {
     setError("");
     setIsSigningIn(true);
 
     try {
-      await signInWithGoogle();
-      return true;
+      const signedInUser = await signInWithGoogle();
+      return signedInUser;
     } catch (err) {
       console.error(err);
       setError("Google sign-in failed. Please try again.");
-      return false;
+      return null;
     } finally {
       setIsSigningIn(false);
     }
