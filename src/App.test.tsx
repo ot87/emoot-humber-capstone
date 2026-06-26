@@ -38,7 +38,7 @@ describe("App", () => {
 
     expect(await screen.findByRole("button", { name: /start quiz/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /emoot home/i })).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: /app navigation/i })).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: /app navigation/i })).not.toBeInTheDocument();
     expect(screen.getByText(/happy path ventures incorporated/i)).toBeInTheDocument();
   });
 });

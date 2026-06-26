@@ -41,6 +41,9 @@ describe("AppFooter", () => {
     const footer = screen.getByRole("contentinfo");
     expect(footer).toHaveClass("w-full");
     expect(screen.getByRole("navigation", { name: /app navigation/i })).toHaveClass("w-full");
+    expect(
+      screen.getByRole("navigation", { name: /app navigation/i }).firstElementChild,
+    ).toHaveClass("h-app-footer-nav");
     expect(screen.getByRole("navigation", { name: /app navigation/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /quiz/i })).toHaveAttribute("href", "/quiz");
     expect(screen.getByRole("link", { name: /bingo/i })).toHaveAttribute("href", "/bingo");
@@ -66,5 +69,16 @@ describe("AppFooter", () => {
     for (const link of links) {
       expect(link).toHaveAttribute("data-nav-kind", "client");
     }
+  });
+
+  it("renders only the copyright line when navigation is hidden", () => {
+    render(
+      <MemoryRouter>
+        <AppFooter {...defaultProps} navVisible={false} />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByRole("navigation", { name: /app navigation/i })).not.toBeInTheDocument();
+    expect(screen.getByText(getAppCopyrightText())).toBeInTheDocument();
   });
 });

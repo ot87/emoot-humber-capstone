@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppShellFooterNavVisibility } from "@/components/layout/useAppShellFooterNavVisibility";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";
@@ -7,9 +10,21 @@ import { SAVE_QUIZ_RESULT_ERROR, useSaveQuizResult } from "./hooks/useSaveQuizRe
 
 export default function QuizPage() {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const { setFooterNavVisible } = useAppShellFooterNavVisibility();
   const { saveCompletion } = useSaveQuizResult();
   const { questions, quizId, loading, error } = useQuestions();
   const quiz = useQuiz(questions);
+
+  useEffect(() => {
+    const onLanding = quiz.step !== "questions";
+    const hideFooterNav = !authLoading && user === null && onLanding;
+    setFooterNavVisible(!hideFooterNav);
+
+    return () => {
+      setFooterNavVisible(true);
+    };
+  }, [authLoading, quiz.step, setFooterNavVisible, user]);
 
   if (error) {
     return (

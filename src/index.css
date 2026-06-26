@@ -70,6 +70,10 @@
   --color-app-footer-nav-selected: var(--app-footer-nav-selected);
   --color-app-footer-copyright: var(--app-footer-copyright);
   --color-app-footer-copyright-foreground: var(--app-footer-copyright-foreground);
+  --height-app-footer-nav: var(--app-footer-nav-height);
+  --height-app-footer-copyright: var(--app-footer-copyright-height);
+  --height-app-footer-nav-item: var(--app-footer-nav-item-height);
+  --width-app-footer-nav-item: var(--app-footer-nav-item-width);
   --shadow-app-header: var(--app-header-shadow);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
@@ -143,6 +147,10 @@
   --app-footer-nav-selected: #ffd870;
   --app-footer-copyright: #1a1a1a;
   --app-footer-copyright-foreground: #ffffff;
+  --app-footer-nav-height: 75px;
+  --app-footer-copyright-height: 63px;
+  --app-footer-nav-item-height: 63px;
+  --app-footer-nav-item-width: 65px;
   /* App header — bottom elevation per Figma */
   --app-header-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.08);
 }

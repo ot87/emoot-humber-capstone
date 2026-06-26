@@ -3,14 +3,19 @@ import { AppShellVisibilityContext } from "@/components/layout/appShellVisibilit
 
 type AppShellVisibilityProviderProps = {
   setHeaderVisible: (visible: boolean) => void;
+  setFooterNavVisible: (visible: boolean) => void;
   children: ReactNode;
 };
 
 export function AppShellVisibilityProvider({
   setHeaderVisible,
+  setFooterNavVisible,
   children,
 }: AppShellVisibilityProviderProps) {
-  const value = useMemo(() => ({ setHeaderVisible }), [setHeaderVisible]);
+  const value = useMemo(
+    () => ({ setHeaderVisible, setFooterNavVisible }),
+    [setHeaderVisible, setFooterNavVisible],
+  );
 
   return (
     <AppShellVisibilityContext.Provider value={value}>

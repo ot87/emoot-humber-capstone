@@ -80,7 +80,7 @@ describe("bingo result gate", () => {
     expect(await screen.findByRole("heading", { name: /hi there!/i })).toBeInTheDocument();
   });
 
-  it("renders login inside the shared app shell", async () => {
+  it("renders login outside the shared app shell", async () => {
     authMock.user = null;
 
     render(
@@ -90,8 +90,8 @@ describe("bingo result gate", () => {
     );
 
     expect(await screen.findByRole("heading", { name: /hi there!/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /emoot home/i })).toBeInTheDocument();
-    expect(screen.getByRole("navigation", { name: /app navigation/i })).toBeInTheDocument();
-    expect(screen.getByText(/happy path ventures incorporated/i)).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /emoot home/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: /app navigation/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/happy path ventures incorporated/i)).not.toBeInTheDocument();
   });
 });

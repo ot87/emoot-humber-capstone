@@ -2,6 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { getQuestions } from "@/services/quiz.service";
+import type { AuthUser } from "@/types/user";
 import {
   testLoadedQuiz,
   testQuizQuestions,
@@ -36,6 +37,15 @@ vi.mock("@/features/quiz/hooks/useResultDefinitions", () => ({
 vi.mock("@/features/quiz/hooks/useSaveQuizResult", () => ({
   SAVE_QUIZ_RESULT_ERROR: "Could not save your quiz result. Please try again.",
   useSaveQuizResult: vi.fn(),
+}));
+
+vi.mock("@/services/auth.service", () => ({
+  signInWithGoogle: vi.fn(),
+  signOut: vi.fn(),
+  listenToAuthChanges: vi.fn((callback: (user: AuthUser | null) => void) => {
+    callback(null);
+    return () => {};
+  }),
 }));
 
 const mockedGetQuestions = vi.mocked(getQuestions);

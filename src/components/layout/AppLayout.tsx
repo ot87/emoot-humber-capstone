@@ -17,11 +17,15 @@ function getBingoNavActive(pathname: string): boolean {
 export function AppLayout() {
   const location = useLocation();
   const [headerVisible, setHeaderVisible] = useState(true);
+  const [footerNavVisible, setFooterNavVisible] = useState(true);
   const quizNavActive = getQuizNavActive(location.pathname);
   const bingoNavActive = getBingoNavActive(location.pathname);
 
   return (
-    <AppShellVisibilityProvider setHeaderVisible={setHeaderVisible}>
+    <AppShellVisibilityProvider
+      setHeaderVisible={setHeaderVisible}
+      setFooterNavVisible={setFooterNavVisible}
+    >
       <div className="flex h-svh w-full flex-col overflow-hidden bg-background">
         {headerVisible ? <AppHeader navLink={Link} homeTo="/quiz" /> : null}
 
@@ -33,6 +37,7 @@ export function AppLayout() {
 
         <AppFooter
           navLink={Link}
+          navVisible={footerNavVisible}
           quizNav={{
             to: "/quiz",
             label: "Quiz",

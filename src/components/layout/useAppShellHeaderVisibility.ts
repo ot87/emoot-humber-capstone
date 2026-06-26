@@ -8,7 +8,7 @@ export function useAppShellHeaderVisibility(): AppShellVisibilityContextValue {
   const context = useContext(AppShellVisibilityContext);
 
   if (!context) {
-    return { setHeaderVisible: () => {} };
+    return { setHeaderVisible: () => {}, setFooterNavVisible: () => {} };
   }
 
   return context;
