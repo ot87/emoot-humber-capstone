@@ -48,14 +48,21 @@ Re-run as often as you like; `set()` overwrites, so it always converges to what 
 
 ## Seed prod
 
-These are terminal commands, run from the repo root, only when you intend to write to the live database. First get a service-account key: Firebase console -> Project settings -> Service accounts -> Generate new private key. Save it at `./secrets/serviceAccount.json` and add `secrets/` to `.gitignore`. Then:
+These are terminal commands, run from the repo root, only when you intend to write to the live database. First get a service-account key: Firebase console -> Project settings -> Service accounts -> Generate new private key. Save it at `./secrets/serviceAccount.json` - the `secrets/` dir is gitignored, so the key stays local. Never commit it: it has full Admin SDK access and bypasses every security rule. Then:
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=./secrets/serviceAccount.json   # points firebase-admin at the key, this shell session only
+export FIREBASE_PROJECT_ID=emoot-my-savings-goal                      # pin the target so it can't resolve to the wrong project
 SEED_CONFIRM=yes npm run seed:prod
 ```
 
-The target is the `.firebaserc` default (the service-account key must be for that same project). Prod refuses to run without `SEED_CONFIRM=yes`, so it cannot fire by accident.
+Pin `FIREBASE_PROJECT_ID` explicitly. Without it the seed falls back to the `.firebaserc` default; setting it here removes any doubt about which project gets written - the same wrong-project trap the deploy runbook guards against with `--project`. The service-account key must be for that same project.
+
+Two things gate the write: prod refuses to run without `SEED_CONFIRM=yes`, so it cannot fire by accident, and before it commits anything the seed logs `Seeding PROD (project <id>)` - eyeball that it names `emoot-my-savings-goal`.
+
+The seed is idempotent (`set()` overwrites), so re-running converges to exactly what is in the data files. Prod currently holds placeholder content: re-run `seed:prod` once the final quiz copy (KAN-27) and bingo content land, and it overwrites the `FLAG` placeholders cleanly.
+
+For deploying the app itself - rules, indexes, and hosting - see [Deploying to production](../../README.md#deploying-to-production) in the project README. Deploy and seed together are the full ship-to-prod path.
 
 ## package.json scripts
 
