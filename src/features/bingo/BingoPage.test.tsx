@@ -55,6 +55,8 @@ describe("BingoPage", () => {
   it("renders the locked entry when no saved quiz result exists", async () => {
     renderBingoPage();
 
+    expect(await screen.findByRole("heading", { name: /what type are you/i })).toBeInTheDocument();
+    expect(screen.getByText(/your money saving personality/i)).toBeInTheDocument();
     expect(
       await screen.findByRole("heading", { name: /emoot bingo is locked/i }),
     ).toBeInTheDocument();

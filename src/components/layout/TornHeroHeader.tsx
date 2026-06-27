@@ -1,15 +1,20 @@
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import headerTornBg from "@/assets/bg-header-torn.svg";
 import { AppContentShell } from "@/components/layout/AppContentShell";
 import { TitleBanner } from "@/components/layout/TitleBanner";
 import { cn } from "@/lib/utils";
+
+type TitleBannerVariant = ComponentProps<typeof TitleBanner>["variant"];
 
 type TornHeroHeaderProps = {
   title: ReactNode;
   subtitle?: ReactNode;
   badge: ReactNode;
   badgeMarginClassName?: string;
+  badgeShellClassName?: string;
+  titleBannerVariant?: TitleBannerVariant;
   titleShellClassName?: string;
+  headerClassName?: string;
   contentShellClassName?: string;
   className?: string;
   children?: ReactNode;
@@ -20,14 +25,22 @@ export function TornHeroHeader({
   subtitle,
   badge,
   badgeMarginClassName = "mb-4",
+  badgeShellClassName = "size-28",
+  titleBannerVariant,
   titleShellClassName,
+  headerClassName,
   contentShellClassName,
   className,
   children,
 }: TornHeroHeaderProps) {
   return (
     <div className={cn("flex min-h-0 flex-1 flex-col bg-background", className)}>
-      <header className="relative w-full min-h-3/12 sm:min-h-1/3 lg:min-h-64 xl:min-h-72">
+      <header
+        className={cn(
+          "relative w-full min-h-3/12 sm:min-h-1/3 lg:min-h-64 xl:min-h-72",
+          headerClassName,
+        )}
+      >
         <img
           src={headerTornBg}
           alt=""
@@ -45,7 +58,7 @@ export function TornHeroHeader({
             titleShellClassName,
           )}
         >
-          <TitleBanner>{title}</TitleBanner>
+          <TitleBanner variant={titleBannerVariant}>{title}</TitleBanner>
           {subtitle}
         </AppContentShell>
       </header>
@@ -55,7 +68,12 @@ export function TornHeroHeader({
           className={cn("relative z-10 -mt-14 flex justify-center", badgeMarginClassName)}
           aria-hidden="true"
         >
-          <div className="flex size-28 items-center justify-center rounded-full border-4 border-quiz-badge-ring bg-quiz-header">
+          <div
+            className={cn(
+              "flex items-center justify-center rounded-full border-4 border-quiz-badge-ring bg-quiz-header",
+              badgeShellClassName,
+            )}
+          >
             {badge}
           </div>
         </div>
