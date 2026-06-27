@@ -65,7 +65,8 @@ In dev the app signs in against the real Firebase project but reads and writes F
 - `npm run lint` - lint
 - `npm run typecheck` - type-check without emitting
 - `npm run preview` - preview the production build
-- `npm run test` - run unit tests
+- `npm run test` - run the unit test suite only (the security-rules tests are a separate command, `npm run test:rules`)
+- `npm run test:rules` - run the Firestore security-rules tests against the emulator. Separate from `npm run test` (which excludes them); needs the emulator and a Java JDK, and starts its own emulator via `emulators:exec`
 - `npm run emulators` - start the local Firestore emulator, pinned with `--project` so the Emulator UI shows the same namespace the seed writes
 - `npm run emulators:persist` - same, but imports/exports `./.emulator-data` so seeded data survives restarts
 - `npm run seed:emulator` - load content into the local Firestore emulator (see [`scripts/seed/README.md`](scripts/seed/README.md))
@@ -94,7 +95,14 @@ VITE_FIREBASE_APP_ID=
 
 `.env.example` is the tracked template with placeholders only; real values live only in `.env.local`, which git ignores.
 
-Security rules enforce per-user access: a user can read and write only their own data. [TODO: link the rules file once written.]
+Security rules ([firestore.rules](firestore.rules)) enforce the access model described in the data model's ["Security model and indexes"](docs/data-model/README.md#security-model-and-indexes) section:
+
+- Quiz content (`quizzes`/`questions`, `personalityTypes`) is publicly readable; client writes are denied.
+- `bingoChallenges` is readable by signed-in users; client writes are denied.
+- Per-user documents (`userQuizResults/{uid}`, `bingoBoards/{uid}`) are owner-only (`request.auth.uid == uid`).
+- `feedback` lets a signed-in user create their own document (`userId == request.auth.uid`); client reads are denied (admin/analytics only).
+
+Content writes are seed/admin-only (`allow write: if false`); the Admin SDK bypasses the rules.
 
 ## Troubleshooting
 
@@ -118,6 +126,7 @@ Issues the team hit during first setup, with fixes:
 The app is unaffected by this: it reads through the SDK using `VITE_FIREBASE_PROJECT_ID`, the same namespace the seed writes.
 
 - **`:persist` export lands in the repo root, or data is empty on re-run.** The persist script must give `--export-on-exit` an explicit path (`--export-on-exit=./.emulator-data`), or the export goes to the current directory. It also only writes on a clean Ctrl-C exit. For the bootstrap and the two-script split, see "Two emulator scripts" under Running locally.
+- **`npm run test:rules` fails with "port taken" / 8080 already in use.** The rules tests start their own Firestore emulator on the configured port, so they collide with a running `npm run emulators` / `emulators:persist`. Stop the running emulator first, then run `test:rules`.
 
 ## Project structure
 
@@ -199,6 +208,8 @@ src/
 ## Testing
 
 Unit tests use Vitest and React Testing Library, co-located as `*.test.ts(x)`. The pure `*.logic.ts` files are the primary unit-test targets. Tests never touch live Firebase: mock the service layer (`vi.mock("@/services/...")`). Run with `npm run test`; a single file with `npx vitest run src/features/quiz/quiz.logic.test.ts`.
+
+Security rules have a separate suite under `test/rules/`, written with `@firebase/rules-unit-testing` and run against the Firestore emulator (not the jsdom unit run). It is excluded from `npm run test` and run with `npm run test:rules` instead - see Scripts and Troubleshooting above.
 
 ## Deployment
 
