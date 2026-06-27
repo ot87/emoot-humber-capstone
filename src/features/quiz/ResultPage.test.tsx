@@ -4,9 +4,19 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { useLoadQuizResult } from "@/features/quiz/hooks/useLoadQuizResult";
 import { useResultDefinitions } from "@/features/quiz/hooks/useResultDefinitions";
 import { testResultDefinitions } from "@/features/quiz/quiz.test-fixtures";
+import type { AuthUser } from "@/types/user";
 import { PERSONALITY_TYPES } from "@/types/quiz";
 import type { QuizCompletionResult } from "@/types/quiz";
 import ResultPage from "./ResultPage";
+
+vi.mock("@/services/auth.service", () => ({
+  signInWithGoogle: vi.fn(),
+  signOut: vi.fn(),
+  listenToAuthChanges: vi.fn((callback: (user: AuthUser | null) => void) => {
+    callback(null);
+    return () => {};
+  }),
+}));
 
 vi.mock("@/features/quiz/hooks/useLoadQuizResult", () => ({
   useLoadQuizResult: vi.fn(),

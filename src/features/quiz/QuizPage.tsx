@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAnonymousQuizVisitorFooterNav } from "./hooks/useAnonymousQuizVisitorFooterNav";
 import { QuizLandingScreen } from "./components/QuizLandingScreen";
 import { QuizQuestionsFlow } from "./components/QuizQuestionsFlow";
 import { useQuestions } from "./hooks/useQuestions";
@@ -7,6 +8,7 @@ import { SAVE_QUIZ_RESULT_ERROR, useSaveQuizResult } from "./hooks/useSaveQuizRe
 
 export default function QuizPage() {
   const navigate = useNavigate();
+  useAnonymousQuizVisitorFooterNav();
   const { saveCompletion } = useSaveQuizResult();
   const { questions, quizId, loading, error } = useQuestions();
   const quiz = useQuiz(questions);
@@ -64,7 +66,7 @@ export default function QuizPage() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex min-h-full flex-1 flex-col">
       <QuizLandingScreen loading={loading} itemCount={questions.length} onStart={quiz.start} />
     </div>
   );

@@ -41,6 +41,14 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/quiz" replace />} />
+      <Route
+        path="/auth"
+        element={
+          <div className="flex h-svh w-full flex-col overflow-hidden bg-background">
+            <AuthPage />
+          </div>
+        }
+      />
       <Route element={<AppLayout />}>
         <Route path="/quiz" element={<QuizPage />} />
         <Route path="/result" element={<ResultPage />} />
@@ -62,7 +70,6 @@ export default function AppRoutes() {
             </RequireAuth>
           }
         />
-        <Route path="/auth" element={<AuthPage />} />
       </Route>
     </Routes>
   );

@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { AuthUser } from "@/types/user";
 import { AppLayout } from "./AppLayout";
+import { useAppShellFooterNavVisibility } from "./useAppShellFooterNavVisibility";
 import { useAppShellHeaderVisibility } from "./useAppShellHeaderVisibility";
 
 vi.mock("@/services/auth.service", () => ({
@@ -24,6 +25,16 @@ function HeaderVisibilityProbe({ visible }: { visible: boolean }) {
   );
 }
 
+function FooterNavVisibilityProbe({ visible }: { visible: boolean }) {
+  const { setFooterNavVisible } = useAppShellFooterNavVisibility();
+
+  return (
+    <button type="button" onClick={() => setFooterNavVisible(visible)}>
+      Set footer nav {visible ? "visible" : "hidden"}
+    </button>
+  );
+}
+
 function renderAppLayout(initialEntry: string, page: React.ReactNode) {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
@@ -33,7 +44,6 @@ function renderAppLayout(initialEntry: string, page: React.ReactNode) {
           <Route path="/result" element={<div>Result page</div>} />
           <Route path="/bingo" element={<div>Bingo page</div>} />
           <Route path="/bingo/board" element={<div>Bingo board page</div>} />
-          <Route path="/auth" element={<div>Auth page</div>} />
         </Route>
       </Routes>
     </MemoryRouter>,
@@ -56,18 +66,24 @@ describe("AppLayout", () => {
     expect(screen.getByRole("link", { name: /bingo/i })).not.toHaveAttribute("aria-current");
   });
 
-  it("does not highlight quiz navigation on /auth", () => {
-    renderAppLayout("/auth", <div>Auth page</div>);
-
-    expect(screen.getByRole("link", { name: /quiz/i })).not.toHaveAttribute("aria-current");
-    expect(screen.getByRole("link", { name: /bingo/i })).not.toHaveAttribute("aria-current");
-  });
-
   it("does not highlight quiz navigation on /result", () => {
     renderAppLayout("/result", <div>Result page</div>);
 
     expect(screen.getByRole("link", { name: /quiz/i })).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("link", { name: /bingo/i })).not.toHaveAttribute("aria-current");
+  });
+
+  it("hides the footer navigation when a page requests it", async () => {
+    const user = userEvent.setup();
+
+    renderAppLayout("/quiz", <FooterNavVisibilityProbe visible={false} />);
+
+    expect(screen.getByRole("navigation", { name: /app navigation/i })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /set footer nav hidden/i }));
+
+    expect(screen.queryByRole("navigation", { name: /app navigation/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/happy path ventures incorporated/i)).toBeInTheDocument();
   });
 
   it("highlights bingo navigation on /bingo", () => {

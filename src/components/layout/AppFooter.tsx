@@ -13,6 +13,7 @@ export type AppFooterProps = {
   navLink: AppNavLinkComponent;
   quizNav: AppFooterNavItem;
   bingoNav: AppFooterNavItem;
+  isNavVisible?: boolean;
   className?: string;
 };
 
@@ -27,7 +28,7 @@ function AppFooterNavLink({ navLink: NavLink, item }: AppFooterNavLinkProps) {
     "aria-label": item.label,
     "aria-current": item.isActive ? "page" : undefined,
     className: cn(
-      "flex h-[63px] w-[65px] flex-col items-center justify-center gap-1 rounded-xl transition-colors",
+      "flex h-app-footer-nav-item w-app-footer-nav-item flex-col items-center justify-center gap-1 rounded-xl transition-colors",
       item.isActive ? "bg-app-footer-nav-selected" : "hover:bg-app-footer-nav-selected/70",
     ),
     children: (
@@ -51,17 +52,25 @@ function AppFooterNavLink({ navLink: NavLink, item }: AppFooterNavLinkProps) {
   return <NavLink {...linkProps} />;
 }
 
-export function AppFooter({ navLink, quizNav, bingoNav, className }: AppFooterProps) {
+export function AppFooter({
+  navLink,
+  quizNav,
+  bingoNav,
+  isNavVisible = true,
+  className,
+}: AppFooterProps) {
   return (
     <footer className={cn("w-full shrink-0", className)}>
-      <nav aria-label="App navigation" className="w-full bg-app-footer-nav-bg">
-        <div className="flex h-[70px] w-full items-center justify-center gap-8">
-          <AppFooterNavLink navLink={navLink} item={quizNav} />
-          <AppFooterNavLink navLink={navLink} item={bingoNav} />
-        </div>
-      </nav>
+      {isNavVisible ? (
+        <nav aria-label="App navigation" className="w-full bg-app-footer-nav-bg">
+          <div className="flex h-app-footer-nav w-full items-center justify-center gap-8">
+            <AppFooterNavLink navLink={navLink} item={quizNav} />
+            <AppFooterNavLink navLink={navLink} item={bingoNav} />
+          </div>
+        </nav>
+      ) : null}
 
-      <div className="w-full bg-app-footer-copyright px-4 py-3 text-center">
+      <div className="flex h-app-footer-copyright w-full items-center justify-center bg-app-footer-copyright px-4 text-center">
         <p className="font-app-footer text-xs font-normal text-app-footer-copyright-foreground">
           {getAppCopyrightText()}
         </p>
