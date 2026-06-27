@@ -93,7 +93,7 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
 
-`.env.example` is the tracked template with placeholders only; real values live only in `.env.local`, which git ignores.
+`.env.example` is the tracked template with placeholders only. Local development reads the real values from `.env.local`, which git ignores. Production builds read them from `.env.production`, which **is** committed: the Firebase web config is not a secret - it identifies the project but authorizes nothing (access is gated by Firestore Security Rules and the Auth authorized-domains list), and it is already public in the deployed bundle anyone can view-source, so committing it adds no exposure while letting a fresh clone or CI build with no setup. See [Deploying to production](#deploying-to-production).
 
 Security rules ([firestore.rules](firestore.rules)) enforce the access model described in the data model's ["Security model and indexes"](docs/data-model/README.md#security-model-and-indexes) section:
 
@@ -211,10 +211,31 @@ Unit tests use Vitest and React Testing Library, co-located as `*.test.ts(x)`. T
 
 Security rules have a separate suite under `test/rules/`, written with `@firebase/rules-unit-testing` and run against the Firestore emulator (not the jsdom unit run). It is excluded from `npm run test` and run with `npm run test:rules` instead - see Scripts and Troubleshooting above.
 
-## Deployment
+## Deploying to production
 
-- Standalone (public URL): the team's deployed build, for demo and testing. [TODO: link]
-- Production: deployed to the environment designated by the Emoot CTO. [TODO: details once confirmed]
+The app is deployed to Firebase Hosting at **https://emoot-my-savings-goal.web.app** - the team's standalone build, for demo, testing, and handover. Deploys are run by hand from a logged-in machine; there is no CI deploy yet.
+
+**Prerequisites.**
+
+- Logged in to the Firebase CLI (`npx firebase login`), with the Google account added to the project.
+- The active project resolves to `emoot-my-savings-goal`. Check with `npx firebase use`; a stale local override can point it elsewhere, so reset it once with `npx firebase use emoot-my-savings-goal` if needed.
+- The production web config present at build time - it is committed in `.env.production` (see [Firebase](#firebase)), so `npm run build` picks it up with no extra setup.
+
+**Deploy in order - rules and indexes first, hosting second:**
+
+```
+npm run build
+npx firebase deploy --only firestore:rules,firestore:indexes --project emoot-my-savings-goal
+npx firebase deploy --only hosting --project emoot-my-savings-goal
+```
+
+Rules and indexes always go up _before_ hosting. Never put the app on a public URL while the live database still has open or unset rules - that would expose every user's data. Protect the data first, then publish the app.
+
+Pass `--project emoot-my-savings-goal` on every deploy command. The CLI deploys to its _active_ project, and a stale `firebase use` override (a past `firebase use staging` stored outside the repo) can default to the wrong - or a non-existent - project and 403. The explicit `--project` removes that ambiguity regardless of local state.
+
+**After deploying.** Open https://emoot-my-savings-goal.web.app and confirm Google sign-in works on the live domain. If it fails with `auth/unauthorized-domain`, add the domain under **Firebase Console -> Authentication -> Settings -> Authorized domains**. The `.web.app` and `.firebaseapp.com` domains are added automatically; a custom domain would need adding by hand.
+
+Emoot's own production environment - the one designated by the Emoot CTO - is a separate, later target; see Integration and handover below. [TODO: details once confirmed]
 
 ## Integration and handover (for the Emoot team)
 
