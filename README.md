@@ -235,6 +235,8 @@ Pass `--project emoot-my-savings-goal` on every deploy command. The CLI deploys 
 
 **After deploying.** Open https://emoot-my-savings-goal.web.app and confirm Google sign-in works on the live domain. If it fails with `auth/unauthorized-domain`, add the domain under **Firebase Console -> Authentication -> Settings -> Authorized domains**. The `.web.app` and `.firebaseapp.com` domains are added automatically; a custom domain would need adding by hand.
 
+**Seed the content database.** Hosting serves the app, but the quiz, personality-type, and bingo content lives in Firestore and is seeded separately - see [the prod seed runbook](scripts/seed/README.md#seed-prod). Deploy and seed together are the full ship-to-prod path.
+
 Emoot's own production environment - the one designated by the Emoot CTO - is a separate, later target; see Integration and handover below. [TODO: details once confirmed]
 
 ## Integration and handover (for the Emoot team)
