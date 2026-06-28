@@ -218,7 +218,28 @@ describe("ResultPage", () => {
   it("navigates to /auth when the sign-up CTA is clicked", async () => {
     const user = userEvent.setup();
 
-    renderResultPage({ personalityType: "PLANNER", answers: sampleAnswers });
+    renderResultPage({
+      personalityType: "PLANNER",
+      answers: sampleAnswers,
+      quizId: "moneyPersonalityQuiz",
+      needsDeferredSave: true,
+    });
+    await user.click(screen.getByRole("link", { name: /sign up to play emoot bingo/i }));
+
+    expect(screen.getByText(/auth page/i)).toHaveTextContent(
+      '{"from":"/bingo","pendingQuizCompletion":{"personalityType":"PLANNER","answers":{"q1":"a"},"quizId":"moneyPersonalityQuiz"}}',
+    );
+  });
+
+  it("does not forward pending completion when the result was already saved", async () => {
+    const user = userEvent.setup();
+
+    renderResultPage({
+      personalityType: "PLANNER",
+      answers: sampleAnswers,
+      quizId: "moneyPersonalityQuiz",
+      needsDeferredSave: false,
+    });
     await user.click(screen.getByRole("link", { name: /sign up to play emoot bingo/i }));
 
     expect(screen.getByText(/auth page/i)).toHaveTextContent('{"from":"/bingo"}');

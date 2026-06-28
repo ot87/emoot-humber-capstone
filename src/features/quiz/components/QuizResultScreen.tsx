@@ -3,14 +3,16 @@ import { buttonVariants } from "@/components/ui/button";
 import { AppContentShell } from "@/components/layout/AppContentShell";
 import { TitleBanner } from "@/components/layout/TitleBanner";
 import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
+import type { AuthLocationState } from "@/features/quiz/quiz.route-state";
 import { cn } from "@/lib/utils";
 import type { QuizResultDefinition } from "@/types/quiz";
 
 type QuizResultScreenProps = {
   definition: QuizResultDefinition;
+  authLinkState: AuthLocationState;
 };
 
-export function QuizResultScreen({ definition }: QuizResultScreenProps) {
+export function QuizResultScreen({ definition, authLinkState }: QuizResultScreenProps) {
   const theme = getPersonalityResultTheme(definition.personalityType);
 
   return (
@@ -40,7 +42,7 @@ export function QuizResultScreen({ definition }: QuizResultScreenProps) {
         <div className="flex w-full flex-col items-center">
           <Link
             to="/auth"
-            state={{ from: "/bingo" }}
+            state={authLinkState}
             className={cn(buttonVariants({ variant: "brand" }), "quiz-result-cta")}
           >
             Sign up to play Emoot Bingo

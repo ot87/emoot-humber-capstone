@@ -33,6 +33,8 @@ export default function QuizPage() {
         navigate("/result", {
           state: {
             ...result,
+            ...(quizId !== null ? { quizId } : {}),
+            ...(saveOutcome === "skipped" && quizId !== null ? { needsDeferredSave: true } : {}),
             ...(saveOutcome === "failed" ? { saveError: SAVE_QUIZ_RESULT_ERROR } : {}),
           },
         });

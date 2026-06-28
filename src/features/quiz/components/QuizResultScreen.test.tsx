@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import { testResultDefinitions } from "@/features/quiz/quiz.test-fixtures";
 import { PERSONALITY_TYPES, type PersonalityType } from "@/types/quiz";
+import type { AuthLocationState } from "@/features/quiz/quiz.route-state";
 import { QuizResultScreen } from "./QuizResultScreen";
 
 function AuthStub() {
@@ -11,7 +12,10 @@ function AuthStub() {
   return <div>Auth page {JSON.stringify(location.state)}</div>;
 }
 
-function renderQuizResultScreen(personalityType: PersonalityType) {
+function renderQuizResultScreen(
+  personalityType: PersonalityType,
+  authLinkState: AuthLocationState = { from: "/bingo" },
+) {
   const definition = testResultDefinitions.find(
     (candidate) => candidate.personalityType === personalityType,
   );
@@ -22,7 +26,10 @@ function renderQuizResultScreen(personalityType: PersonalityType) {
   return render(
     <MemoryRouter initialEntries={["/result"]}>
       <Routes>
-        <Route path="/result" element={<QuizResultScreen definition={definition} />} />
+        <Route
+          path="/result"
+          element={<QuizResultScreen definition={definition} authLinkState={authLinkState} />}
+        />
         <Route path="/auth" element={<AuthStub />} />
       </Routes>
     </MemoryRouter>,
@@ -63,5 +70,23 @@ describe("QuizResultScreen", () => {
     await user.click(screen.getByRole("link", { name: /sign up to play emoot bingo/i }));
 
     expect(screen.getByText(/auth page/i)).toHaveTextContent('{"from":"/bingo"}');
+  });
+
+  it("forwards pending quiz completion in auth link state", async () => {
+    const user = userEvent.setup();
+
+    renderQuizResultScreen("PLANNER", {
+      from: "/bingo",
+      pendingQuizCompletion: {
+        personalityType: "PLANNER",
+        answers: { q1: "a" },
+        quizId: "moneyPersonalityQuiz",
+      },
+    });
+    await user.click(screen.getByRole("link", { name: /sign up to play emoot bingo/i }));
+
+    expect(screen.getByText(/auth page/i)).toHaveTextContent(
+      '{"from":"/bingo","pendingQuizCompletion":{"personalityType":"PLANNER","answers":{"q1":"a"},"quizId":"moneyPersonalityQuiz"}}',
+    );
   });
 });

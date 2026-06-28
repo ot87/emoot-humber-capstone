@@ -6,17 +6,11 @@ import { GoogleIcon } from "@/features/auth/components/GoogleIcon";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
-type SignInCardProps = {
-  onSuccess: () => void;
-};
-
-export function SignInCard({ onSuccess }: SignInCardProps) {
+export function SignInCard() {
   const { signIn, isSigningIn, error } = useAuth();
 
   async function handleSignIn() {
-    if (await signIn()) {
-      onSuccess();
-    }
+    await signIn();
   }
 
   return (

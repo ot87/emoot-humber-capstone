@@ -9,39 +9,11 @@ import {
 import { useLoadQuizResult } from "@/features/quiz/hooks/useLoadQuizResult";
 import { toQuizCompletionResult } from "@/features/quiz/quiz.result";
 import {
-  PERSONALITY_TYPES,
-  type PersonalityType,
-  type QuizCompletionResult,
-  type QuizResultDefinition,
-} from "@/types/quiz";
-
-function isPersonalityType(value: unknown): value is PersonalityType {
-  return PERSONALITY_TYPES.some((type) => type === value);
-}
-
-function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const candidate = value as QuizCompletionResult;
-  return (
-    isPersonalityType(candidate.personalityType) &&
-    typeof candidate.answers === "object" &&
-    candidate.answers !== null &&
-    Object.keys(candidate.answers).every((k) => typeof k === "string") &&
-    Object.values(candidate.answers).every((optionId) => typeof optionId === "string")
-  );
-}
-
-function getRouteSaveError(state: unknown): string | null {
-  if (!state || typeof state !== "object" || !("saveError" in state)) {
-    return null;
-  }
-
-  const saveError = (state as { saveError: unknown }).saveError;
-  return typeof saveError === "string" ? saveError : null;
-}
+  buildAuthLocationState,
+  parseQuizResultRouteState,
+  type QuizResultRouteState,
+} from "@/features/quiz/quiz.route-state";
+import type { PersonalityType, QuizResultDefinition } from "@/types/quiz";
 
 function resolveDefinition(
   personalityType: PersonalityType,
@@ -60,9 +32,11 @@ function ResultPageError({ message }: { message: string }) {
 
 function ResultScreenWithOptionalBanner({
   definition,
+  routeResult,
   saveError,
 }: {
   definition: QuizResultDefinition;
+  routeResult: QuizResultRouteState;
   saveError: string | null;
 }) {
   return (
@@ -75,7 +49,14 @@ function ResultScreenWithOptionalBanner({
           {saveError}
         </p>
       ) : null}
-      <QuizResultScreen definition={definition} />
+      <QuizResultScreen
+        definition={definition}
+        authLinkState={buildAuthLocationState(
+          routeResult,
+          routeResult.needsDeferredSave === true,
+          routeResult.quizId,
+        )}
+      />
     </div>
   );
 }
@@ -89,7 +70,7 @@ export default function ResultPage() {
     loading: definitionsLoading,
     error: definitionsError,
   } = useResultDefinitions();
-  const routeResult = isQuizCompletionResult(location.state) ? location.state : null;
+  const routeResult = parseQuizResultRouteState(location.state);
 
   if (routeResult) {
     if (definitionsLoading) {
@@ -108,7 +89,8 @@ export default function ResultPage() {
     return (
       <ResultScreenWithOptionalBanner
         definition={definition}
-        saveError={getRouteSaveError(location.state)}
+        routeResult={routeResult}
+        saveError={routeResult.saveError ?? null}
       />
     );
   }
@@ -132,7 +114,7 @@ export default function ResultPage() {
       return <ResultPageError message={LOAD_RESULT_DEFINITIONS_ERROR} />;
     }
 
-    return <QuizResultScreen definition={definition} />;
+    return <QuizResultScreen definition={definition} authLinkState={{ from: "/bingo" }} />;
   }
 
   return <Navigate to="/quiz" replace />;
