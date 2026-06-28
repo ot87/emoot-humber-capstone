@@ -36,14 +36,11 @@ describe("usePersistPendingQuizResult", () => {
     const { result } = renderHook(() => usePersistPendingQuizResult());
 
     await act(async () => {
-      await result.current.persistPending(
-        {
-          personalityType: "PLANNER",
-          answers: { q1: "a" },
-          quizId: "moneyPersonalityQuiz",
-        },
-        "fresh-uid",
-      );
+      await result.current.persistPending({
+        personalityType: "PLANNER",
+        answers: { q1: "a" },
+        quizId: "moneyPersonalityQuiz",
+      });
     });
 
     expect(mockSaveCompletion).toHaveBeenCalledWith(
@@ -52,7 +49,6 @@ describe("usePersistPendingQuizResult", () => {
         answers: { q1: "a" },
       },
       "moneyPersonalityQuiz",
-      "fresh-uid",
     );
   });
 });

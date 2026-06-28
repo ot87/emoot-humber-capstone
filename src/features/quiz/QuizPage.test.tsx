@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { getQuestions } from "@/services/quiz.service";
 import type { AuthUser } from "@/types/user";
 import {
@@ -52,12 +53,24 @@ const mockedGetQuestions = vi.mocked(getQuestions);
 const mockedUseSaveQuizResult = vi.mocked(useSaveQuizResult);
 const mockSaveCompletion = vi.fn().mockResolvedValue("skipped");
 
+let capturedResultNavState: unknown = null;
+
+function ResultWithRouteState() {
+  const location = useLocation();
+
+  useEffect(() => {
+    capturedResultNavState = location.state;
+  }, [location.state]);
+
+  return <ResultPage />;
+}
+
 function renderQuizFlow(initialEntry = "/quiz") {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/quiz" element={<QuizPage />} />
-        <Route path="/result" element={<ResultPage />} />
+        <Route path="/result" element={<ResultWithRouteState />} />
       </Routes>
     </MemoryRouter>,
   );
@@ -75,6 +88,7 @@ async function answerCurrentQuestionAndAdvance(
 
 describe("QuizPage", () => {
   beforeEach(() => {
+    capturedResultNavState = null;
     mockedGetQuestions.mockReset();
     mockedGetQuestions.mockResolvedValue(testLoadedQuiz);
     mockSaveCompletion.mockReset();
@@ -159,6 +173,20 @@ describe("QuizPage", () => {
       "/auth",
     );
     expect(mockSaveCompletion).toHaveBeenCalledOnce();
+
+    const navState = capturedResultNavState as Record<string, unknown>;
+    expect(navState).toMatchObject({
+      needsDeferredSave: true,
+      quizId: "moneyPersonalityQuiz",
+      personalityType: "PLANNER",
+      answers: {
+        q1: "a",
+        q2: "a",
+        q3: "a",
+        q4: "a",
+        q5: "a",
+      },
+    });
   });
 
   it("saves the quiz result when a signed-in user finishes the quiz", async () => {

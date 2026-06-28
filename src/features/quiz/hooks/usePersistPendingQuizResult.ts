@@ -9,7 +9,6 @@ import type { PendingQuizCompletion } from "@/features/quiz/quiz.route-state";
 export type UsePersistPendingQuizResultState = {
   persistPending: (
     pending: PendingQuizCompletion | null | undefined,
-    uidOverride?: string,
   ) => Promise<SaveCompletionOutcome>;
   saveErrorMessage: typeof SAVE_QUIZ_RESULT_ERROR;
 };
@@ -18,10 +17,7 @@ export function usePersistPendingQuizResult(): UsePersistPendingQuizResultState 
   const { saveCompletion } = useSaveQuizResult();
 
   const persistPending = useCallback(
-    async (
-      pending: PendingQuizCompletion | null | undefined,
-      uidOverride?: string,
-    ): Promise<SaveCompletionOutcome> => {
+    async (pending: PendingQuizCompletion | null | undefined): Promise<SaveCompletionOutcome> => {
       if (!pending) {
         return "skipped";
       }
@@ -32,7 +28,6 @@ export function usePersistPendingQuizResult(): UsePersistPendingQuizResultState 
           answers: pending.answers,
         },
         pending.quizId,
-        uidOverride,
       );
     },
     [saveCompletion],

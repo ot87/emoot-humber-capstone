@@ -25,17 +25,14 @@ describe("SignInCard", () => {
     vi.mocked(signInWithGoogle).mockResolvedValue(signedInUser);
   });
 
-  it('calls signInWithGoogle and onSuccess when "Continue with Google" is clicked', async () => {
+  it('calls signInWithGoogle when "Continue with Google" is clicked', async () => {
     const user = userEvent.setup();
-    const onSuccess = vi.fn();
 
-    render(<SignInCard onSuccess={onSuccess} />);
+    render(<SignInCard />);
     await user.click(screen.getByRole("button", { name: /continue with google/i }));
 
     expect(screen.getByText("Powered by Interac e-Transfer®")).toBeInTheDocument();
 
     expect(signInWithGoogle).toHaveBeenCalledOnce();
-    expect(onSuccess).toHaveBeenCalledOnce();
-    expect(onSuccess).toHaveBeenCalledWith(signedInUser);
   });
 });
