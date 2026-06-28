@@ -11,7 +11,6 @@ export type UseSaveQuizResultState = {
   saveCompletion: (
     completion: QuizCompletionResult,
     quizId: string,
-    uidOverride?: string,
   ) => Promise<SaveCompletionOutcome>;
 };
 
@@ -20,19 +19,14 @@ export function useSaveQuizResult(): UseSaveQuizResultState {
   const uid = user?.uid ?? null;
 
   const saveCompletion = useCallback(
-    async (
-      completion: QuizCompletionResult,
-      quizId: string,
-      uidOverride?: string,
-    ): Promise<SaveCompletionOutcome> => {
-      const effectiveUid = uidOverride ?? uid;
-      if (!effectiveUid) {
+    async (completion: QuizCompletionResult, quizId: string): Promise<SaveCompletionOutcome> => {
+      if (!uid) {
         return "skipped";
       }
 
       try {
         await saveQuizResult(
-          effectiveUid,
+          uid,
           quizId,
           completion.answers,
           completion.personalityType,

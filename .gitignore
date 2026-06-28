@@ -32,3 +32,13 @@ coverage
 
 # Firebase emulator data
 .emulator-data/
+
+# Firebase deploy cache
+.firebase/
+
+# Service-account / admin keys - never commit (full Admin SDK access, bypasses all rules)
+secrets/
+serviceAccount.json
+*firebase-adminsdk*.json
+*service-account*.json
+*-key.json

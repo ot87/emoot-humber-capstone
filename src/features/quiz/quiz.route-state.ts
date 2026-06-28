@@ -15,11 +15,16 @@ export type AuthLocationState = {
   pendingQuizCompletion?: PendingQuizCompletion;
 };
 
+export type ParsedAuthLocationState = {
+  from: string;
+  pendingQuizCompletion?: PendingQuizCompletion;
+};
+
 function isPersonalityType(value: unknown): value is PersonalityType {
   return PERSONALITY_TYPES.some((type) => type === value);
 }
 
-export function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
+function isQuizCompletionResult(value: unknown): value is QuizCompletionResult {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -95,7 +100,7 @@ export function buildAuthLocationState(
   };
 }
 
-export function parseAuthLocationState(state: unknown): AuthLocationState {
+export function parseAuthLocationState(state: unknown): ParsedAuthLocationState {
   if (!state || typeof state !== "object") {
     return { from: "/bingo" };
   }

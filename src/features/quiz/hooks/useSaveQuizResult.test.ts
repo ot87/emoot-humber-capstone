@@ -102,32 +102,6 @@ describe("useSaveQuizResult", () => {
     );
   });
 
-  it("uses a uid override when auth state has not updated yet", async () => {
-    const { result } = renderHook(() => useSaveQuizResult());
-
-    let outcome: Awaited<ReturnType<typeof result.current.saveCompletion>> = "failed";
-
-    await act(async () => {
-      outcome = await result.current.saveCompletion(
-        {
-          personalityType: "PLANNER",
-          answers: { q1: "q1a" },
-        },
-        "moneyPersonalityQuiz",
-        "fresh-uid",
-      );
-    });
-
-    expect(outcome).toBe("saved");
-    expect(mockedSaveQuizResult).toHaveBeenCalledWith(
-      "fresh-uid",
-      "moneyPersonalityQuiz",
-      { q1: "q1a" },
-      "PLANNER",
-      expect.any(Date),
-    );
-  });
-
   it("overwrites the prior save when the user completes the quiz again", async () => {
     mockedUseAuth.mockReturnValue({
       user: signedInUser,

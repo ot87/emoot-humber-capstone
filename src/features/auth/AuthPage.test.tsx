@@ -2,16 +2,25 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { saveQuizResult } from "@/services/quiz.service";
-import { signInWithGoogle } from "@/services/auth.service";
+import { signInWithGoogle, listenToAuthChanges } from "@/services/auth.service";
 import type { AuthUser } from "@/types/user";
 import { AuthPage } from "./AuthPage";
+
+let authCallbacks: Array<(user: AuthUser | null) => void> = [];
+
+function notifyAuthListeners(user: AuthUser | null) {
+  authCallbacks.forEach((callback) => callback(user));
+}
 
 vi.mock("@/services/auth.service", () => ({
   signInWithGoogle: vi.fn(),
   signOut: vi.fn(),
   listenToAuthChanges: vi.fn((callback: (user: AuthUser | null) => void) => {
+    authCallbacks.push(callback);
     callback(null);
-    return () => {};
+    return () => {
+      authCallbacks = authCallbacks.filter((registered) => registered !== callback);
+    };
   }),
 }));
 
@@ -22,6 +31,7 @@ vi.mock("@/services/quiz.service", () => ({
 }));
 
 const mockedSignInWithGoogle = vi.mocked(signInWithGoogle);
+const mockedListenToAuthChanges = vi.mocked(listenToAuthChanges);
 const mockedSaveQuizResult = vi.mocked(saveQuizResult);
 
 const signedInUser: AuthUser = {
@@ -59,7 +69,18 @@ function renderAuthPage(state: unknown = pendingAuthState) {
 describe("AuthPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockedSignInWithGoogle.mockResolvedValue(signedInUser);
+    authCallbacks = [];
+    mockedListenToAuthChanges.mockImplementation((callback) => {
+      authCallbacks.push(callback);
+      callback(null);
+      return () => {
+        authCallbacks = authCallbacks.filter((registered) => registered !== callback);
+      };
+    });
+    mockedSignInWithGoogle.mockImplementation(async () => {
+      notifyAuthListeners(signedInUser);
+      return signedInUser;
+    });
     mockedSaveQuizResult.mockResolvedValue({
       userId: "test-uid",
       quizId: "moneyPersonalityQuiz",
@@ -70,7 +91,7 @@ describe("AuthPage", () => {
     });
   });
 
-  it("persists pending quiz completion after Google sign-in and routes to bingo", async () => {
+  it("persists pending quiz completion once after Google sign-in and routes to bingo", async () => {
     const user = userEvent.setup();
 
     renderAuthPage();
@@ -81,6 +102,32 @@ describe("AuthPage", () => {
       expect(screen.getByText(/bingo page/i)).toBeInTheDocument();
     });
 
+    expect(mockedSaveQuizResult).toHaveBeenCalledOnce();
+    expect(mockedSaveQuizResult).toHaveBeenCalledWith(
+      "test-uid",
+      "moneyPersonalityQuiz",
+      pendingAuthState.pendingQuizCompletion.answers,
+      "PLANNER",
+      expect.any(Date),
+    );
+  });
+
+  it("persists pending quiz completion once when user is already signed in", async () => {
+    mockedListenToAuthChanges.mockImplementation((callback) => {
+      authCallbacks.push(callback);
+      callback(signedInUser);
+      return () => {
+        authCallbacks = authCallbacks.filter((registered) => registered !== callback);
+      };
+    });
+
+    renderAuthPage();
+
+    await waitFor(() => {
+      expect(screen.getByText(/bingo page/i)).toBeInTheDocument();
+    });
+
+    expect(mockedSignInWithGoogle).not.toHaveBeenCalled();
     expect(mockedSaveQuizResult).toHaveBeenCalledOnce();
     expect(mockedSaveQuizResult).toHaveBeenCalledWith(
       "test-uid",
@@ -117,5 +164,7 @@ describe("AuthPage", () => {
     await waitFor(() => {
       expect(screen.getByText(/bingo page/i)).toHaveTextContent(/could not save your quiz result/i);
     });
+
+    expect(mockedSaveQuizResult).toHaveBeenCalledOnce();
   });
 });
