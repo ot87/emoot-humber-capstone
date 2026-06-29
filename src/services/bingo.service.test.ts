@@ -98,8 +98,20 @@ describe("bingo.service", () => {
     });
 
     await expect(getChallenges("PLANNER")).resolves.toEqual([
-      { id: "planner-0", position: 0, title: "A", whatToDo: "do A", whyItMatters: "why A" },
-      { id: "planner-1", position: 1, title: "B", whatToDo: "do B", whyItMatters: "why B" },
+      {
+        challengeId: "planner-0",
+        position: 0,
+        title: "A",
+        whatToDo: "do A",
+        whyItMatters: "why A",
+      },
+      {
+        challengeId: "planner-1",
+        position: 1,
+        title: "B",
+        whatToDo: "do B",
+        whyItMatters: "why B",
+      },
     ]);
     expect(firestoreMocks.doc).toHaveBeenCalledWith("mock-db", "bingoChallenges", "PLANNER");
   });

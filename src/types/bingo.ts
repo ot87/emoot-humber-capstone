@@ -1,5 +1,21 @@
 import type { PersonalityType } from "@/types/quiz";
 
+export type ChallengeStatus = "NOT_STARTED" | "COMPLETED";
+
+export type FeedbackVote = "UP" | "DOWN";
+
+/** Persisted board state for a signed-in user. */
+export type BingoBoard = {
+  userId: string;
+  personalityType: PersonalityType;
+  challengeStatuses: Record<string, ChallengeStatus>;
+  celebratedLines: string[];
+  feedbackSubmitted: boolean;
+  completedAt: Date | null;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+};
+
 /** One tile on the 3×3 board — aligned with seed `bingoChallengeSchema`. */
 export type BingoChallenge = {
   challengeId: string;
