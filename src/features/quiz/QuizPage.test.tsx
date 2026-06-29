@@ -183,19 +183,17 @@ describe("QuizPage", () => {
     );
     expect(mockSaveCompletion).toHaveBeenCalledOnce();
 
-    await waitFor(() => {
-      expect(capturedResultNavState).toMatchObject({
-        needsDeferredSave: true,
-        quizId: "moneyPersonalityQuiz",
-        personalityType: "PLANNER",
-        answers: {
-          q1: "a",
-          q2: "a",
-          q3: "a",
-          q4: "a",
-          q5: "a",
-        },
-      });
+    expect(readResultNavState()).toMatchObject({
+      needsDeferredSave: true,
+      quizId: "moneyPersonalityQuiz",
+      personalityType: "PLANNER",
+      answers: {
+        q1: "a",
+        q2: "a",
+        q3: "a",
+        q4: "a",
+        q5: "a",
+      },
     });
   });
 
