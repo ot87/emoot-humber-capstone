@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
@@ -53,16 +52,27 @@ const mockedGetQuestions = vi.mocked(getQuestions);
 const mockedUseSaveQuizResult = vi.mocked(useSaveQuizResult);
 const mockSaveCompletion = vi.fn().mockResolvedValue("skipped");
 
-let capturedResultNavState: unknown = null;
+const NAV_STATE_TESTID = "result-nav-state";
 
+// Renders the route state into the DOM so a test can read it synchronously, in
+// the same commit that renders the result heading the test already waits for.
+// A useEffect-based capture races that assertion: under full-suite scheduling
+// the effect can fire after the synchronous read, leaving the value stale.
 function ResultWithRouteState() {
   const location = useLocation();
 
-  useEffect(() => {
-    capturedResultNavState = location.state;
-  }, [location.state]);
+  return (
+    <>
+      {/* Serialized into an attribute, not text, so it can't collide with the
+          findByText/getByText queries other tests run on the result screen. */}
+      <div data-testid={NAV_STATE_TESTID} data-state={JSON.stringify(location.state)} />
+      <ResultPage />
+    </>
+  );
+}
 
-  return <ResultPage />;
+function readResultNavState(): unknown {
+  return JSON.parse(screen.getByTestId(NAV_STATE_TESTID).getAttribute("data-state") ?? "null");
 }
 
 function renderQuizFlow(initialEntry = "/quiz") {
@@ -88,7 +98,6 @@ async function answerCurrentQuestionAndAdvance(
 
 describe("QuizPage", () => {
   beforeEach(() => {
-    capturedResultNavState = null;
     mockedGetQuestions.mockReset();
     mockedGetQuestions.mockResolvedValue(testLoadedQuiz);
     mockSaveCompletion.mockReset();

@@ -9,3 +9,4 @@ Short records of non-obvious architectural decisions, with their context and con
 | [0003](./0003-split-result-ui-and-persistence.md) | Split quiz result UI from result persistence                                                 | Accepted | 2026-05-29 |
 | [0004](./0004-public-read-quiz-content.md)        | Public read for quiz content; no anonymous auth                                              | Accepted | 2026-06-12 |
 | [0005](./0005-styling-reuse-and-assets.md)        | Styling reuse via cva/components/tokens, not constant files; assets imported from src/assets | Accepted | 2026-06-15 |
+| [0006](./0006-service-test-strategy.md)           | Service-layer test strategy — observable outcomes over SDK call shape                        | Accepted | 2026-06-29 |
