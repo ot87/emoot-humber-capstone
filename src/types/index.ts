@@ -1,4 +1,5 @@
 export { PERSONALITY_TYPES } from "@/types/quiz";
+export type { BingoBoard, BingoChallenge, ChallengeStatus, FeedbackVote } from "@/types/bingo";
 export type {
   LoadedQuiz,
   PersonalityType,
