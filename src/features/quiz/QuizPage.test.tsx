@@ -167,25 +167,26 @@ describe("QuizPage", () => {
       await answerCurrentQuestionAndAdvance(user, index === testQuizQuestions.length - 1);
     }
 
-    expect(screen.getByRole("heading", { name: /the planner/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /the planner/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
       "href",
       "/auth",
     );
     expect(mockSaveCompletion).toHaveBeenCalledOnce();
 
-    const navState = capturedResultNavState as Record<string, unknown>;
-    expect(navState).toMatchObject({
-      needsDeferredSave: true,
-      quizId: "moneyPersonalityQuiz",
-      personalityType: "PLANNER",
-      answers: {
-        q1: "a",
-        q2: "a",
-        q3: "a",
-        q4: "a",
-        q5: "a",
-      },
+    await waitFor(() => {
+      expect(capturedResultNavState).toMatchObject({
+        needsDeferredSave: true,
+        quizId: "moneyPersonalityQuiz",
+        personalityType: "PLANNER",
+        answers: {
+          q1: "a",
+          q2: "a",
+          q3: "a",
+          q4: "a",
+          q5: "a",
+        },
+      });
     });
   });
 

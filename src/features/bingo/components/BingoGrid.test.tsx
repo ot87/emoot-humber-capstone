@@ -71,4 +71,19 @@ describe("BingoGrid", () => {
 
     expect(onOpenDetail).toHaveBeenCalledWith("planner-0");
   });
+
+  it("applies completed and pending tile surface classes", () => {
+    const { container } = render(
+      <BingoGrid
+        challenges={testPlannerBingoChallenges}
+        completed={testCompletedPartial}
+        personalityType="PLANNER"
+        onOpenDetail={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelector(".bg-bingo-tile-completed")).toBeInTheDocument();
+    expect(container.querySelector(".bg-bingo-tile-pending")).toBeInTheDocument();
+    expect(container.querySelector(".bg-bingo-tile-centre")).toBeInTheDocument();
+  });
 });

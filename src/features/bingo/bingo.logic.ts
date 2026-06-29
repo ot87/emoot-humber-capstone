@@ -66,7 +66,26 @@ export function getBingoTaskCompletedIcon(): string {
   return BINGO_TASK_ICON.check;
 }
 
-/** Placeholder for all incomplete tasks until each challenge gets its own icon. */
+/** Default placeholder for incomplete tasks without a mapped icon. */
 export function getBingoTaskPendingIcon(): string {
   return BINGO_TASK_ICON.calendar;
+}
+
+/** Maps challenge titles to task icons; falls back to the calendar placeholder. */
+export function getBingoTaskPendingIconForChallenge(challenge: BingoChallenge): string {
+  const title = challenge.title.toLowerCase();
+
+  if (title.includes("separate account") || title.includes("savings goal")) {
+    return BINGO_TASK_ICON.piggyBank;
+  }
+
+  if (title.includes("share") || title.includes("goal-link")) {
+    return BINGO_TASK_ICON.speechBubble;
+  }
+
+  if (title.includes("impulse") || title.includes("reach")) {
+    return BINGO_TASK_ICON.lightbulb;
+  }
+
+  return getBingoTaskPendingIcon();
 }

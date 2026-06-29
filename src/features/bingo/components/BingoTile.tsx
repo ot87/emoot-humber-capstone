@@ -1,6 +1,6 @@
 import {
   getBingoTaskCompletedIcon,
-  getBingoTaskPendingIcon,
+  getBingoTaskPendingIconForChallenge,
   getPersonalityFaceIcon,
   isCentreChallenge,
 } from "@/features/bingo/bingo.logic";
@@ -14,6 +14,11 @@ export type BingoTileProps = {
   isCompleted: boolean;
   onOpenDetail: (challengeId: string) => void;
 };
+
+const tileTitleClassName =
+  "font-quiz-body text-xs font-medium leading-[15px] tracking-normal text-center";
+
+const taskIconClassName = "size-[30px] shrink-0";
 
 export function BingoTile({
   challenge,
@@ -31,7 +36,7 @@ export function BingoTile({
         onOpenDetail(challenge.challengeId);
       }}
       className={cn(
-        "relative flex aspect-square w-full min-w-0 flex-col items-center justify-center rounded-xl p-1 text-center transition-colors sm:rounded-2xl sm:p-2",
+        "relative flex aspect-square w-full min-w-0 flex-col items-center justify-center gap-1 rounded-xl p-1 text-center transition-colors sm:rounded-2xl sm:p-1.5",
         isCentre
           ? "bg-bingo-tile-centre text-bingo-tile-centre-foreground"
           : isCompleted
@@ -50,24 +55,33 @@ export function BingoTile({
             className="size-7 shrink-0 sm:size-8"
             aria-hidden="true"
           />
-          <span className="mt-1 line-clamp-2 font-quiz-body text-[10px] font-bold leading-tight tracking-[-0.2px] sm:text-xs">
-            {challenge.title}
-          </span>
+          <span className={cn("line-clamp-2", tileTitleClassName)}>{challenge.title}</span>
+        </>
+      ) : isCompleted ? (
+        <>
+          <img
+            src={getBingoTaskCompletedIcon()}
+            alt=""
+            width={30}
+            height={30}
+            decoding="async"
+            className={taskIconClassName}
+            aria-hidden="true"
+          />
+          <span className={cn("line-clamp-3 px-0.5", tileTitleClassName)}>{challenge.title}</span>
         </>
       ) : (
         <>
           <img
-            src={isCompleted ? getBingoTaskCompletedIcon() : getBingoTaskPendingIcon()}
+            src={getBingoTaskPendingIconForChallenge(challenge)}
             alt=""
-            width={28}
-            height={28}
+            width={30}
+            height={30}
             decoding="async"
-            className="size-6 shrink-0 sm:size-7"
+            className={taskIconClassName}
             aria-hidden="true"
           />
-          <span className="mt-1 line-clamp-2 px-0.5 font-quiz-body text-[10px] font-normal leading-tight tracking-[-0.2px] sm:text-xs sm:leading-snug">
-            {challenge.title}
-          </span>
+          <span className={cn("line-clamp-2 px-0.5", tileTitleClassName)}>{challenge.title}</span>
         </>
       )}
     </button>

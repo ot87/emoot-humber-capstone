@@ -11,6 +11,7 @@ type TornHeroHeaderProps = {
   subtitle?: ReactNode;
   badge: ReactNode;
   badgeMarginClassName?: string;
+  badgeOverlapClassName?: string;
   badgeShellClassName?: string;
   titleBannerVariant?: TitleBannerVariant;
   titleShellClassName?: string;
@@ -25,6 +26,7 @@ export function TornHeroHeader({
   subtitle,
   badge,
   badgeMarginClassName = "mb-4",
+  badgeOverlapClassName = "-mt-14",
   badgeShellClassName = "size-28",
   titleBannerVariant,
   titleShellClassName,
@@ -65,12 +67,16 @@ export function TornHeroHeader({
 
       <AppContentShell className={cn("relative flex flex-col", contentShellClassName)}>
         <div
-          className={cn("relative z-10 -mt-14 flex justify-center", badgeMarginClassName)}
+          className={cn(
+            "relative z-10 flex justify-center",
+            badgeOverlapClassName,
+            badgeMarginClassName,
+          )}
           aria-hidden="true"
         >
           <div
             className={cn(
-              "flex items-center justify-center rounded-full border-4 border-quiz-badge-ring bg-quiz-header",
+              "flex items-center justify-center overflow-hidden rounded-full border-4 border-quiz-badge-ring bg-quiz-header",
               badgeShellClassName,
             )}
           >

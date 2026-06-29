@@ -42,15 +42,19 @@ export function BingoBoardPage() {
   return (
     <BingoBoardLayout personalityType={savedResult.personalityType}>
       <h1 className="sr-only">Bingo board</h1>
-      <BingoScreenContent>
+      <BingoScreenContent variant="board">
         <BingoGrid
           challenges={challenges}
           completed={completed}
           personalityType={savedResult.personalityType}
           onOpenDetail={handleOpenDetail}
-          className="gap-3"
+          className="w-full shrink-0"
         />
-        <BingoProgressCard completedCount={completed.length} totalCount={challenges.length} />
+        <BingoProgressCard
+          personalityType={savedResult.personalityType}
+          completedCount={completed.length}
+          totalCount={challenges.length}
+        />
       </BingoScreenContent>
     </BingoBoardLayout>
   );
