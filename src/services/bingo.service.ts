@@ -79,7 +79,7 @@ export async function getChallenges(personalityType: PersonalityType): Promise<B
   return [...data.challenges]
     .sort((a, b) => a.position - b.position)
     .map((challenge) => ({
-      id: challenge.challengeId,
+      challengeId: challenge.challengeId,
       position: challenge.position,
       title: challenge.title,
       whatToDo: challenge.whatToDo,
@@ -111,7 +111,7 @@ export async function createBoard(
   const challengeStatuses: Record<string, ChallengeStatus> = {};
 
   for (const challenge of challenges) {
-    challengeStatuses[challenge.id] = "NOT_STARTED";
+    challengeStatuses[challenge.challengeId] = "NOT_STARTED";
   }
 
   const boardRef = doc(db, BINGO_BOARDS_COLLECTION, uid);

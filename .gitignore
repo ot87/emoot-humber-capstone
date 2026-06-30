@@ -42,3 +42,6 @@ serviceAccount.json
 *firebase-adminsdk*.json
 *service-account*.json
 *-key.json
+
+# Local icon preview scratch
+.tmp-icon-preview/

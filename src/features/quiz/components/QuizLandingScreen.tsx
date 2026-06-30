@@ -1,5 +1,5 @@
-import quizLandingBg from "@/assets/bg-quiz-landing.svg";
 import quizStarIcon from "@/assets/icon-star.svg";
+import { QuizLandingBackground } from "@/components/layout/QuizLandingBackground";
 import { TornHeroHeader } from "@/components/layout/TornHeroHeader";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -13,17 +13,7 @@ type QuizLandingScreenProps = {
 export function QuizLandingScreen({ loading = false, itemCount, onStart }: QuizLandingScreenProps) {
   const hasQuestions = itemCount > 0;
   return (
-    <div className="relative flex min-h-full flex-1 flex-col bg-background">
-      <img
-        src={quizLandingBg}
-        alt=""
-        aria-hidden="true"
-        width={402}
-        height={873}
-        decoding="async"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top select-none"
-      />
-
+    <QuizLandingBackground>
       <TornHeroHeader
         className="relative z-10 min-h-full bg-transparent"
         title={
@@ -95,6 +85,6 @@ export function QuizLandingScreen({ loading = false, itemCount, onStart }: QuizL
           </>
         )}
       </TornHeroHeader>
-    </div>
+    </QuizLandingBackground>
   );
 }

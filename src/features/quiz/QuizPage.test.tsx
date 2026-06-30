@@ -179,15 +179,14 @@ describe("QuizPage", () => {
       await answerCurrentQuestionAndAdvance(user, index === testQuizQuestions.length - 1);
     }
 
-    expect(screen.getByRole("heading", { name: /the planner/i })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /the planner/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sign up to play emoot bingo/i })).toHaveAttribute(
       "href",
       "/auth",
     );
     expect(mockSaveCompletion).toHaveBeenCalledOnce();
 
-    const navState = readResultNavState() as Record<string, unknown>;
-    expect(navState).toMatchObject({
+    expect(readResultNavState()).toMatchObject({
       needsDeferredSave: true,
       quizId: "moneyPersonalityQuiz",
       personalityType: "PLANNER",

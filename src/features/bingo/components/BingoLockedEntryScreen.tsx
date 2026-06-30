@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { BingoEntryLayout } from "@/features/bingo/components/BingoEntryLayout";
 import { BingoLockedGrid } from "@/features/bingo/components/BingoLockedGrid";
+import { BingoScreenContent } from "@/features/bingo/components/BingoScreenContent";
 
 function renderCapsCtaLabel(text: string) {
   return text.split(" ").map((word, index) => (
@@ -17,7 +18,7 @@ function renderCapsCtaLabel(text: string) {
 export function BingoLockedEntryScreen() {
   return (
     <BingoEntryLayout>
-      <div className="mx-auto flex w-full max-w-xs flex-col gap-6">
+      <BingoScreenContent>
         <section className="flex min-h-36 flex-col justify-center rounded-xl bg-bingo-locked-tile px-4 text-center">
           <img
             src={lockIcon}
@@ -44,7 +45,7 @@ export function BingoLockedEntryScreen() {
             {renderCapsCtaLabel("TAKE THE QUIZ TO UNLOCK")}
           </Link>
         </Button>
-      </div>
+      </BingoScreenContent>
     </BingoEntryLayout>
   );
 }

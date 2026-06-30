@@ -1,11 +1,12 @@
 import lockIcon from "@/assets/icon-lock-sm.svg";
+import { BingoGridShell } from "@/features/bingo/components/BingoGridShell";
 
 const ROW_COUNT = 3;
 const TILES_PER_ROW = 3;
 
 export function BingoLockedGrid() {
   return (
-    <div className="grid w-full grid-cols-3 gap-3" aria-label="Locked bingo board preview">
+    <BingoGridShell aria-label="Locked bingo board preview" className="gap-3">
       {Array.from({ length: ROW_COUNT * TILES_PER_ROW }, (_, index) => (
         <div
           key={index}
@@ -22,6 +23,6 @@ export function BingoLockedGrid() {
           />
         </div>
       ))}
-    </div>
+    </BingoGridShell>
   );
 }

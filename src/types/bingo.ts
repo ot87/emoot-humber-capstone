@@ -1,18 +1,10 @@
 import type { PersonalityType } from "@/types/quiz";
 
-export type BingoChallenge = {
-  id: string;
-  position: number;
-  title: string;
-  whatToDo: string;
-  whyItMatters: string;
-};
-
 export type ChallengeStatus = "NOT_STARTED" | "COMPLETED";
 
-/** No SKIP member: skipping the Board Complete prompt writes no feedback at all. */
 export type FeedbackVote = "UP" | "DOWN";
 
+/** Persisted board state for a signed-in user. */
 export type BingoBoard = {
   userId: string;
   personalityType: PersonalityType;
@@ -22,4 +14,25 @@ export type BingoBoard = {
   completedAt: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+};
+
+/** One tile on the 3×3 board — aligned with seed `bingoChallengeSchema`. */
+export type BingoChallenge = {
+  challengeId: string;
+  position: number;
+  title: string;
+  whatToDo: string;
+  whyItMatters: string;
+};
+
+export type BingoBoardLoadState = {
+  challenges: BingoChallenge[];
+  completed: string[];
+  loading: boolean;
+  error: string;
+};
+
+export type UseBingoBoardState = BingoBoardLoadState & {
+  personalityType: PersonalityType;
+  toggleChallenge: (challengeId: string) => Promise<void>;
 };

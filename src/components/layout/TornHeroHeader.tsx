@@ -9,6 +9,7 @@ type TornHeroHeaderProps = {
   subtitle?: ReactNode;
   badge: ReactNode;
   badgeMarginClassName?: string;
+  badgeShellClassName?: string;
   titleShellClassName?: string;
   contentShellClassName?: string;
   className?: string;
@@ -20,6 +21,7 @@ export function TornHeroHeader({
   subtitle,
   badge,
   badgeMarginClassName = "mb-4",
+  badgeShellClassName = "size-28",
   titleShellClassName,
   contentShellClassName,
   className,
@@ -55,7 +57,12 @@ export function TornHeroHeader({
           className={cn("relative z-10 -mt-14 flex justify-center", badgeMarginClassName)}
           aria-hidden="true"
         >
-          <div className="flex size-28 items-center justify-center rounded-full border-4 border-quiz-badge-ring bg-quiz-header">
+          <div
+            className={cn(
+              "flex items-center justify-center overflow-hidden rounded-full border-4 border-quiz-badge-ring bg-quiz-header",
+              badgeShellClassName,
+            )}
+          >
             {badge}
           </div>
         </div>

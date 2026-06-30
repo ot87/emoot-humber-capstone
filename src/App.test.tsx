@@ -24,6 +24,14 @@ const authMock = vi.hoisted(() => {
 vi.mock("@/services/quiz.service", () => ({
   getSavedQuizResult: vi.fn(),
   getQuestions: vi.fn(),
+  getResultDefinitions: vi.fn(),
+}));
+
+vi.mock("@/services/bingo.service", () => ({
+  getBoardState: vi.fn(),
+  createBoard: vi.fn(),
+  getChallenges: vi.fn(),
+  updateChallengeStatus: vi.fn(),
 }));
 
 vi.mock("@/services/auth.service", () => ({
