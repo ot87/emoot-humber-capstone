@@ -41,9 +41,9 @@ describe("useSaveQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
     mockedSaveQuizResult.mockResolvedValue(savedResult);
   });
@@ -73,9 +73,9 @@ describe("useSaveQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
 
     const { result } = renderHook(() => useSaveQuizResult());
@@ -108,9 +108,9 @@ describe("useSaveQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
     mockedSaveQuizResult.mockResolvedValueOnce(savedResult).mockResolvedValueOnce({
       ...savedResult,
@@ -160,9 +160,9 @@ describe("useSaveQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
     mockedSaveQuizResult.mockRejectedValue(new Error("network failure"));
 
@@ -190,9 +190,9 @@ describe("useSaveQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
 
     renderHook(() => useSaveQuizResult());

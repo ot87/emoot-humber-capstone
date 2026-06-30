@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "@/features/auth/AuthProvider";
 import type { AuthUser } from "@/types/user";
 import { AppLayout } from "./AppLayout";
 import { useAppShellFooterNavVisibility } from "./useAppShellFooterNavVisibility";
@@ -37,16 +38,18 @@ function FooterNavVisibilityProbe({ visible }: { visible: boolean }) {
 
 function renderAppLayout(initialEntry: string, page: React.ReactNode) {
   return render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route path="/quiz" element={page} />
-          <Route path="/result" element={<div>Result page</div>} />
-          <Route path="/bingo" element={<div>Bingo page</div>} />
-          <Route path="/bingo/board" element={<div>Bingo board page</div>} />
-        </Route>
-      </Routes>
-    </MemoryRouter>,
+    <AuthProvider>
+      <MemoryRouter initialEntries={[initialEntry]}>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route path="/quiz" element={page} />
+            <Route path="/result" element={<div>Result page</div>} />
+            <Route path="/bingo" element={<div>Bingo page</div>} />
+            <Route path="/bingo/board" element={<div>Bingo board page</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>,
   );
 }
 
