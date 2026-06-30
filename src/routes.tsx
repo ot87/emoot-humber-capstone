@@ -15,8 +15,9 @@ function RequireAuth({ children }: { children: ReactElement }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return null;
+    return <LoadingSpinner />;
   }
+
   if (!user) {
     return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
   }

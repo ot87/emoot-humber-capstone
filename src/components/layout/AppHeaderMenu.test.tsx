@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { listenToAuthChanges, signOut } from "@/services/auth.service";
+import { AuthProvider } from "@/features/auth/AuthProvider";
 import type { AuthUser } from "@/types/user";
 import { AppHeaderMenu } from "./AppHeaderMenu";
 
@@ -23,9 +24,11 @@ const signedInUser: AuthUser = {
 
 function renderMenu() {
   return render(
-    <MemoryRouter>
-      <AppHeaderMenu />
-    </MemoryRouter>,
+    <AuthProvider>
+      <MemoryRouter>
+        <AppHeaderMenu />
+      </MemoryRouter>
+    </AuthProvider>,
   );
 }
 

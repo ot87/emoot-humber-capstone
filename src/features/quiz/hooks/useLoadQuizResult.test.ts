@@ -39,9 +39,9 @@ describe("useLoadQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
     mockedGetSavedQuizResult.mockResolvedValue(null);
   });
@@ -52,9 +52,9 @@ describe("useLoadQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
     mockedGetSavedQuizResult.mockResolvedValue(savedResult);
 
@@ -88,9 +88,9 @@ describe("useLoadQuizResult", () => {
       loading: false,
       signIn: vi.fn(),
       signOut: vi.fn(),
-      isSigningIn: false,
-      isSigningOut: false,
+      authAction: "idle",
       error: "",
+      clearError: vi.fn(),
     });
     mockedGetSavedQuizResult.mockRejectedValue(new Error("network failure"));
 
