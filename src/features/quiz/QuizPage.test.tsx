@@ -8,6 +8,7 @@ import {
   testQuizQuestions,
   testResultDefinitionsByType,
 } from "./quiz.test-fixtures";
+import { AuthProvider } from "@/features/auth/AuthProvider";
 import QuizPage from "./QuizPage";
 import ResultPage from "./ResultPage";
 import { useSaveQuizResult } from "./hooks/useSaveQuizResult";
@@ -77,12 +78,14 @@ function readResultNavState(): unknown {
 
 function renderQuizFlow(initialEntry = "/quiz") {
   return render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <Routes>
-        <Route path="/quiz" element={<QuizPage />} />
-        <Route path="/result" element={<ResultWithRouteState />} />
-      </Routes>
-    </MemoryRouter>,
+    <AuthProvider>
+      <MemoryRouter initialEntries={[initialEntry]}>
+        <Routes>
+          <Route path="/quiz" element={<QuizPage />} />
+          <Route path="/result" element={<ResultWithRouteState />} />
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>,
   );
 }
 

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import authSurfaceBg from "@/assets/bg-auth-surface.svg";
 import { AppContentShell } from "@/components/layout/AppContentShell";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,15 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 export function SignInCard() {
-  const { signIn, isSigningIn, error } = useAuth();
+  const { signIn, authAction, error, clearError } = useAuth();
+  const isSigningIn = authAction === "signing-in";
+
+  // Shared auth error now lives in the provider, so a stale message from an
+  // earlier failed attempt could outlive this card. Reset it on a fresh visit
+  // (signIn() also clears it at the start of each retry-in-place).
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   async function handleSignIn() {
     await signIn();

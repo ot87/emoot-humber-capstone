@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { getSavedQuizResult } from "@/services/quiz.service";
+import { AuthProvider } from "@/features/auth/AuthProvider";
 import type { AuthUser } from "@/types/user";
 import type { SavedQuizResult } from "@/types/quiz";
 import { BingoPage } from "./BingoPage";
@@ -37,13 +38,15 @@ const savedResult: SavedQuizResult = {
 
 function renderBingoPage() {
   return render(
-    <MemoryRouter initialEntries={["/bingo"]}>
-      <Routes>
-        <Route path="/bingo" element={<BingoPage />} />
-        <Route path="/quiz" element={<div>Quiz landing</div>} />
-        <Route path="/bingo/board" element={<div>Bingo board</div>} />
-      </Routes>
-    </MemoryRouter>,
+    <AuthProvider>
+      <MemoryRouter initialEntries={["/bingo"]}>
+        <Routes>
+          <Route path="/bingo" element={<BingoPage />} />
+          <Route path="/quiz" element={<div>Quiz landing</div>} />
+          <Route path="/bingo/board" element={<div>Bingo board</div>} />
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>,
   );
 }
 

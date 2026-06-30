@@ -10,7 +10,8 @@ const menuItemClassName =
 
 export function AppHeaderMenu() {
   const navigate = useNavigate();
-  const { user, loading, signOut, isSigningOut } = useAuth();
+  const { user, loading, signOut, authAction } = useAuth();
+  const isSigningOut = authAction === "signing-out";
 
   if (loading || !user) {
     return <div aria-hidden className="size-7 shrink-0" />;
