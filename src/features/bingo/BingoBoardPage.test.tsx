@@ -1,5 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { BINGO_WIN_COPY } from "@/features/bingo/bingo.win-copy";
 import { getSavedQuizResult } from "@/services/quiz.service";
 import type { AuthUser } from "@/types/user";
 import type { SavedQuizResult } from "@/types/quiz";
@@ -85,5 +87,23 @@ describe("BingoBoardPage", () => {
         screen.getByText(/could not load your quiz result\. please try again\./i),
       ).toBeInTheDocument();
     });
+  });
+
+  it("shows win celebration when a stub toggle completes a line", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+    expect(screen.getByLabelText("Bingo progress")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /separate account, not started/i }));
+    await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
+    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+
+    expect(screen.getByLabelText("Bingo win congratulations")).toBeInTheDocument();
+    expect(screen.getByText(BINGO_WIN_COPY.congratulationsTitle)).toBeInTheDocument();
+    expect(screen.getByLabelText("Bingo win motivation")).toBeInTheDocument();
+    expect(screen.getByText(BINGO_WIN_COPY.streakTitle)).toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo progress")).not.toBeInTheDocument();
   });
 });

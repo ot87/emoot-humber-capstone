@@ -41,3 +41,13 @@ export type UseBingoBoardState = BingoBoardLoadState & {
   personalityType: PersonalityType;
   toggleChallenge: (challengeId: string) => Promise<void>;
 };
+
+export type BingoLineKind = "row" | "col" | "diag";
+
+/** Descriptor for one winning 3-in-a-row line on the 3×3 board. */
+export type BingoLine = {
+  id: string;
+  kind: BingoLineKind;
+  index: number;
+  positions: readonly number[];
+};
