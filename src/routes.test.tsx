@@ -4,11 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import AppRoutes from "@/routes";
 import { AuthProvider } from "@/features/auth/AuthProvider";
+import { testPlannerBingoChallenges } from "@/features/bingo/bingo.test-fixtures";
 import {
   testLoadedQuiz,
   testQuizQuestions,
   testResultDefinitions,
 } from "@/features/quiz/quiz.test-fixtures";
+import { createBoard, getBoardState, getChallenges } from "@/services/bingo.service";
 import { getQuestions, getResultDefinitions, getSavedQuizResult } from "@/services/quiz.service";
 import { listenToAuthChanges } from "@/services/auth.service";
 import type { AuthUser } from "@/types/user";
@@ -32,6 +34,26 @@ vi.mock("@/services/quiz.service", () => ({
   getQuestions: vi.fn(),
   getResultDefinitions: vi.fn(),
 }));
+
+vi.mock("@/services/bingo.service", () => ({
+  getBoardState: vi.fn(),
+  createBoard: vi.fn(),
+  getChallenges: vi.fn(),
+  updateChallengeStatus: vi.fn(),
+}));
+
+const emptyBoard = {
+  userId: "test-uid",
+  personalityType: "PLANNER" as const,
+  challengeStatuses: Object.fromEntries(
+    testPlannerBingoChallenges.map((challenge) => [challenge.challengeId, "NOT_STARTED" as const]),
+  ),
+  celebratedLines: [],
+  feedbackSubmitted: false,
+  completedAt: null,
+  createdAt: null,
+  updatedAt: null,
+};
 
 vi.mock("@/services/auth.service", () => ({
   signInWithGoogle: vi.fn(),
@@ -58,6 +80,9 @@ describe("bingo result gate", () => {
     vi.mocked(getSavedQuizResult).mockResolvedValue(null);
     vi.mocked(getQuestions).mockResolvedValue(testLoadedQuiz);
     vi.mocked(getResultDefinitions).mockResolvedValue(testResultDefinitions);
+    vi.mocked(getBoardState).mockResolvedValue(emptyBoard);
+    vi.mocked(getChallenges).mockResolvedValue(testPlannerBingoChallenges);
+    vi.mocked(createBoard).mockResolvedValue(emptyBoard);
   });
 
   it("redirects /bingo/board to the locked entry when no saved result exists", async () => {

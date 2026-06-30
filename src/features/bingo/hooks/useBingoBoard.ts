@@ -1,61 +1,74 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
-  testBingoChallengesByType,
-  testCompletedEmpty,
-} from "@/features/bingo/bingo.test-fixtures";
-import type { UseBingoBoardState } from "@/types/bingo";
+  createBoard,
+  getBoardState,
+  getChallenges,
+  updateChallengeStatus,
+} from "@/services/bingo.service";
+import type { BingoBoard, ChallengeStatus, UseBingoBoardState } from "@/types/bingo";
 import type { PersonalityType } from "@/types/quiz";
 
 export const LOAD_BINGO_BOARD_ERROR = "Could not load your bingo board. Please try again.";
 
-type StubBoardData = {
-  challenges: UseBingoBoardState["challenges"];
-  completed: string[];
-};
+function completedIdsFromBoard(board: BingoBoard): string[] {
+  return Object.entries(board.challengeStatuses)
+    .filter(([, status]) => status === "COMPLETED")
+    .map(([challengeId]) => challengeId);
+}
 
-/** Stub loader — replaced by bingo.service when KAN-33/KAN-38 land. */
-async function loadStubBoard(personalityType: PersonalityType): Promise<StubBoardData> {
-  const challenges =
-    personalityType in testBingoChallengesByType
-      ? testBingoChallengesByType[personalityType as keyof typeof testBingoChallengesByType]
-      : [];
-
-  if (challenges.length === 0) {
-    return { challenges: [], completed: testCompletedEmpty };
-  }
-
-  return { challenges, completed: testCompletedEmpty };
+function boardLoadKey(uid: string, personalityType: PersonalityType): string {
+  return `${uid}:${personalityType}`;
 }
 
 export function useBingoBoard(personalityType: PersonalityType): UseBingoBoardState {
+  const { user, loading: authLoading } = useAuth();
   const [challenges, setChallenges] = useState<UseBingoBoardState["challenges"]>([]);
   const [completed, setCompleted] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const completedRef = useRef(completed);
 
   useEffect(() => {
+    completedRef.current = completed;
+  }, [completed]);
+
+  const [loadedForKey, setLoadedForKey] = useState<string | null>(null);
+  const [error, setError] = useState("");
+
+  const uid = user?.uid ?? null;
+  const loadKey = uid !== null ? boardLoadKey(uid, personalityType) : null;
+  const awaitingFetch = loadKey !== null && loadedForKey !== loadKey;
+  const loading = authLoading || awaitingFetch;
+
+  useEffect(() => {
+    if (authLoading || uid === null || loadKey === null || loadedForKey === loadKey) {
+      return;
+    }
+
     let cancelled = false;
+    const currentUid = uid;
+    const currentLoadKey = loadKey;
 
     async function loadBoard(): Promise<void> {
-      setLoading(true);
-      setError("");
-
       try {
-        const board = await loadStubBoard(personalityType);
+        let board = await getBoardState(currentUid);
+        if (!board) {
+          board = await createBoard(currentUid, personalityType);
+        }
+
+        const loadedChallenges = await getChallenges(personalityType);
         if (!cancelled) {
-          setChallenges(board.challenges);
-          setCompleted(board.completed);
+          setChallenges(loadedChallenges);
+          setCompleted(completedIdsFromBoard(board));
+          setLoadedForKey(currentLoadKey);
+          setError("");
         }
       } catch (loadError) {
         console.error(loadError);
         if (!cancelled) {
           setChallenges([]);
           setCompleted([]);
+          setLoadedForKey(currentLoadKey);
           setError(LOAD_BINGO_BOARD_ERROR);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
         }
       }
     }
@@ -65,15 +78,35 @@ export function useBingoBoard(personalityType: PersonalityType): UseBingoBoardSt
     return () => {
       cancelled = true;
     };
-  }, [personalityType]);
+  }, [authLoading, uid, loadKey, loadedForKey, personalityType]);
 
-  const toggleChallenge = useCallback(async (challengeId: string): Promise<void> => {
-    setCompleted((current) =>
-      current.includes(challengeId)
-        ? current.filter((id) => id !== challengeId)
-        : [...current, challengeId],
-    );
-  }, []);
+  const toggleChallenge = useCallback(
+    async (challengeId: string): Promise<void> => {
+      if (!uid) {
+        return;
+      }
+
+      const wasCompleted = completedRef.current.includes(challengeId);
+      const nextStatus: ChallengeStatus = wasCompleted ? "NOT_STARTED" : "COMPLETED";
+
+      setCompleted((current) =>
+        wasCompleted ? current.filter((id) => id !== challengeId) : [...current, challengeId],
+      );
+
+      try {
+        const updated = await updateChallengeStatus(uid, challengeId, nextStatus);
+        setCompleted(completedIdsFromBoard(updated));
+        setError("");
+      } catch (toggleError) {
+        console.error(toggleError);
+        setCompleted((current) =>
+          wasCompleted ? [...current, challengeId] : current.filter((id) => id !== challengeId),
+        );
+        setError(LOAD_BINGO_BOARD_ERROR);
+      }
+    },
+    [uid],
+  );
 
   return {
     personalityType,

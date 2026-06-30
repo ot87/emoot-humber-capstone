@@ -25,11 +25,6 @@ export type BingoChallenge = {
   whyItMatters: string;
 };
 
-/** User progress: set of completed challenge ids. */
-export type BingoBoardProgress = {
-  completed: string[];
-};
-
 export type BingoBoardLoadState = {
   challenges: BingoChallenge[];
   completed: string[];

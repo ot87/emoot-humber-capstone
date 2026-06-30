@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import questionIcon from "@/assets/icon-question.svg";
 import { QuizLandingBackground } from "@/components/layout/QuizLandingBackground";
 import { TornHeroHeader } from "@/components/layout/TornHeroHeader";
-import { getPersonalityDisplayName, getPersonalityFaceIcon } from "@/features/bingo/bingo.logic";
+import { getPersonalityDisplayName } from "@/features/bingo/bingo.logic";
+import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import type { PersonalityType } from "@/types/quiz";
 
 const bingoHeroShellProps = {
@@ -71,7 +72,7 @@ export function BingoShellLayout(props: BingoShellLayoutProps) {
         subtitle={bingoHeroSubtitle}
         badge={
           <img
-            src={getPersonalityFaceIcon(personalityType)}
+            src={getPersonalityResultTheme(personalityType).iconSrc}
             alt=""
             width={97}
             height={97}
