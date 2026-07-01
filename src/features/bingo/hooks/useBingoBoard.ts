@@ -25,6 +25,7 @@ export function useBingoBoard(personalityType: PersonalityType): UseBingoBoardSt
   const { user, loading: authLoading } = useAuth();
   const [challenges, setChallenges] = useState<UseBingoBoardState["challenges"]>([]);
   const [completed, setCompleted] = useState<string[]>([]);
+  const [syncedCompleted, setSyncedCompleted] = useState<string[]>([]);
   const completedRef = useRef(completed);
 
   useEffect(() => {
@@ -57,8 +58,10 @@ export function useBingoBoard(personalityType: PersonalityType): UseBingoBoardSt
 
         const loadedChallenges = await getChallenges(personalityType);
         if (!cancelled) {
+          const loadedCompleted = completedIdsFromBoard(board);
           setChallenges(loadedChallenges);
-          setCompleted(completedIdsFromBoard(board));
+          setCompleted(loadedCompleted);
+          setSyncedCompleted(loadedCompleted);
           setLoadedForKey(currentLoadKey);
           setError("");
         }
@@ -67,6 +70,7 @@ export function useBingoBoard(personalityType: PersonalityType): UseBingoBoardSt
         if (!cancelled) {
           setChallenges([]);
           setCompleted([]);
+          setSyncedCompleted([]);
           setLoadedForKey(currentLoadKey);
           setError(LOAD_BINGO_BOARD_ERROR);
         }
@@ -95,7 +99,9 @@ export function useBingoBoard(personalityType: PersonalityType): UseBingoBoardSt
 
       try {
         const updated = await updateChallengeStatus(uid, challengeId, nextStatus);
-        setCompleted(completedIdsFromBoard(updated));
+        const confirmedCompleted = completedIdsFromBoard(updated);
+        setCompleted(confirmedCompleted);
+        setSyncedCompleted(confirmedCompleted);
         setError("");
       } catch (toggleError) {
         console.error(toggleError);
@@ -112,6 +118,7 @@ export function useBingoBoard(personalityType: PersonalityType): UseBingoBoardSt
     personalityType,
     challenges,
     completed,
+    syncedCompleted,
     loading,
     error,
     toggleChallenge,

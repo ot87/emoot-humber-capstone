@@ -52,7 +52,7 @@ describe("BingoTile", () => {
     );
   });
 
-  it("renders the centre tile with savings goal title and personality face icon", () => {
+  it("renders the incomplete centre tile like a pending tile", () => {
     render(
       <BingoTile
         challenge={centreChallenge}
@@ -64,12 +64,53 @@ describe("BingoTile", () => {
 
     const tile = screen.getByRole("button", { name: /emoot savings goal, not started/i });
 
-    expect(tile).toHaveAttribute("data-tile-state", "centre");
+    expect(tile).toHaveAttribute("data-tile-state", "pending");
+    expect(tile).toHaveClass("bg-bingo-tile-pending");
     expect(screen.getByText("Emoot Savings Goal")).toBeVisible();
+    expect(within(tile).getByRole("presentation", { hidden: true })).toHaveAttribute(
+      "src",
+      getBingoTaskPendingIconForChallenge(centreChallenge),
+    );
+  });
+
+  it("renders a completed centre tile with completed styling and personality icon", () => {
+    render(
+      <BingoTile
+        challenge={centreChallenge}
+        personalityType="PLANNER"
+        isCompleted={true}
+        onOpenDetail={vi.fn()}
+      />,
+    );
+
+    const tile = screen.getByRole("button", { name: /emoot savings goal, completed/i });
+
+    expect(tile).toHaveAttribute("data-tile-state", "completed");
+    expect(tile).toHaveClass("bg-bingo-tile-completed");
+    expect(tile).not.toHaveClass("bg-bingo-tile-centre");
     expect(within(tile).getByRole("presentation", { hidden: true })).toHaveAttribute(
       "src",
       getPersonalityResultTheme("PLANNER").iconSrc,
     );
+  });
+
+  it("invokes onOpenDetail when the centre tile is clicked", async () => {
+    const user = userEvent.setup();
+    const onOpenDetail = vi.fn();
+
+    render(
+      <BingoTile
+        challenge={centreChallenge}
+        personalityType="PLANNER"
+        isCompleted={false}
+        onOpenDetail={onOpenDetail}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /emoot savings goal, not started/i }));
+
+    expect(onOpenDetail).toHaveBeenCalledWith("planner-4");
+    expect(onOpenDetail).toHaveBeenCalledTimes(1);
   });
 
   it("distinguishes completed and pending tiles by state and task icon", () => {

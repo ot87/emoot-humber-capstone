@@ -2,8 +2,8 @@ import {
   getBingoTaskCompletedIcon,
   getBingoTaskPendingIconForChallenge,
 } from "@/features/bingo/bingo.icons";
-import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import { isCentreChallenge } from "@/features/bingo/bingo.logic";
+import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";
 import type { BingoChallenge } from "@/types/bingo";
 import type { PersonalityType } from "@/types/quiz";
@@ -27,7 +27,8 @@ export function BingoTile({
   onOpenDetail,
 }: BingoTileProps) {
   const isCentre = isCentreChallenge(challenge);
-  const tileState = isCentre ? "centre" : isCompleted ? "completed" : "pending";
+  const showCentreCompletedLook = isCentre && isCompleted;
+  const tileState = isCompleted ? "completed" : "pending";
 
   return (
     <button
@@ -39,14 +40,12 @@ export function BingoTile({
       }}
       className={cn(
         "relative flex aspect-square w-full min-w-0 flex-col items-center justify-center gap-1 rounded-xl p-1 text-center transition-colors sm:rounded-2xl sm:p-1.5",
-        isCentre
-          ? "bg-bingo-tile-centre text-bingo-tile-centre-foreground"
-          : isCompleted
-            ? "bg-bingo-tile-completed text-bingo-tile-completed-foreground"
-            : "bg-bingo-tile-pending text-foreground",
+        isCompleted
+          ? "bg-bingo-tile-completed text-bingo-tile-completed-foreground"
+          : "bg-bingo-tile-pending text-foreground",
       )}
     >
-      {isCentre ? (
+      {showCentreCompletedLook ? (
         <>
           <img
             src={getPersonalityResultTheme(personalityType).iconSrc}

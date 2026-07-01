@@ -1,13 +1,18 @@
 import {
   BINGO_CENTRE_POSITION,
+  detectNewlyCompletedLines,
+  getCompletedLines,
   getPersonalityDisplayName,
   getRemainingChallengeCount,
+  isBoardComplete,
   isCentreChallenge,
   isChallengeCompleted,
+  isLineComplete,
   sortChallengesByPosition,
 } from "@/features/bingo/bingo.logic";
 import {
   testCompletedPartial,
+  testCompletedOneLine,
   testPlannerBingoChallenges,
 } from "@/features/bingo/bingo.test-fixtures";
 
@@ -42,6 +47,21 @@ describe("getRemainingChallengeCount", () => {
   });
 });
 
+describe("isBoardComplete", () => {
+  it("returns true when every challenge is completed", () => {
+    expect(isBoardComplete(9, 9)).toBe(true);
+  });
+
+  it("returns false when challenges remain", () => {
+    expect(isBoardComplete(8, 9)).toBe(false);
+    expect(isBoardComplete(0, 9)).toBe(false);
+  });
+
+  it("returns false when there are no challenges", () => {
+    expect(isBoardComplete(0, 0)).toBe(false);
+  });
+});
+
 describe("getPersonalityDisplayName", () => {
   it("returns the quiz personality label", () => {
     expect(getPersonalityDisplayName("PLANNER")).toBe("The Planner");
@@ -57,5 +77,88 @@ describe("isCentreChallenge", () => {
     expect(centre).toBeDefined();
     expect(isCentreChallenge(centre!)).toBe(true);
     expect(isCentreChallenge(testPlannerBingoChallenges[0])).toBe(false);
+  });
+});
+
+describe("isLineComplete", () => {
+  it("returns true when every position in the line is completed", () => {
+    expect(
+      isLineComplete(
+        { id: "row0", kind: "row", index: 0, positions: [0, 1, 2] },
+        testCompletedOneLine,
+        testPlannerBingoChallenges,
+      ),
+    ).toBe(true);
+  });
+
+  it("returns false when any position in the line is incomplete", () => {
+    expect(
+      isLineComplete(
+        { id: "row0", kind: "row", index: 0, positions: [0, 1, 2] },
+        testCompletedPartial,
+        testPlannerBingoChallenges,
+      ),
+    ).toBe(false);
+  });
+});
+
+describe("getCompletedLines", () => {
+  it("returns every line that is fully completed", () => {
+    expect(
+      getCompletedLines(testCompletedOneLine, testPlannerBingoChallenges).map((line) => line.id),
+    ).toEqual(["row0"]);
+  });
+});
+
+describe("detectNewlyCompletedLines", () => {
+  it("reports a line that became complete on this toggle", () => {
+    const previous = ["planner-0", "planner-1"];
+    const next = ["planner-0", "planner-1", "planner-2"];
+
+    expect(
+      detectNewlyCompletedLines(previous, next, testPlannerBingoChallenges).map((line) => line.id),
+    ).toEqual(["row0"]);
+  });
+
+  it("returns no lines when a challenge is un-completed", () => {
+    const previous = testCompletedOneLine;
+    const next = ["planner-0", "planner-1"];
+
+    expect(detectNewlyCompletedLines(previous, next, testPlannerBingoChallenges)).toEqual([]);
+  });
+
+  it("reports two lines when a corner toggle completes row and column at once", () => {
+    const previous = ["planner-1", "planner-2", "planner-3", "planner-6"];
+    const next = [...previous, "planner-0"];
+
+    expect(
+      detectNewlyCompletedLines(previous, next, testPlannerBingoChallenges).map((line) => line.id),
+    ).toEqual(["row0", "col0"]);
+  });
+
+  it("reports a column line after a row was already complete", () => {
+    const rowComplete = ["planner-0", "planner-1", "planner-2"];
+    const rowAndColumn = [...rowComplete, "planner-3", "planner-6"];
+
+    expect(
+      detectNewlyCompletedLines(rowComplete, rowAndColumn, testPlannerBingoChallenges).map(
+        (line) => line.id,
+      ),
+    ).toEqual(["col0"]);
+  });
+
+  it("fires again when a line is un-completed and then re-completed", () => {
+    const completed = testCompletedOneLine;
+    const uncompleted = ["planner-0", "planner-1"];
+    const recompleted = testCompletedOneLine;
+
+    expect(detectNewlyCompletedLines(completed, uncompleted, testPlannerBingoChallenges)).toEqual(
+      [],
+    );
+    expect(
+      detectNewlyCompletedLines(uncompleted, recompleted, testPlannerBingoChallenges).map(
+        (line) => line.id,
+      ),
+    ).toEqual(["row0"]);
   });
 });
