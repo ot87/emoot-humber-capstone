@@ -1,7 +1,8 @@
 import { BINGO_TASK_ICON } from "@/features/bingo/bingo.icons";
-import { BINGO_WIN_COPY } from "@/features/bingo/bingo.win-copy";
+import { BINGO_WIN_COPY, getWinLineHeadline } from "@/features/bingo/bingo.win-copy";
 import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";
+import type { BingoLine } from "@/types/bingo";
 import type { PersonalityType } from "@/types/quiz";
 
 type BingoWinCelebrationProps = {
@@ -9,8 +10,16 @@ type BingoWinCelebrationProps = {
   className?: string;
 };
 
+type BingoWinCelebrationTopProps = BingoWinCelebrationProps & {
+  line: BingoLine;
+};
+
 /** Congratulations banner shown above the grid when a line is newly completed. */
-export function BingoWinCelebrationTop({ personalityType, className }: BingoWinCelebrationProps) {
+export function BingoWinCelebrationTop({
+  personalityType,
+  line,
+  className,
+}: BingoWinCelebrationTopProps) {
   const theme = getPersonalityResultTheme(personalityType);
 
   return (
@@ -33,7 +42,7 @@ export function BingoWinCelebrationTop({ personalityType, className }: BingoWinC
       />
       <div className="flex min-w-0 flex-col text-left">
         <p className="font-quiz-body text-sm font-bold leading-snug text-foreground sm:text-base">
-          {BINGO_WIN_COPY.congratulationsTitle}
+          {getWinLineHeadline(line)}
         </p>
         <p className="mt-0.5 font-quiz-body text-xs font-normal leading-snug text-foreground sm:text-sm">
           {BINGO_WIN_COPY.congratulationsSubtitle}

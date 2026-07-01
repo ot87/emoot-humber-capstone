@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BingoGrid } from "@/features/bingo/components/BingoGrid";
+import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import {
   testCompletedPartial,
   testPlannerBingoChallenges,
@@ -21,7 +22,7 @@ describe("BingoGrid", () => {
     expect(screen.getAllByRole("button")).toHaveLength(9);
   });
 
-  it("shows the savings-goal centre tile with the personality face label", () => {
+  it("shows the savings-goal centre tile with not-started label", () => {
     render(
       <BingoGrid
         challenges={testPlannerBingoChallenges}
@@ -84,6 +85,27 @@ describe("BingoGrid", () => {
 
     expect(container.querySelector(".bg-bingo-tile-completed")).toBeInTheDocument();
     expect(container.querySelector(".bg-bingo-tile-pending")).toBeInTheDocument();
-    expect(container.querySelector(".bg-bingo-tile-centre")).toBeInTheDocument();
+    expect(container.querySelector(".bg-bingo-tile-centre")).not.toBeInTheDocument();
+  });
+
+  it("applies completed tile surface and personality icon when the savings goal is completed", () => {
+    const { container } = render(
+      <BingoGrid
+        challenges={testPlannerBingoChallenges}
+        completed={["planner-4"]}
+        personalityType="PLANNER"
+        onOpenDetail={vi.fn()}
+      />,
+    );
+
+    const centreTile = screen.getByRole("button", { name: /emoot savings goal, completed/i });
+
+    expect(centreTile).toHaveClass("bg-bingo-tile-completed");
+    expect(centreTile).toHaveAttribute("data-tile-state", "completed");
+    expect(container.querySelector(".bg-bingo-tile-centre")).not.toBeInTheDocument();
+    expect(within(centreTile).getByRole("presentation", { hidden: true })).toHaveAttribute(
+      "src",
+      getPersonalityResultTheme("PLANNER").iconSrc,
+    );
   });
 });

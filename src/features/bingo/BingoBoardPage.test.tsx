@@ -1,7 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { BINGO_WIN_COPY } from "@/features/bingo/bingo.win-copy";
+import { BINGO_WIN_LINES } from "@/features/bingo/bingo.logic";
+import { BINGO_COMPLETE_COPY } from "@/features/bingo/bingo.complete-copy";
+import { BINGO_WIN_COPY, getWinLineHeadline } from "@/features/bingo/bingo.win-copy";
 import { testPlannerBingoChallenges } from "@/features/bingo/bingo.test-fixtures";
 import { BingoBoardPage } from "@/features/bingo/BingoBoardPage";
 import { LOAD_BINGO_BOARD_ERROR } from "@/features/bingo/hooks/useBingoBoard";
@@ -143,10 +145,77 @@ describe("BingoBoardPage", () => {
     await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
 
     expect(screen.getByLabelText("Bingo win congratulations")).toBeInTheDocument();
-    expect(screen.getByText(BINGO_WIN_COPY.congratulationsTitle)).toBeInTheDocument();
+    expect(screen.getByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).toBeInTheDocument();
     expect(screen.getByLabelText("Bingo win motivation")).toBeInTheDocument();
     expect(screen.getByText(BINGO_WIN_COPY.streakTitle)).toBeInTheDocument();
     expect(screen.queryByLabelText("Bingo progress")).not.toBeInTheDocument();
+  });
+
+  it("updates win celebration to the latest line when a second line completes", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /separate account, not started/i }));
+    await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
+    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+
+    expect(screen.getByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /last month's expenses, not started/i }));
+    await user.click(screen.getByRole("button", { name: /share your goal-link, not started/i }));
+
+    expect(screen.getByText(getWinLineHeadline(BINGO_WIN_LINES[3]))).toBeInTheDocument();
+    expect(screen.queryByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).not.toBeInTheDocument();
+  });
+
+  it("dismisses win celebration when a tile in the completed line is un-completed", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /separate account, not started/i }));
+    await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
+    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+
+    expect(screen.getByLabelText("Bingo win congratulations")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /automate a bill, completed/i }));
+
+    expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Bingo progress")).toBeInTheDocument();
+  });
+
+  it("toggles the centre savings-goal tile", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    const centreTile = screen.getByRole("button", { name: /emoot savings goal, not started/i });
+    await user.click(centreTile);
+
+    expect(
+      await screen.findByRole("button", { name: /emoot savings goal, completed/i }),
+    ).toBeInTheDocument();
+    expect(bingoService.updateChallengeStatus).toHaveBeenCalledWith(
+      "test-uid",
+      "planner-4",
+      "COMPLETED",
+    );
+
+    await user.click(screen.getByRole("button", { name: /emoot savings goal, completed/i }));
+
+    expect(
+      await screen.findByRole("button", { name: /emoot savings goal, not started/i }),
+    ).toBeInTheDocument();
+    expect(bingoService.updateChallengeStatus).toHaveBeenCalledWith(
+      "test-uid",
+      "planner-4",
+      "NOT_STARTED",
+    );
   });
 
   it("shows a user-facing error when the bingo board fails to load", async () => {
@@ -156,5 +225,135 @@ describe("BingoBoardPage", () => {
 
     const message = await screen.findByText(LOAD_BINGO_BOARD_ERROR);
     expect(message).toHaveClass("text-destructive");
+  });
+
+  it("does not show VIEW MY ACHIEVEMENT when 8 of 9 challenges are complete", async () => {
+    const eightOfNineBoard = {
+      ...emptyBoard,
+      challengeStatuses: Object.fromEntries(
+        testPlannerBingoChallenges.map((challenge, index) => [
+          challenge.challengeId,
+          index < 8 ? ("COMPLETED" as const) : ("NOT_STARTED" as const),
+        ]),
+      ),
+    };
+    vi.mocked(bingoService.getBoardState).mockResolvedValue(eightOfNineBoard);
+
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: BINGO_COMPLETE_COPY.viewAchievementLabel }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows board-complete UI when all challenges are completed", async () => {
+    const completedBoard = {
+      ...emptyBoard,
+      challengeStatuses: Object.fromEntries(
+        testPlannerBingoChallenges.map((challenge) => [
+          challenge.challengeId,
+          "COMPLETED" as const,
+        ]),
+      ),
+    };
+    vi.mocked(bingoService.getBoardState).mockResolvedValue(completedBoard);
+
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board complete")).toBeInTheDocument();
+    expect(screen.getByText(BINGO_COMPLETE_COPY.message)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: BINGO_COMPLETE_COPY.viewAchievementLabel }),
+    ).toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo progress")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win motivation")).not.toBeInTheDocument();
+  });
+
+  it("shows board-complete UI only after the ninth challenge is toggled complete", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
+
+    for (const [index, challenge] of testPlannerBingoChallenges.entries()) {
+      await user.click(
+        screen.getByRole("button", {
+          name: new RegExp(`${challenge.title}, not started`, "i"),
+        }),
+      );
+
+      if (index < testPlannerBingoChallenges.length - 1) {
+        expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
+        expect(
+          screen.queryByRole("button", { name: BINGO_COMPLETE_COPY.viewAchievementLabel }),
+        ).not.toBeInTheDocument();
+      }
+    }
+
+    expect(screen.getByLabelText("Bingo board complete")).toBeInTheDocument();
+    expect(screen.getByText(BINGO_COMPLETE_COPY.message)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: BINGO_COMPLETE_COPY.viewAchievementLabel }),
+    ).toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo progress")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win motivation")).not.toBeInTheDocument();
+  });
+
+  it("hides board-complete UI when a challenge is un-completed from a full board", async () => {
+    const completedBoard = {
+      ...emptyBoard,
+      challengeStatuses: Object.fromEntries(
+        testPlannerBingoChallenges.map((challenge) => [
+          challenge.challengeId,
+          "COMPLETED" as const,
+        ]),
+      ),
+    };
+    vi.mocked(bingoService.getBoardState).mockResolvedValue(completedBoard);
+
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board complete")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /reach 25% of your goal, completed/i }));
+
+    expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
+    const hasProgress = screen.queryByLabelText("Bingo progress") !== null;
+    const hasCelebration =
+      screen.queryByLabelText("Bingo win congratulations") !== null ||
+      screen.queryByLabelText("Bingo win motivation") !== null;
+    expect(hasProgress || hasCelebration).toBe(true);
+  });
+
+  it("hides board-complete UI and shows progress after un-completing the ninth toggled challenge", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    for (const challenge of testPlannerBingoChallenges) {
+      await user.click(
+        screen.getByRole("button", {
+          name: new RegExp(`${challenge.title}, not started`, "i"),
+        }),
+      );
+    }
+
+    expect(screen.getByLabelText("Bingo board complete")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /reach 25% of your goal, completed/i }));
+
+    expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
+    const hasProgress = screen.queryByLabelText("Bingo progress") !== null;
+    const hasCelebration =
+      screen.queryByLabelText("Bingo win congratulations") !== null ||
+      screen.queryByLabelText("Bingo win motivation") !== null;
+    expect(hasProgress || hasCelebration).toBe(true);
   });
 });

@@ -4,6 +4,7 @@ import {
   getCompletedLines,
   getPersonalityDisplayName,
   getRemainingChallengeCount,
+  isBoardComplete,
   isCentreChallenge,
   isChallengeCompleted,
   isLineComplete,
@@ -43,6 +44,21 @@ describe("getRemainingChallengeCount", () => {
   it("returns how many challenges are left to complete", () => {
     expect(getRemainingChallengeCount(3, 9)).toBe(6);
     expect(getRemainingChallengeCount(9, 9)).toBe(0);
+  });
+});
+
+describe("isBoardComplete", () => {
+  it("returns true when every challenge is completed", () => {
+    expect(isBoardComplete(9, 9)).toBe(true);
+  });
+
+  it("returns false when challenges remain", () => {
+    expect(isBoardComplete(8, 9)).toBe(false);
+    expect(isBoardComplete(0, 9)).toBe(false);
+  });
+
+  it("returns false when there are no challenges", () => {
+    expect(isBoardComplete(0, 0)).toBe(false);
   });
 });
 
@@ -118,6 +134,17 @@ describe("detectNewlyCompletedLines", () => {
     expect(
       detectNewlyCompletedLines(previous, next, testPlannerBingoChallenges).map((line) => line.id),
     ).toEqual(["row0", "col0"]);
+  });
+
+  it("reports a column line after a row was already complete", () => {
+    const rowComplete = ["planner-0", "planner-1", "planner-2"];
+    const rowAndColumn = [...rowComplete, "planner-3", "planner-6"];
+
+    expect(
+      detectNewlyCompletedLines(rowComplete, rowAndColumn, testPlannerBingoChallenges).map(
+        (line) => line.id,
+      ),
+    ).toEqual(["col0"]);
   });
 
   it("fires again when a line is un-completed and then re-completed", () => {

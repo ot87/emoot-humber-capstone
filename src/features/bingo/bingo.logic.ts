@@ -18,6 +18,10 @@ export function getRemainingChallengeCount(completedCount: number, totalCount: n
   return Math.max(0, totalCount - completedCount);
 }
 
+export function isBoardComplete(completedCount: number, totalCount: number): boolean {
+  return totalCount > 0 && completedCount === totalCount;
+}
+
 export function sortChallengesByPosition(challenges: BingoChallenge[]): BingoChallenge[] {
   return [...challenges].sort((left, right) => left.position - right.position);
 }

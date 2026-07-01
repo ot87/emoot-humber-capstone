@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { detectNewlyCompletedLines } from "@/features/bingo/bingo.logic";
+import { detectNewlyCompletedLines, isLineComplete } from "@/features/bingo/bingo.logic";
 import type { BingoChallenge, BingoLine } from "@/types/bingo";
 
 export type UseBingoWinCelebrationState = {
@@ -24,9 +24,35 @@ export function useBingoWinCelebration(
     );
     previousCompletedRef.current = completed;
 
-    if (newlyCompleted.length > 0) {
-      setCelebrationQueue((current) => [...current, ...newlyCompleted]);
-    }
+    setCelebrationQueue((current) => {
+      const stillComplete = current.filter((line) => isLineComplete(line, completed, challenges));
+      const brokeLines = stillComplete.length !== current.length;
+      const addedLines = newlyCompleted.length > 0;
+
+      if (!brokeLines && !addedLines) {
+        return current;
+      }
+
+      if (!addedLines) {
+        return stillComplete;
+      }
+
+      // A celebration was already visible: show the latest newly completed line
+      // immediately instead of queuing behind the older active celebration.
+      if (current.length > 0) {
+        const merged = [...newlyCompleted, ...stillComplete];
+        const seen = new Set<string>();
+        return merged.filter((line) => {
+          if (seen.has(line.id)) {
+            return false;
+          }
+          seen.add(line.id);
+          return true;
+        });
+      }
+
+      return [...stillComplete, ...newlyCompleted];
+    });
   }, [challenges, completed]);
 
   const activeCelebration = celebrationQueue[0] ?? null;
