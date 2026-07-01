@@ -3,23 +3,30 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { saveQuizResult } from "@/services/quiz.service";
 import { signInWithGoogle, listenToAuthChanges } from "@/services/auth.service";
+import { AuthProvider } from "@/features/auth/AuthProvider";
 import type { AuthUser } from "@/types/user";
 import { AuthPage } from "./AuthPage";
 
-let authCallbacks: Array<(user: AuthUser | null) => void> = [];
+// The AuthProvider opens exactly one auth listener for the whole tree, so these
+// tests drive that single source of truth. The deferred-save trigger (AuthPage's
+// `user`) and the save's uid (useSaveQuizResult's `user`) now both read the same
+// provider state - the test no longer depends on many per-instance listeners
+// firing in one synchronous batch.
+let authListener: ((user: AuthUser | null) => void) | null = null;
+let initialAuthUser: AuthUser | null = null;
 
-function notifyAuthListeners(user: AuthUser | null) {
-  authCallbacks.forEach((callback) => callback(user));
+function emitAuthUser(user: AuthUser | null) {
+  authListener?.(user);
 }
 
 vi.mock("@/services/auth.service", () => ({
   signInWithGoogle: vi.fn(),
   signOut: vi.fn(),
   listenToAuthChanges: vi.fn((callback: (user: AuthUser | null) => void) => {
-    authCallbacks.push(callback);
-    callback(null);
+    authListener = callback;
+    callback(initialAuthUser);
     return () => {
-      authCallbacks = authCallbacks.filter((registered) => registered !== callback);
+      authListener = null;
     };
   }),
 }));
@@ -57,28 +64,32 @@ function BingoStub() {
 
 function renderAuthPage(state: unknown = pendingAuthState) {
   return render(
-    <MemoryRouter initialEntries={[{ pathname: "/auth", state }]}>
-      <Routes>
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/bingo" element={<BingoStub />} />
-      </Routes>
-    </MemoryRouter>,
+    <AuthProvider>
+      <MemoryRouter initialEntries={[{ pathname: "/auth", state }]}>
+        <Routes>
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/bingo" element={<BingoStub />} />
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>,
   );
 }
 
 describe("AuthPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    authCallbacks = [];
+    authListener = null;
+    initialAuthUser = null;
     mockedListenToAuthChanges.mockImplementation((callback) => {
-      authCallbacks.push(callback);
-      callback(null);
+      authListener = callback;
+      callback(initialAuthUser);
       return () => {
-        authCallbacks = authCallbacks.filter((registered) => registered !== callback);
+        authListener = null;
       };
     });
     mockedSignInWithGoogle.mockImplementation(async () => {
-      notifyAuthListeners(signedInUser);
+      // Firebase reports the signed-in user through the single auth listener.
+      emitAuthUser(signedInUser);
       return signedInUser;
     });
     mockedSaveQuizResult.mockResolvedValue({
@@ -113,13 +124,7 @@ describe("AuthPage", () => {
   });
 
   it("persists pending quiz completion once when user is already signed in", async () => {
-    mockedListenToAuthChanges.mockImplementation((callback) => {
-      authCallbacks.push(callback);
-      callback(signedInUser);
-      return () => {
-        authCallbacks = authCallbacks.filter((registered) => registered !== callback);
-      };
-    });
+    initialAuthUser = signedInUser;
 
     renderAuthPage();
 

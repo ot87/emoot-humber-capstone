@@ -1,9 +1,9 @@
 import {
   getBingoTaskCompletedIcon,
   getBingoTaskPendingIconForChallenge,
-  getPersonalityFaceIcon,
-  isCentreChallenge,
-} from "@/features/bingo/bingo.logic";
+} from "@/features/bingo/bingo.icons";
+import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
+import { isCentreChallenge } from "@/features/bingo/bingo.logic";
 import { cn } from "@/lib/utils";
 import type { BingoChallenge } from "@/types/bingo";
 import type { PersonalityType } from "@/types/quiz";
@@ -27,10 +27,12 @@ export function BingoTile({
   onOpenDetail,
 }: BingoTileProps) {
   const isCentre = isCentreChallenge(challenge);
+  const tileState = isCentre ? "centre" : isCompleted ? "completed" : "pending";
 
   return (
     <button
       type="button"
+      data-tile-state={tileState}
       aria-label={`${challenge.title}${isCompleted ? ", completed" : ", not started"}`}
       onClick={() => {
         onOpenDetail(challenge.challengeId);
@@ -47,7 +49,7 @@ export function BingoTile({
       {isCentre ? (
         <>
           <img
-            src={getPersonalityFaceIcon(personalityType)}
+            src={getPersonalityResultTheme(personalityType).iconSrc}
             alt=""
             width={32}
             height={32}

@@ -1,4 +1,4 @@
-import { BINGO_TASK_ICON } from "@/features/bingo/bingo.logic";
+import { BINGO_TASK_ICON } from "@/features/bingo/bingo.icons";
 import { BINGO_WIN_COPY } from "@/features/bingo/bingo.win-copy";
 import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";

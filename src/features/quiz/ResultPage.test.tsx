@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
+import { AuthProvider } from "@/features/auth/AuthProvider";
 import { useLoadQuizResult } from "@/features/quiz/hooks/useLoadQuizResult";
 import { useResultDefinitions } from "@/features/quiz/hooks/useResultDefinitions";
 import { testResultDefinitions } from "@/features/quiz/quiz.test-fixtures";
@@ -62,13 +63,15 @@ function AuthStub() {
 
 function renderResultPage(state: unknown, initialEntry = "/result") {
   return render(
-    <MemoryRouter initialEntries={[{ pathname: initialEntry, state }]}>
-      <Routes>
-        <Route path="/result" element={<ResultPage />} />
-        <Route path="/quiz" element={<div>Quiz landing</div>} />
-        <Route path="/auth" element={<AuthStub />} />
-      </Routes>
-    </MemoryRouter>,
+    <AuthProvider>
+      <MemoryRouter initialEntries={[{ pathname: initialEntry, state }]}>
+        <Routes>
+          <Route path="/result" element={<ResultPage />} />
+          <Route path="/quiz" element={<div>Quiz landing</div>} />
+          <Route path="/auth" element={<AuthStub />} />
+        </Routes>
+      </MemoryRouter>
+    </AuthProvider>,
   );
 }
 

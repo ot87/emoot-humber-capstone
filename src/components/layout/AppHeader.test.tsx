@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { Link, MemoryRouter } from "react-router-dom";
 import type { AppNavLinkProps } from "@/components/layout/appNavLink";
 import { listenToAuthChanges } from "@/services/auth.service";
+import { AuthProvider } from "@/features/auth/AuthProvider";
 import type { AuthUser } from "@/types/user";
 import { AppHeader } from "./AppHeader";
 
@@ -25,9 +26,11 @@ function StubNavLink({ to, children, ...props }: AppNavLinkProps) {
 describe("AppHeader", () => {
   it("renders the centered EMOOT logo linking home", () => {
     render(
-      <MemoryRouter>
-        <AppHeader navLink={Link} homeTo="/quiz" />
-      </MemoryRouter>,
+      <AuthProvider>
+        <MemoryRouter>
+          <AppHeader navLink={Link} homeTo="/quiz" />
+        </MemoryRouter>
+      </AuthProvider>,
     );
 
     const header = screen.getByRole("banner");
@@ -39,9 +42,11 @@ describe("AppHeader", () => {
 
   it("renders the home target through the supplied client nav link component", () => {
     render(
-      <MemoryRouter>
-        <AppHeader navLink={StubNavLink} homeTo="/quiz" />
-      </MemoryRouter>,
+      <AuthProvider>
+        <MemoryRouter>
+          <AppHeader navLink={StubNavLink} homeTo="/quiz" />
+        </MemoryRouter>
+      </AuthProvider>,
     );
 
     expect(screen.getByRole("link", { name: /emoot home/i })).toHaveAttribute(
@@ -64,9 +69,11 @@ describe("AppHeader", () => {
     });
 
     render(
-      <MemoryRouter>
-        <AppHeader navLink={Link} homeTo="/quiz" />
-      </MemoryRouter>,
+      <AuthProvider>
+        <MemoryRouter>
+          <AppHeader navLink={Link} homeTo="/quiz" />
+        </MemoryRouter>
+      </AuthProvider>,
     );
 
     expect(screen.getByRole("button", { name: /open menu/i })).toBeInTheDocument();

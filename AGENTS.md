@@ -39,7 +39,7 @@ const onClick = async () => {
 };
 
 // GOOD - component consumes the hook; the hook calls the service
-const { signIn, isSigningIn, error } = useAuth();
+const { signIn, authAction, error } = useAuth();
 const onClick = async () => {
   if (await signIn()) navigate(redirectTo);
 };

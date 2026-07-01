@@ -2,13 +2,25 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { BINGO_WIN_COPY } from "@/features/bingo/bingo.win-copy";
+import { testPlannerBingoChallenges } from "@/features/bingo/bingo.test-fixtures";
+import { BingoBoardPage } from "@/features/bingo/BingoBoardPage";
+import { LOAD_BINGO_BOARD_ERROR } from "@/features/bingo/hooks/useBingoBoard";
+import { AuthProvider } from "@/features/auth/AuthProvider";
+import * as bingoService from "@/services/bingo.service";
 import { getSavedQuizResult } from "@/services/quiz.service";
 import type { AuthUser } from "@/types/user";
+import type { ChallengeStatus } from "@/types/bingo";
 import type { SavedQuizResult } from "@/types/quiz";
-import { BingoBoardPage } from "@/features/bingo/BingoBoardPage";
 
 vi.mock("@/services/quiz.service", () => ({
   getSavedQuizResult: vi.fn(),
+}));
+
+vi.mock("@/services/bingo.service", () => ({
+  getBoardState: vi.fn(),
+  createBoard: vi.fn(),
+  getChallenges: vi.fn(),
+  updateChallengeStatus: vi.fn(),
 }));
 
 vi.mock("@/services/auth.service", () => ({
@@ -36,17 +48,46 @@ const savedResult: SavedQuizResult = {
   updatedAt: null,
 };
 
+const emptyBoard = {
+  userId: "test-uid",
+  personalityType: "PLANNER" as const,
+  challengeStatuses: Object.fromEntries(
+    testPlannerBingoChallenges.map((challenge) => [challenge.challengeId, "NOT_STARTED" as const]),
+  ),
+  celebratedLines: [],
+  feedbackSubmitted: false,
+  completedAt: null,
+  createdAt: null,
+  updatedAt: null,
+};
+
 function renderBoardPage() {
   return render(
-    <MemoryRouter>
-      <BingoBoardPage />
-    </MemoryRouter>,
+    <AuthProvider>
+      <MemoryRouter>
+        <BingoBoardPage />
+      </MemoryRouter>
+    </AuthProvider>,
   );
 }
 
 describe("BingoBoardPage", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.mocked(getSavedQuizResult).mockResolvedValue(savedResult);
+    vi.mocked(bingoService.getBoardState).mockResolvedValue(emptyBoard);
+    vi.mocked(bingoService.getChallenges).mockResolvedValue(testPlannerBingoChallenges);
+    vi.mocked(bingoService.createBoard).mockResolvedValue(emptyBoard);
+
+    let challengeStatuses: Record<string, ChallengeStatus> = {
+      ...emptyBoard.challengeStatuses,
+    };
+    vi.mocked(bingoService.updateChallengeStatus).mockImplementation(
+      async (_uid, challengeId, status) => {
+        challengeStatuses = { ...challengeStatuses, [challengeId]: status };
+        return { ...emptyBoard, challengeStatuses };
+      },
+    );
   });
 
   it("renders the 3x3 bingo grid for a saved PLANNER result", async () => {
@@ -67,6 +108,7 @@ describe("BingoBoardPage", () => {
       ...savedResult,
       personalityType: "WORRIER",
     });
+    vi.mocked(bingoService.getChallenges).mockResolvedValue([]);
 
     renderBoardPage();
 
@@ -105,5 +147,14 @@ describe("BingoBoardPage", () => {
     expect(screen.getByLabelText("Bingo win motivation")).toBeInTheDocument();
     expect(screen.getByText(BINGO_WIN_COPY.streakTitle)).toBeInTheDocument();
     expect(screen.queryByLabelText("Bingo progress")).not.toBeInTheDocument();
+  });
+
+  it("shows a user-facing error when the bingo board fails to load", async () => {
+    vi.spyOn(bingoService, "getBoardState").mockRejectedValue(new Error("network failure"));
+
+    renderBoardPage();
+
+    const message = await screen.findByText(LOAD_BINGO_BOARD_ERROR);
+    expect(message).toHaveClass("text-destructive");
   });
 });

@@ -1,4 +1,5 @@
-import { BINGO_TASK_ICON, getRemainingChallengeCount } from "@/features/bingo/bingo.logic";
+import { BINGO_TASK_ICON } from "@/features/bingo/bingo.icons";
+import { getRemainingChallengeCount } from "@/features/bingo/bingo.logic";
 import { getPersonalityResultTheme } from "@/features/quiz/quiz.result";
 import { cn } from "@/lib/utils";
 import type { PersonalityType } from "@/types/quiz";
