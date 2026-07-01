@@ -17,8 +17,13 @@ import { useSavedQuizResult } from "@/features/bingo/hooks/useSavedQuizResult";
 export function BingoBoardPage() {
   const { savedResult, loading: quizLoading, error: quizError } = useSavedQuizResult();
   const personalityType = savedResult?.personalityType ?? "PLANNER";
-  const { challenges, completed, loading, error, toggleChallenge } = useBingoBoard(personalityType);
-  const { activeCelebration, isCelebrating } = useBingoWinCelebration(challenges, completed);
+  const { challenges, completed, syncedCompleted, loading, error, toggleChallenge } =
+    useBingoBoard(personalityType);
+  const { activeCelebration, isCelebrating } = useBingoWinCelebration(
+    challenges,
+    completed,
+    syncedCompleted,
+  );
 
   const handleOpenDetail = useCallback(
     (challengeId: string) => {

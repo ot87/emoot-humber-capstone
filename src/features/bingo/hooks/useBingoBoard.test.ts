@@ -3,6 +3,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { testPlannerBingoChallenges } from "@/features/bingo/bingo.test-fixtures";
 import { LOAD_BINGO_BOARD_ERROR, useBingoBoard } from "@/features/bingo/hooks/useBingoBoard";
 import * as bingoService from "@/services/bingo.service";
+import type { BingoBoard } from "@/types/bingo";
 import type { AuthUser } from "@/types/user";
 
 vi.mock("@/features/auth/hooks/useAuth", () => ({
@@ -81,6 +82,7 @@ describe("useBingoBoard", () => {
     expect(mockedGetChallenges).toHaveBeenCalledWith("PLANNER");
     expect(result.current.challenges).toEqual(testPlannerBingoChallenges);
     expect(result.current.completed).toEqual(["planner-0"]);
+    expect(result.current.syncedCompleted).toEqual(["planner-0"]);
     expect(result.current.error).toBe("");
   });
 
@@ -174,5 +176,62 @@ describe("useBingoBoard", () => {
       "NOT_STARTED",
     );
     expect(result.current.completed).toEqual([]);
+  });
+
+  it("updates syncedCompleted only after toggleChallenge persists successfully", async () => {
+    let resolveUpdate: ((board: BingoBoard) => void) | undefined;
+    mockedUpdateChallengeStatus.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveUpdate = resolve;
+        }),
+    );
+
+    const { result } = renderHook(() => useBingoBoard("PLANNER"));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    let togglePromise: Promise<void> | undefined;
+    act(() => {
+      togglePromise = result.current.toggleChallenge("planner-0");
+    });
+
+    await waitFor(() => {
+      expect(result.current.completed).toEqual(["planner-0"]);
+    });
+    expect(result.current.syncedCompleted).toEqual([]);
+
+    await act(async () => {
+      resolveUpdate?.({
+        ...emptyBoard,
+        challengeStatuses: {
+          ...emptyBoard.challengeStatuses,
+          "planner-0": "COMPLETED",
+        },
+      });
+      await togglePromise;
+    });
+
+    expect(result.current.syncedCompleted).toEqual(["planner-0"]);
+  });
+
+  it("does not update syncedCompleted when toggleChallenge fails", async () => {
+    mockedUpdateChallengeStatus.mockRejectedValue(new Error("network failure"));
+
+    const { result } = renderHook(() => useBingoBoard("PLANNER"));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    await act(async () => {
+      await result.current.toggleChallenge("planner-0");
+    });
+
+    expect(result.current.completed).toEqual([]);
+    expect(result.current.syncedCompleted).toEqual([]);
+    expect(result.current.error).toBe(LOAD_BINGO_BOARD_ERROR);
   });
 });

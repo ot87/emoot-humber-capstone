@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { BINGO_WIN_LINES } from "@/features/bingo/bingo.logic";
@@ -11,7 +11,7 @@ import { AuthProvider } from "@/features/auth/AuthProvider";
 import * as bingoService from "@/services/bingo.service";
 import { getSavedQuizResult } from "@/services/quiz.service";
 import type { AuthUser } from "@/types/user";
-import type { ChallengeStatus } from "@/types/bingo";
+import type { ChallengeStatus, BingoBoard } from "@/types/bingo";
 import type { SavedQuizResult } from "@/types/quiz";
 
 vi.mock("@/services/quiz.service", () => ({
@@ -144,11 +144,86 @@ describe("BingoBoardPage", () => {
     await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
     await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
 
-    expect(screen.getByLabelText("Bingo win congratulations")).toBeInTheDocument();
+    expect(await screen.findByLabelText("Bingo win congratulations")).toBeInTheDocument();
     expect(screen.getByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).toBeInTheDocument();
     expect(screen.getByLabelText("Bingo win motivation")).toBeInTheDocument();
     expect(screen.getByText(BINGO_WIN_COPY.streakTitle)).toBeInTheDocument();
     expect(screen.queryByLabelText("Bingo progress")).not.toBeInTheDocument();
+  });
+
+  it("does not show win celebration until toggle persist succeeds", async () => {
+    const user = userEvent.setup();
+    const twoOfRowBoard = {
+      ...emptyBoard,
+      challengeStatuses: {
+        ...emptyBoard.challengeStatuses,
+        "planner-0": "COMPLETED" as const,
+        "planner-1": "COMPLETED" as const,
+      },
+    };
+    vi.mocked(bingoService.getBoardState).mockResolvedValue(twoOfRowBoard);
+
+    let resolveUpdate: ((board: BingoBoard) => void) | undefined;
+    vi.mocked(bingoService.updateChallengeStatus).mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveUpdate = resolve;
+        }),
+    );
+
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+
+    expect(
+      await screen.findByRole("button", { name: /automate a bill, completed/i }),
+    ).toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win motivation")).not.toBeInTheDocument();
+
+    await act(async () => {
+      resolveUpdate?.({
+        ...twoOfRowBoard,
+        challengeStatuses: {
+          ...twoOfRowBoard.challengeStatuses,
+          "planner-2": "COMPLETED",
+        },
+      });
+    });
+
+    expect(await screen.findByLabelText("Bingo win congratulations")).toBeInTheDocument();
+    expect(screen.getByLabelText("Bingo win motivation")).toBeInTheDocument();
+  });
+
+  it("does not show win celebration when toggle persist fails after optimistic line completion", async () => {
+    const user = userEvent.setup();
+    const twoOfRowBoard = {
+      ...emptyBoard,
+      challengeStatuses: {
+        ...emptyBoard.challengeStatuses,
+        "planner-0": "COMPLETED" as const,
+        "planner-1": "COMPLETED" as const,
+      },
+    };
+    vi.mocked(bingoService.getBoardState).mockResolvedValue(twoOfRowBoard);
+    vi.mocked(bingoService.updateChallengeStatus).mockRejectedValue(new Error("network failure"));
+
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+
+    expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win motivation")).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText(LOAD_BINGO_BOARD_ERROR)).toBeInTheDocument();
+    });
+    expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo win motivation")).not.toBeInTheDocument();
   });
 
   it("updates win celebration to the latest line when a second line completes", async () => {
@@ -161,12 +236,12 @@ describe("BingoBoardPage", () => {
     await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
     await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
 
-    expect(screen.getByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).toBeInTheDocument();
+    expect(await screen.findByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /last month's expenses, not started/i }));
     await user.click(screen.getByRole("button", { name: /share your goal-link, not started/i }));
 
-    expect(screen.getByText(getWinLineHeadline(BINGO_WIN_LINES[3]))).toBeInTheDocument();
+    expect(await screen.findByText(getWinLineHeadline(BINGO_WIN_LINES[3]))).toBeInTheDocument();
     expect(screen.queryByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).not.toBeInTheDocument();
   });
 
@@ -180,7 +255,7 @@ describe("BingoBoardPage", () => {
     await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
     await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
 
-    expect(screen.getByLabelText("Bingo win congratulations")).toBeInTheDocument();
+    expect(await screen.findByLabelText("Bingo win congratulations")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /automate a bill, completed/i }));
 

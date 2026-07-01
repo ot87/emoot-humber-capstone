@@ -34,6 +34,8 @@ export type BingoBoardLoadState = {
 
 export type UseBingoBoardState = BingoBoardLoadState & {
   personalityType: PersonalityType;
+  /** Server-confirmed completions; celebration and win detection use this, not optimistic `completed`. */
+  syncedCompleted: string[];
   toggleChallenge: (challengeId: string) => Promise<void>;
 };
 

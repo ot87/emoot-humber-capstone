@@ -12,17 +12,18 @@ export type UseBingoWinCelebrationState = {
 export function useBingoWinCelebration(
   challenges: BingoChallenge[],
   completed: string[],
+  syncedCompleted: string[],
 ): UseBingoWinCelebrationState {
-  const previousCompletedRef = useRef(completed);
+  const previousSyncedCompletedRef = useRef(syncedCompleted);
   const [celebrationQueue, setCelebrationQueue] = useState<BingoLine[]>([]);
 
   useEffect(() => {
     const newlyCompleted = detectNewlyCompletedLines(
-      previousCompletedRef.current,
-      completed,
+      previousSyncedCompletedRef.current,
+      syncedCompleted,
       challenges,
     );
-    previousCompletedRef.current = completed;
+    previousSyncedCompletedRef.current = syncedCompleted;
 
     setCelebrationQueue((current) => {
       const stillComplete = current.filter((line) => isLineComplete(line, completed, challenges));
@@ -53,7 +54,7 @@ export function useBingoWinCelebration(
 
       return [...stillComplete, ...newlyCompleted];
     });
-  }, [challenges, completed]);
+  }, [challenges, completed, syncedCompleted]);
 
   const activeCelebration = celebrationQueue[0] ?? null;
 
