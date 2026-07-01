@@ -27,15 +27,15 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
   FREE_SPIRIT: board("FREE_SPIRIT", [
     {
       title: "separate account",
-      whatToDo: "Keep your savings in a separate, dedicated high interest savings account",
+      whatToDo: "Keep your savings in a separate, dedicated high interest savings account.",
       whyItMatters: "Hide your money so you aren't tempted to spend it.",
     },
     {
       title: "1 month budget",
       whatToDo:
-        'Think about next month and list your "money in" and "money out" expectations. Congrats! you\'ve just created a budget.',
+        'Think about next month and list your "money in" and "money out" expectations. Congrats! You\'ve just created a budget.',
       whyItMatters:
-        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgetting.',
+        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgeting.',
     },
     {
       title: "automate savings",
@@ -82,24 +82,22 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
       title: "automate a bill",
       whatToDo:
         "Automate at least one of your bills so you never miss a payment, leaving the rest of your money guilt-free for spending or short-term goals.",
-      // FLAG: truncated in the screenshot (ends mid-sentence). Verify against the full sheet.
       whyItMatters:
-        "Free spirits often dislike the daily or weekly maintenance of budgeting. The best strategy is automation:",
+        "Free spirits often dislike the daily or weekly maintenance of budgeting. The best strategy for you is automating your bill payments so you aren't left scrambling.",
     },
   ]),
 
   OVERWHELMED_STARTER: board("OVERWHELMED_STARTER", [
     {
       title: "separate account",
-      whatToDo: "Keep your savings in a separate, dedicated high interest savings account",
+      whatToDo: "Keep your savings in a separate, dedicated high interest savings account.",
       whyItMatters: "Hide your money so you aren't tempted to spend it.",
     },
     {
       title: "smallest debt first",
-      // FLAG: "balancce" typo carried verbatim from the sheet.
       whatToDo:
-        "pay off your smallest debt balancce first; this could be the min monthly payment on a credit card",
-      whyItMatters: 'build some early wins with smaller steps first aka "the snowball method"',
+        "Pay off your smallest debt balance first; this could be the min monthly payment on a credit card.",
+      whyItMatters: 'Build some early wins with smaller steps first aka "the snowball method".',
     },
     {
       title: "buy nothing day",
@@ -137,9 +135,9 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
     {
       title: "1 month budget",
       whatToDo:
-        'Think about next month and list your "money in" and "money out" expectations. Congrats! you\'ve just created a budget.',
+        'Think about next month and list your "money in" and "money out" expectations. Congrats! You\'ve just created a budget.',
       whyItMatters:
-        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgetting.',
+        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgeting.',
     },
     {
       title: "mini investment",
@@ -162,11 +160,9 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
     },
     {
       title: "automate a bill",
-      whatToDo:
-        "Automate at least one of your bills so you never miss a payment, leaving the rest of your money guilt-free for spending or short-term goals.",
-      // FLAG: wrong type ("Free spirits") and truncated - looks pasted from the Free Spirit row. Replace with Planner copy from the sheet.
+      whatToDo: "Automate your bill payments or recurring expenses.",
       whyItMatters:
-        "Free spirits often dislike the daily or weekly maintenance of budgeting. The best strategy is automation:",
+        "Keeping your payments timely will help boost your credit rating and get you ready for that loan or mortgage in your future.",
     },
     {
       title: "last month's expenses",
@@ -199,22 +195,22 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
     {
       title: "1 month budget",
       whatToDo:
-        'Think about next month and list your "money in" and "money out" expectations. Congrats! you\'ve just created a budget.',
+        'Think about next month and list your "money in" and "money out" expectations. Congrats! You\'ve just created a budget.',
       whyItMatters:
-        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgetting.',
+        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgeting.',
     },
     {
       title: "Reach 25% of your goal",
-      // FLAG: blank in the sheet - paste the real copy from the full sheet.
-      whatToDo: "FLAG: paste What-to-Do from the sheet",
-      whyItMatters: "FLAG: paste Why-it-Matters from the sheet",
+      whatToDo: "Plan a way to celebrate reaching this milestone.",
+      whyItMatters:
+        "You are on your way! The first and most difficult part of your savings journey is behind you.",
     },
   ]),
 
   WORRIER: board("WORRIER", [
     {
       title: "separate account",
-      whatToDo: "Keep your savings in a separate, dedicated high interest savings account",
+      whatToDo: "Keep your savings in a separate, dedicated high interest savings account.",
       whyItMatters: "Hide your money so you aren't tempted to spend it.",
     },
     {
@@ -225,8 +221,8 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
     {
       title: "the safety net",
       whatToDo:
-        "figure out what you need to cover 3 months of essential living expenses (home, utility, food)",
-      whyItMatters: "relieve some anxiety by protecting yourself against an unexpected expense",
+        "Figure out what you need to cover 3 months of essential living expenses (home, utility, food).",
+      whyItMatters: "Relieve some anxiety by protecting yourself against an unexpected expense.",
     },
     {
       title: "last month's expenses",
@@ -252,9 +248,9 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
     {
       title: "1 month budget",
       whatToDo:
-        'Think about next month and list your "money in" and "money out" expectations. Congrats! you\'ve just created a budget.',
+        'Think about next month and list your "money in" and "money out" expectations. Congrats! You\'ve just created a budget.',
       whyItMatters:
-        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgetting.',
+        'It\'s easy to spend more than we have with credit cards, lines of credit and loans. Being aware when more money is "going out" than "coming in" is a good first step towards better budgeting.',
     },
     {
       title: 'say "no" this week',
@@ -266,7 +262,8 @@ export const bingoChallenges: Record<PersonalityTypeKey, BingoChallenge[]> = {
     {
       title: "automate savings",
       whatToDo: "Set up automatic transfers to move money to a savings account.",
-      whyItMatters: "Automate everything so it won't sit in your mind.",
+      whyItMatters:
+        "Setting this up will be one less thing to worry about. Check your, so it won't sit on your mind.",
     },
   ]),
 };
