@@ -1,10 +1,20 @@
+import iconBingoBrain from "@/assets/icon-bingo-brain.svg";
 import iconBingoCalendar from "@/assets/icon-bingo-calendar.svg";
 import iconBingoCheck from "@/assets/icon-bingo-check.svg";
+import iconBingoClose from "@/assets/icon-bingo-close.svg";
 import iconBingoLightbulb from "@/assets/icon-bingo-lightbulb.svg";
 import iconBingoPiggyBank from "@/assets/icon-bingo-piggy-bank.svg";
+import iconBingoReset from "@/assets/icon-bingo-reset.svg";
 import iconBingoSpeechBubble from "@/assets/icon-bingo-speech-bubble.svg";
 import iconBingoTrophy from "@/assets/icon-bingo-trophy.svg";
 import type { BingoChallenge } from "@/types/bingo";
+
+/** Challenge detail screen icons (close, why-it-matters, reset). */
+export const BINGO_DETAIL_ICON = {
+  brain: iconBingoBrain,
+  close: iconBingoClose,
+  reset: iconBingoReset,
+} as const;
 
 /** Task tile icons — per-challenge mapping can replace the pending fallback later. */
 export const BINGO_TASK_ICON = {

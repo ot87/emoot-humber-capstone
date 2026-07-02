@@ -1,5 +1,6 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { BINGO_WIN_LINES } from "@/features/bingo/bingo.logic";
 import { BINGO_COMPLETE_COPY } from "@/features/bingo/bingo.complete-copy";
@@ -73,6 +74,23 @@ function renderBoardPage() {
   );
 }
 
+async function openChallengeDetail(user: UserEvent, tileLabel: RegExp) {
+  await user.click(screen.getByRole("button", { name: tileLabel }));
+  expect(screen.getByLabelText("Challenge detail")).toBeInTheDocument();
+}
+
+async function markChallengeComplete(user: UserEvent) {
+  await user.click(screen.getByRole("button", { name: /mark challenge as complete/i }));
+}
+
+async function uncompleteChallenge(user: UserEvent) {
+  await user.click(screen.getByRole("button", { name: /mark challenge as not started/i }));
+}
+
+async function closeChallengeDetail(user: UserEvent) {
+  await user.click(screen.getByRole("button", { name: /close challenge detail/i }));
+}
+
 describe("BingoBoardPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -105,6 +123,56 @@ describe("BingoBoardPage", () => {
     ).toBeInTheDocument();
   });
 
+  it("opens challenge detail when a tile is clicked", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    await openChallengeDetail(user, /skip one impulse buy, not started/i);
+
+    expect(screen.getByRole("heading", { name: /skip one impulse buy/i })).toBeInTheDocument();
+    expect(screen.getByText(/the planner · challenge #6/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText("Bingo board")).not.toBeInTheDocument();
+    expect(screen.queryByText(/your money saving personality/i)).not.toBeInTheDocument();
+  });
+
+  it("returns to the board when detail is closed without completing", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    await openChallengeDetail(user, /skip one impulse buy, not started/i);
+    await closeChallengeDetail(user);
+
+    expect(screen.getByLabelText("Bingo board")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /skip one impulse buy, not started/i }),
+    ).toBeInTheDocument();
+    expect(bingoService.updateChallengeStatus).not.toHaveBeenCalled();
+  });
+
+  it("marks a challenge complete from detail and returns to the board", async () => {
+    const user = userEvent.setup();
+    renderBoardPage();
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+
+    await openChallengeDetail(user, /skip one impulse buy, not started/i);
+    await markChallengeComplete(user);
+
+    expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /skip one impulse buy, completed/i }),
+    ).toBeInTheDocument();
+    expect(bingoService.updateChallengeStatus).toHaveBeenCalledWith(
+      "test-uid",
+      "planner-5",
+      "COMPLETED",
+    );
+  });
+
   it("shows an empty state when no challenges exist for the personality type", async () => {
     vi.mocked(getSavedQuizResult).mockResolvedValue({
       ...savedResult,
@@ -133,16 +201,19 @@ describe("BingoBoardPage", () => {
     });
   });
 
-  it("shows win celebration when a stub toggle completes a line", async () => {
+  it("shows win celebration when completing a line from challenge detail", async () => {
     const user = userEvent.setup();
     renderBoardPage();
 
     expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
     expect(screen.getByLabelText("Bingo progress")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /separate account, not started/i }));
-    await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
-    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+    await openChallengeDetail(user, /separate account, not started/i);
+    await markChallengeComplete(user);
+    await openChallengeDetail(user, /review subscriptions, not started/i);
+    await markChallengeComplete(user);
+    await openChallengeDetail(user, /automate a bill, not started/i);
+    await markChallengeComplete(user);
 
     expect(await screen.findByLabelText("Bingo win congratulations")).toBeInTheDocument();
     expect(screen.getByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).toBeInTheDocument();
@@ -175,11 +246,10 @@ describe("BingoBoardPage", () => {
 
     expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+    await openChallengeDetail(user, /automate a bill, not started/i);
+    await user.click(screen.getByRole("button", { name: /mark challenge as complete/i }));
 
-    expect(
-      await screen.findByRole("button", { name: /automate a bill, completed/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Challenge detail")).toBeInTheDocument();
     expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Bingo win motivation")).not.toBeInTheDocument();
 
@@ -214,7 +284,8 @@ describe("BingoBoardPage", () => {
 
     expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+    await openChallengeDetail(user, /automate a bill, not started/i);
+    await markChallengeComplete(user);
 
     expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Bingo win motivation")).not.toBeInTheDocument();
@@ -232,14 +303,19 @@ describe("BingoBoardPage", () => {
 
     expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /separate account, not started/i }));
-    await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
-    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+    await openChallengeDetail(user, /separate account, not started/i);
+    await markChallengeComplete(user);
+    await openChallengeDetail(user, /review subscriptions, not started/i);
+    await markChallengeComplete(user);
+    await openChallengeDetail(user, /automate a bill, not started/i);
+    await markChallengeComplete(user);
 
     expect(await screen.findByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /last month's expenses, not started/i }));
-    await user.click(screen.getByRole("button", { name: /share your goal-link, not started/i }));
+    await openChallengeDetail(user, /last month's expenses, not started/i);
+    await markChallengeComplete(user);
+    await openChallengeDetail(user, /share your goal-link, not started/i);
+    await markChallengeComplete(user);
 
     expect(await screen.findByText(getWinLineHeadline(BINGO_WIN_LINES[3]))).toBeInTheDocument();
     expect(screen.queryByText(getWinLineHeadline(BINGO_WIN_LINES[0]))).not.toBeInTheDocument();
@@ -251,26 +327,30 @@ describe("BingoBoardPage", () => {
 
     expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /separate account, not started/i }));
-    await user.click(screen.getByRole("button", { name: /review subscriptions, not started/i }));
-    await user.click(screen.getByRole("button", { name: /automate a bill, not started/i }));
+    await openChallengeDetail(user, /separate account, not started/i);
+    await markChallengeComplete(user);
+    await openChallengeDetail(user, /review subscriptions, not started/i);
+    await markChallengeComplete(user);
+    await openChallengeDetail(user, /automate a bill, not started/i);
+    await markChallengeComplete(user);
 
     expect(await screen.findByLabelText("Bingo win congratulations")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /automate a bill, completed/i }));
+    await openChallengeDetail(user, /automate a bill, completed/i);
+    await uncompleteChallenge(user);
 
     expect(screen.queryByLabelText("Bingo win congratulations")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Bingo progress")).toBeInTheDocument();
   });
 
-  it("toggles the centre savings-goal tile", async () => {
+  it("toggles the centre savings-goal tile from challenge detail", async () => {
     const user = userEvent.setup();
     renderBoardPage();
 
     expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
 
-    const centreTile = screen.getByRole("button", { name: /emoot savings goal, not started/i });
-    await user.click(centreTile);
+    await openChallengeDetail(user, /emoot savings goal, not started/i);
+    await markChallengeComplete(user);
 
     expect(
       await screen.findByRole("button", { name: /emoot savings goal, completed/i }),
@@ -281,7 +361,8 @@ describe("BingoBoardPage", () => {
       "COMPLETED",
     );
 
-    await user.click(screen.getByRole("button", { name: /emoot savings goal, completed/i }));
+    await openChallengeDetail(user, /emoot savings goal, completed/i);
+    await uncompleteChallenge(user);
 
     expect(
       await screen.findByRole("button", { name: /emoot savings goal, not started/i }),
@@ -355,11 +436,8 @@ describe("BingoBoardPage", () => {
     expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
 
     for (const [index, challenge] of testPlannerBingoChallenges.entries()) {
-      await user.click(
-        screen.getByRole("button", {
-          name: new RegExp(`${challenge.title}, not started`, "i"),
-        }),
-      );
+      await openChallengeDetail(user, new RegExp(`${challenge.title}, not started`, "i"));
+      await markChallengeComplete(user);
 
       if (index < testPlannerBingoChallenges.length - 1) {
         expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
@@ -396,7 +474,8 @@ describe("BingoBoardPage", () => {
 
     expect(await screen.findByLabelText("Bingo board complete")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /reach 25% of your goal, completed/i }));
+    await openChallengeDetail(user, /reach 25% of your goal, completed/i);
+    await uncompleteChallenge(user);
 
     expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
     const hasProgress = screen.queryByLabelText("Bingo progress") !== null;
@@ -413,16 +492,14 @@ describe("BingoBoardPage", () => {
     expect(await screen.findByLabelText("Bingo board")).toBeInTheDocument();
 
     for (const challenge of testPlannerBingoChallenges) {
-      await user.click(
-        screen.getByRole("button", {
-          name: new RegExp(`${challenge.title}, not started`, "i"),
-        }),
-      );
+      await openChallengeDetail(user, new RegExp(`${challenge.title}, not started`, "i"));
+      await markChallengeComplete(user);
     }
 
     expect(screen.getByLabelText("Bingo board complete")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /reach 25% of your goal, completed/i }));
+    await openChallengeDetail(user, /reach 25% of your goal, completed/i);
+    await uncompleteChallenge(user);
 
     expect(screen.queryByLabelText("Bingo board complete")).not.toBeInTheDocument();
     const hasProgress = screen.queryByLabelText("Bingo progress") !== null;

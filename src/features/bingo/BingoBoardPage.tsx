@@ -1,8 +1,9 @@
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { isBoardComplete } from "@/features/bingo/bingo.logic";
+import { isBoardComplete, isChallengeCompleted } from "@/features/bingo/bingo.logic";
 import { BingoBoardLayout } from "@/features/bingo/components/BingoBoardLayout";
 import { BingoBoardCompleteCard } from "@/features/bingo/components/BingoBoardCompleteCard";
+import { BingoChallengeDetail } from "@/features/bingo/components/BingoChallengeDetail";
 import { BingoGrid } from "@/features/bingo/components/BingoGrid";
 import { BingoProgressCard } from "@/features/bingo/components/BingoProgressCard";
 import { BingoScreenContent } from "@/features/bingo/components/BingoScreenContent";
@@ -25,12 +26,29 @@ export function BingoBoardPage() {
     syncedCompleted,
   );
 
-  const handleOpenDetail = useCallback(
-    (challengeId: string) => {
-      void toggleChallenge(challengeId);
-    },
-    [toggleChallenge],
+  const [selectedChallengeId, setSelectedChallengeId] = useState<string | null>(null);
+
+  const selectedChallenge = useMemo(
+    () => challenges.find((challenge) => challenge.challengeId === selectedChallengeId) ?? null,
+    [challenges, selectedChallengeId],
   );
+
+  const handleOpenDetail = useCallback((challengeId: string) => {
+    setSelectedChallengeId(challengeId);
+  }, []);
+
+  const handleCloseDetail = useCallback(() => {
+    setSelectedChallengeId(null);
+  }, []);
+
+  const handleToggleSelectedComplete = useCallback(async () => {
+    if (!selectedChallengeId) {
+      return;
+    }
+
+    await toggleChallenge(selectedChallengeId);
+    setSelectedChallengeId(null);
+  }, [selectedChallengeId, toggleChallenge]);
 
   const handleViewAchievement = useCallback(() => {
     // Achievement route not yet implemented — stub for KAN-49.
@@ -57,6 +75,18 @@ export function BingoBoardPage() {
           No bingo challenges are available for your personality type right now.
         </p>
       </div>
+    );
+  }
+
+  if (selectedChallenge) {
+    return (
+      <BingoChallengeDetail
+        challenge={selectedChallenge}
+        personalityType={savedResult.personalityType}
+        isCompleted={isChallengeCompleted(selectedChallenge.challengeId, completed)}
+        onToggleComplete={handleToggleSelectedComplete}
+        onClose={handleCloseDetail}
+      />
     );
   }
 
